@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.4-apache-alpine
 
 # Dependencias del sistema (zip, intl, etc.) + herramientas
 RUN apk add --no-cache \
@@ -16,12 +16,13 @@ RUN apk add --no-cache \
     mbstring \
     intl \
     zip \
+  && a2enmod rewrite \
   && rm -rf /var/cache/apk/*
 
 # Composer (copiado desde la imagen oficial)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 # Copiar todos los archivos del proyecto
 COPY . .
@@ -30,8 +31,19 @@ COPY . .
 RUN composer install --optimize-autoloader --no-dev
 
 # Permisos para storage y bootstrap
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 8000
+# Configurar Apache para Laravel
+RUN echo '<Directory /var/www/html/public>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' > /etc/apache2/conf-available/laravel.conf && \
+    a2enconf laravel
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Configurar DocumentRoot
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]
