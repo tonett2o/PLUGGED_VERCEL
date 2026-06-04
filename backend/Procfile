@@ -1,1 +1,1 @@
-web: php -d display_errors=stdout -d display_startup_errors=stdout artisan serve --host=0.0.0.0 --port=$PORT
+web: bash ./src/start.sh
