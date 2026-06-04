@@ -4,7 +4,7 @@ const useApiPost_Galeria = async (archivo, token) => {
         const formData = new FormData();
         formData.append('imagen', archivo);
 
-        const response = await fetch(\\/api/usuarios/galeria', {
+        const response = await fetch(`${API_URL}/api/usuarios/galeria`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

@@ -28,7 +28,7 @@ const useApiPost = async (playlistData, token) => {
     }
 
     try {
-        const peticion = await fetch(`${API_URL}/api/playlists", {
+        const peticion = await fetch(`${API_URL}/api/playlists`, {
             method: "POST",
             headers: {
                 "Accept": "application/json",
