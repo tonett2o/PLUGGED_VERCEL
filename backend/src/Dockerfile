@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libonig-dev \
     libzip-dev \
-    mysql-client \
   && docker-php-ext-configure intl \
   && docker-php-ext-install -j$(nproc) \
     pdo \
