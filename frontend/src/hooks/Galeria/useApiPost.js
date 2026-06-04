@@ -1,9 +1,10 @@
+import API_URL from '../../config/api.js'
 const useApiPost_Galeria = async (archivo, token) => {
     try {
         const formData = new FormData();
         formData.append('imagen', archivo);
 
-        const response = await fetch('http://localhost:8000/api/usuarios/galeria', {
+        const response = await fetch(\\/api/usuarios/galeria', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -29,3 +30,7 @@ const useApiPost_Galeria = async (archivo, token) => {
 };
 
 export default useApiPost_Galeria;
+
+
+
+

@@ -1,10 +1,11 @@
+import API_URL from '../../config/api.js'
 const useSearch = async (query) => {
     if (!query || query.trim().length < 2) {
         return { artistas: [], canciones: [], colecciones: [], playlists: [] };
     }
 
     try {
-        const response = await fetch(`http://localhost:8000/api/buscar?q=${encodeURIComponent(query)}`, {
+        const response = await fetch(`${API_URL}/api/buscar?q=${encodeURIComponent(query)}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
@@ -30,3 +31,7 @@ const useSearch = async (query) => {
 };
 
 export default useSearch;
+
+
+
+

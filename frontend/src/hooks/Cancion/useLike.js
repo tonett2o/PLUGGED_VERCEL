@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 import { useState, useEffect } from 'react';
 
 export const useLike = () => {
@@ -18,18 +19,18 @@ export const useLike = () => {
      * Llama al backend que maneja automáticamente la sincronización con "Me gusta"
      */
     const toggleLike = async (cancionId) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token`);
         const usuario = getUsuarioActual();
 
         // Si no está logueado, no hacer nada
         if (!token || !usuario) {
-            console.warn('Usuario no autenticado - no se puede dar like');
+            console.warn('Usuario no autenticado - no se puede dar like`);
             return null;
         }
 
         try {
             // Llamar al endpoint del backend que sincroniza automáticamente con "Me gusta"
-            const response = await fetch(`http://localhost:8000/api/canciones/${cancionId}/like`, {
+            const response = await fetch(`${API_URL}/api/canciones/${cancionId}/like`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -88,7 +89,7 @@ export const useLike = () => {
      * (Opcional: si necesitas cargar todos los likes al montar el componente)
      */
     const cargarLikesDelUsuario = async () => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token`);
         const usuario = getUsuarioActual();
 
         if (!token || !usuario) return;
@@ -96,7 +97,7 @@ export const useLike = () => {
         try {
             // Aquí iría una petición GET para obtener todas las canciones likeadas por el usuario
             // Por ahora, los likes se cargan bajo demanda cuando se interactúa con cada canción
-            console.log('Cargando likes del usuario...');
+            console.log('Cargando likes del usuario...`);
         } catch (error) {
             console.error('Error cargando likes:', error);
         }
@@ -109,3 +110,7 @@ export const useLike = () => {
         cargarLikesDelUsuario
     };
 };
+
+
+
+

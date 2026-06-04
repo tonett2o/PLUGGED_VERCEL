@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 /**
  * Hook para actualizar una playlist mediante PUT
  * Propaga errores de validación con detalles por campo
@@ -5,14 +6,14 @@
 const useApiPut = async (id, playlistEditada, token) => {
     const formData = new FormData();
     formData.append('titulo', playlistEditada.titulo);
-    formData.append('descripcion', playlistEditada.descripcion || '');
+    formData.append('descripcion', playlistEditada.descripcion || '`);
     formData.append('privacidad', playlistEditada.privacidad);
 
     const soloAnio = playlistEditada.fecha_publicacion.toString().substring(0, 4);
     formData.append('fecha_publicacion', soloAnio);
 
     // Simulación de PUT para Laravel
-    formData.append('_method', 'PUT');
+    formData.append('_method', 'PUT`);
 
     // Solo adjuntamos si es un archivo nuevo
     if (playlistEditada.portada instanceof File) {
@@ -25,7 +26,7 @@ const useApiPut = async (id, playlistEditada, token) => {
     }
 
     try {
-        const peticion = await fetch(`http://localhost:8000/api/playlists/${id}`, {
+        const peticion = await fetch(`${API_URL}/api/playlists/${id}`, {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -59,3 +60,6 @@ const useApiPut = async (id, playlistEditada, token) => {
 };
 
 export default useApiPut;
+
+
+

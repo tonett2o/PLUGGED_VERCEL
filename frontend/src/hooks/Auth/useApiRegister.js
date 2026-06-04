@@ -1,9 +1,10 @@
+import API_URL from '../../config/api.js'
 import axios from 'axios'; // Importa axios directamente aquí
 
 const useApiRegister = async (formData) => {
     try {
         // Usamos axios base (sin la configuración JSON que rompe el multipart)
-        const { data } = await axios.post('http://localhost:8000/api/register', formData, {
+        const { data } = await axios.post('${API_URL}/api/register', formData, {
             headers: {
                 'Accept': 'application/json',
                 // NUNCA pongas Content-Type aquí, Axios lo detecta solo
@@ -16,3 +17,6 @@ const useApiRegister = async (formData) => {
 };
 
 export default useApiRegister;
+
+
+

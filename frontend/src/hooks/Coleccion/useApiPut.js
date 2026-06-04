@@ -1,16 +1,17 @@
+import API_URL from '../../config/api.js'
 const useApiPut = async (id, coleccionEditada, token) => {
     let respuesta = null;
 
     const formData = new FormData();
     formData.append('titulo', coleccionEditada.titulo);
     formData.append('artista', coleccionEditada.artista);
-    formData.append('descripcion', coleccionEditada.descripcion || '');
+    formData.append('descripcion', coleccionEditada.descripcion || '`);
     formData.append('privacidad', coleccionEditada.privacidad);
     formData.append('tipo', coleccionEditada.tipo);
     formData.append('fecha_publicacion', coleccionEditada.fecha_publicacion);
     
     // Simulación de PUT para Laravel
-    formData.append('_method', 'PUT');
+    formData.append('_method', 'PUT`);
 
     // Solo adjuntamos si es un archivo nuevo
     if (coleccionEditada.portada instanceof File) {
@@ -27,7 +28,7 @@ const useApiPut = async (id, coleccionEditada, token) => {
     }
     formData.append('colaboradores', JSON.stringify(colaboradoresArray));
 
-    const peticion = await fetch(`http://localhost:8000/api/colecciones/${id}`, {
+    const peticion = await fetch(`${API_URL}/api/colecciones/${id}`, {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -54,3 +55,6 @@ const useApiPut = async (id, coleccionEditada, token) => {
 };
 
 export default useApiPut;
+
+
+

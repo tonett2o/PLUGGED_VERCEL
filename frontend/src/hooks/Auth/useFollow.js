@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 import { useState } from 'react';
 
 export const useFollow = () => {
@@ -8,12 +9,12 @@ export const useFollow = () => {
         setLoading(true);
         setError(null);
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:8000/api/usuarios/${idUsuario}/follow`, {
+            const token = localStorage.getItem('token`);
+            const response = await fetch(`${API_URL}/api/usuarios/${idUsuario}/follow`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
             });
-            if (!response.ok) throw new Error('Error al alternar seguimiento');
+            if (!response.ok) throw new Error('Error al alternar seguimiento`);
             const data = await response.json();
             setLoading(false);
             return data;
@@ -26,3 +27,7 @@ export const useFollow = () => {
 
     return { toggleFollow, loading, error };
 };
+
+
+
+
