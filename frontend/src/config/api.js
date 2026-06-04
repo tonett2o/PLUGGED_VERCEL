@@ -3,4 +3,6 @@ const API_URL =
     ? 'http://localhost:8000'
     : 'https://pluggedvercel-production.up.railway.app';
 
+console.log('API_URL configured as:', API_URL);
+
 export default API_URL;
