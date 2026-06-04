@@ -11,21 +11,21 @@ const useApiPut = async (id, usuarioEditado, token) => {
     if (usuarioEditado.rol) formData.append('rol', usuarioEditado.rol);
     
     // 🆕 AÑADIDOS LOS NUEVOS CAMPOS DEL PERFIL
-    formData.append('ubicacion', usuarioEditado.ubicacion || '`);
-    formData.append('biografia', usuarioEditado.biografia || '`);
-    formData.append('latitud', usuarioEditado.latitud || '`);
-    formData.append('longitud', usuarioEditado.longitud || '`);
+    formData.append('ubicacion', usuarioEditado.ubicacion || '');
+    formData.append('biografia', usuarioEditado.biografia || '');
+    formData.append('latitud', usuarioEditado.latitud || '');
+    formData.append('longitud', usuarioEditado.longitud || '');
 
     // 🆕 REDES SOCIALES
-    formData.append('twitter', usuarioEditado.twitter || '`);
-    formData.append('instagram', usuarioEditado.instagram || '`);
-    formData.append('youtube', usuarioEditado.youtube || '`);
-    formData.append('spotify', usuarioEditado.spotify || '`);
-    formData.append('tiktok', usuarioEditado.tiktok || '`);
-    formData.append('soundcloud', usuarioEditado.soundcloud || '`);
-    
+    formData.append('twitter', usuarioEditado.twitter || '');
+    formData.append('instagram', usuarioEditado.instagram || '');
+    formData.append('youtube', usuarioEditado.youtube || '');
+    formData.append('spotify', usuarioEditado.spotify || '');
+    formData.append('tiktok', usuarioEditado.tiktok || '');
+    formData.append('soundcloud', usuarioEditado.soundcloud || '');
+
     // Simulación de PUT para Laravel (necesario para procesar archivos binarios)
-    formData.append('_method', 'PUT`);
+    formData.append('_method', 'PUT');
 
     if (usuarioEditado.avatar instanceof File) {
         formData.append('avatar', usuarioEditado.avatar);

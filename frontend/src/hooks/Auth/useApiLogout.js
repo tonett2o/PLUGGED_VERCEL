@@ -3,7 +3,7 @@ import clienteAxios from '../../auth/axios.js';
 
 const useApiLogout = async () => {
     try {
-        await clienteAxios.post('/logout`);
+        await clienteAxios.post('/logout');
         return true;
     } catch (error) {
         console.error("Error al cerrar sesión en el servidor:", error.response?.data);

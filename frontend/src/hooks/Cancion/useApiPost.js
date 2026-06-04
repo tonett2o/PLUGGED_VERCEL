@@ -50,7 +50,7 @@ const useApiPost = async (cancionCreada, token) => {
     }
 
     // 4. Ejecución del envío
-    const peticion = await fetch(`${API_URL}/api/canciones", {
+    const peticion = await fetch(`${API_URL}/api/canciones`, {
         method: "POST",
         headers: {
             "Accept": "application/json",

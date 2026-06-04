@@ -6,14 +6,14 @@ import API_URL from '../../config/api.js'
 const useApiPut = async (id, playlistEditada, token) => {
     const formData = new FormData();
     formData.append('titulo', playlistEditada.titulo);
-    formData.append('descripcion', playlistEditada.descripcion || '`);
+    formData.append('descripcion', playlistEditada.descripcion || '');
     formData.append('privacidad', playlistEditada.privacidad);
 
     const soloAnio = playlistEditada.fecha_publicacion.toString().substring(0, 4);
     formData.append('fecha_publicacion', soloAnio);
 
     // Simulación de PUT para Laravel
-    formData.append('_method', 'PUT`);
+    formData.append('_method', 'PUT');
 
     // Solo adjuntamos si es un archivo nuevo
     if (playlistEditada.portada instanceof File) {
