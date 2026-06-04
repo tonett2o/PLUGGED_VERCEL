@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/ProveedorAuth';
 
@@ -7,7 +8,7 @@ export const useComentarios = () => {
 
     // Cargar comentarios desde localStorage
     useEffect(() => {
-        const comentariosGuardados = localStorage.getItem('comentariosMusica');
+        const comentariosGuardados = localStorage.getItem('comentariosMusica`);
         if (comentariosGuardados) {
             try {
                 setComentariosPorCancion(JSON.parse(comentariosGuardados));
@@ -127,3 +128,7 @@ export const useComentarios = () => {
         comentariosPorCancion
     };
 };
+
+
+
+

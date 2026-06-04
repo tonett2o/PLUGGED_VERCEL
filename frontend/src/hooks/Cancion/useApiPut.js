@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 const useApiPut = async (id, cancionEditada, token) => {
     let respuesta = null;
 
@@ -26,7 +27,7 @@ const useApiPut = async (id, cancionEditada, token) => {
     }
     
     // TRUCO LARAVEL: Para enviar archivos en una edición
-    formData.append('_method', 'PUT');
+    formData.append('_method', 'PUT`);
 
     // Solo adjuntamos archivos si el usuario seleccionó nuevos
     if (cancionEditada.archivo instanceof File) {
@@ -47,7 +48,7 @@ const useApiPut = async (id, cancionEditada, token) => {
     console.log('useApiPut_Cancion - enviando colaboradores:', colaboradoresArray);
     formData.append('colaboradores', JSON.stringify(colaboradoresArray));
 
-    const peticion = await fetch(`http://localhost:8000/api/canciones/${id}`, {
+    const peticion = await fetch(`${API_URL}/api/canciones/${id}`, {
         method: "POST", // Se mantiene POST por el FormData
         headers: {
             "Accept": "application/json",
@@ -73,3 +74,6 @@ const useApiPut = async (id, cancionEditada, token) => {
 };
 
 export default useApiPut;
+
+
+

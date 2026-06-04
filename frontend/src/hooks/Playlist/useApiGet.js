@@ -1,6 +1,7 @@
+import API_URL from '../../config/api.js'
 const useApiGet = async (id) => {
     let respuesta = null;
-    let peticion = await fetch(`http://localhost:8000/api/playlists/${id}`);
+    let peticion = await fetch(`${API_URL}/api/playlists/${id}`);
     let playlist = await peticion.json();
 
     if (playlist.id == id && peticion.ok) {
@@ -10,3 +11,6 @@ const useApiGet = async (id) => {
 }
 
 export default useApiGet;
+
+
+

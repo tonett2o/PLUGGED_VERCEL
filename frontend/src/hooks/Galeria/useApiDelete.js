@@ -1,6 +1,7 @@
+import API_URL from '../../config/api.js'
 const useApiDelete_Galeria = async (id, token) => {
     try {
-        const response = await fetch(`http://localhost:8000/api/usuarios/galeria/${id}`, {
+        const response = await fetch(`${API_URL}/api/usuarios/galeria/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -10,7 +11,7 @@ const useApiDelete_Galeria = async (id, token) => {
 
         // Intentar parsear JSON solo si hay contenido
         let datos = {};
-        const contentType = response.headers.get('content-type');
+        const contentType = response.headers.get('content-type`);
         if (contentType && contentType.includes('application/json')) {
             const text = await response.text();
             if (text) {
@@ -38,3 +39,7 @@ const useApiDelete_Galeria = async (id, token) => {
 };
 
 export default useApiDelete_Galeria;
+
+
+
+
