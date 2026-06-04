@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { FaUser } from "react-icons/fa";
+import API_URL from "../../config/api.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoNotificaciones } from "../../contexts/ProveedorNotificaciones.jsx";
 import { generarPortadaPlaceholder } from "../../utils/imagen.js";
@@ -44,7 +45,7 @@ const DetallesCancion = ({ cancionBuscada }) => {
         const cargarDatosCancion = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:8000/api/canciones/${id}`, {
+                const response = await fetch(`${API_URL}/api/canciones/${id}`, {
                     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
                 });
 
@@ -88,7 +89,7 @@ const DetallesCancion = ({ cancionBuscada }) => {
             setYaContada(true);
 
             // Sincronizar con backend
-            fetch(`http://localhost:8000/api/canciones/${id}/reproducir`, {
+            fetch(`${API_URL}/api/canciones/${id}/reproducir`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -152,7 +153,7 @@ const DetallesCancion = ({ cancionBuscada }) => {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8000/api/playlists/${playlistId}/agregar-cancion`, {
+            const response = await fetch(`${API_URL}/api/playlists/${playlistId}/agregar-cancion`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

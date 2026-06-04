@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect, useRef } from "react";
+import API_URL from "../config/api.js";
+
 // Hooks de Canciones
 import useApiGetAll_Canciones from "../hooks/Cancion/useApiGetAll.js";
 import useApiPost_Cancion from "../hooks/Cancion/useApiPost.js";
@@ -7,7 +9,7 @@ import useApiPut_Cancion from "../hooks/Cancion/useApiPut.js"; // 🚨 1. IMPORT
 // Hooks de Colecciones
 import useApiGetAll_Colecciones from "../hooks/Coleccion/useApiGetAll.js";
 import useApiPost_Coleccion from "../hooks/Coleccion/useApiPost.js";
-import useApiPut_Coleccion from "../hooks/Coleccion/useApiPut.js"; 
+import useApiPut_Coleccion from "../hooks/Coleccion/useApiPut.js";
 
 // Hooks de Playlists
 import useApiGetAll_Playlists from "../hooks/Playlist/useApiGetAll.js";
@@ -228,7 +230,7 @@ const ProveedorMusica = (props) => {
             const token = localStorage.getItem('token');
             const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
-            const response = await fetch(`http://localhost:8000/api/playlists/${idPlaylist}`, {
+            const response = await fetch(`${API_URL}/api/playlists/${idPlaylist}`, {
                 headers: {
                     'Accept': 'application/json',
                     ...headers

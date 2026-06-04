@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../config/api.js';
 import { useAuth } from '../contexts/ProveedorAuth.jsx';
 import { contextoNotificaciones } from '../contexts/ProveedorNotificaciones.jsx';
 import MapaUbicacion from './MapaUbicacion.jsx';
@@ -121,7 +122,7 @@ const Registro = () => {
                 }
             });
 
-            const response = await fetch('http://localhost:8000/api/register', {
+            const response = await fetch(`${API_URL}/api/register`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json'

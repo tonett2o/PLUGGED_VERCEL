@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaTimes } from "react-icons/fa";
+import API_URL from "../../config/api.js";
 import useApiPut from "../../hooks/Cancion/useApiPut.js";
 // 1. Conectamos con el grifo global de la música
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
@@ -10,7 +11,7 @@ import { generarPortadaPlaceholder } from "../../utils/imagen.js";
 import PortadaPorDefecto from "../../assets/portada-default.jpg";
 import "./DetallesColeccion.css"; // Asegúrate de enlazar sus estilos
 
-const URL_STORAGE = "http://localhost:8000/storage/";
+const URL_STORAGE = `${API_URL}/storage/`;
 
 const DetallesColeccion = ({ coleccionBuscada }) => {
     // Si por algún motivo se recarga la ruta directamente y tarda en llegar la prop

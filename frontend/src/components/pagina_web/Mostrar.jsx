@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import API_URL from "../../config/api.js";
 
 // Contextos
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
@@ -117,7 +118,7 @@ const Mostrar = () => {
                     return null;
             }
 
-            const response = await fetch(`http://localhost:8000${endpoint}`, {
+            const response = await fetch(`${API_URL}${endpoint}`, {
                 headers: {
                     'Accept': 'application/json',
                     ...headers

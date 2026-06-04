@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
+import API_URL from '../config/api.js';
 import { contextoMusica } from '../contexts/ProveedorMusica.jsx';
 import { contextoNotificaciones } from '../contexts/ProveedorNotificaciones.jsx';
 import FormularioColaboradores from './FormularioColaboradores.jsx';
@@ -39,7 +40,7 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
 
     // Cargar estilos desde API
     useEffect(() => {
-        fetch('http://localhost:8000/api/estilos')
+        fetch(`${API_URL}/api/estilos`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {

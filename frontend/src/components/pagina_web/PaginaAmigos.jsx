@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import API_URL from '../../config/api.js';
 import { useAuth } from '../../contexts/ProveedorAuth';
 import AmigosUsuario from '../detalles/AmigosUsuario';
 
@@ -23,7 +24,7 @@ const PaginaAmigos = () => {
             // Si no, intentamos obtener los datos del usuario
             const obtenerDatosUsuario = async () => {
                 try {
-                    const response = await fetch(`http://localhost:8000/api/usuarios/${usuarioId}`);
+                    const response = await fetch(`${API_URL}/api/usuarios/${usuarioId}`);
                     console.log('PaginaAmigos: Fetch response status:', response.status);
                     if (response.ok) {
                         const datos = await response.json();

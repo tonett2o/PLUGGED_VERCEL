@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import API_URL from '../../config/api.js';
 import './DetallesEvento.css';
 import PortadaPorDefecto from '../../assets/portada-default.jpg';
 
@@ -9,7 +10,7 @@ import PortadaPorDefecto from '../../assets/portada-default.jpg';
 const obtenerImagen = (ruta) => {
     if (!ruta) return null;
     if (ruta.startsWith('http://') || ruta.startsWith('https://')) return ruta;
-    const URL_STORAGE = "http://localhost:8000/storage/";
+    const URL_STORAGE = `${API_URL}/storage/`;
     return `${URL_STORAGE}${ruta.startsWith('/') ? ruta.substring(1) : ruta}`;
 };
 

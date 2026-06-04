@@ -1,3 +1,5 @@
+import API_URL from '../config/api.js';
+
 // Paleta de azules NEON: variaciones del azul cian brillante de la marca (#0ADAF5)
 // Desde oscuro hasta claro manteniendo el look neon
 const PALETA_AZULES = [
@@ -26,11 +28,11 @@ export const resolverRutaArchivo = (ruta) => {
 
     // Si ya contiene /storage/, no agregar de nuevo
     if (rutaNormalizada.includes('/storage/')) {
-        return `http://localhost:8000/${rutaNormalizada}`;
+        return `${API_URL}/${rutaNormalizada}`;
     }
 
     // Agregar /storage/ si no está presente (archivos del sistema)
-    return `http://localhost:8000/storage/${rutaNormalizada}`;
+    return `${API_URL}/storage/${rutaNormalizada}`;
 };
 
 export const generarAvatarDicebear = (nombre = 'usuario') => {

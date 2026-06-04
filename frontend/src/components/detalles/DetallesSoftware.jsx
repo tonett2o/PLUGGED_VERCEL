@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import API_URL from "../../config/api.js";
 import PortadaPorDefecto from "../../assets/portada-default.jpg";
 import "./DetallesSoftware.css";
 
-const URL_STORAGE = "http://localhost:8000/storage/";
+const URL_STORAGE = `${API_URL}/storage/`;
 
 const obtenerImagen = (ruta) => {
     if (!ruta) return PortadaPorDefecto;

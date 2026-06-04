@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaCompactDisc, FaLaptop, FaHeadphones } from 'react-icons/fa';
+import API_URL from '../../config/api.js';
 import { generarPortadaPlaceholder } from '../../utils/imagen.js';
 import './Explorar.css';
 
@@ -19,10 +20,10 @@ const Explorar = () => {
     const cargarDatos = async () => {
         try {
             const [usuarios, colecciones, software, hardware] = await Promise.all([
-                fetch('http://localhost:8000/api/usuarios/top-oyentes').then(r => r.json()),
-                fetch('http://localhost:8000/api/colecciones/top-colecciones').then(r => r.json()),
-                fetch('http://localhost:8000/api/software/top-software').then(r => r.json()),
-                fetch('http://localhost:8000/api/hardware/top-hardware').then(r => r.json()),
+                fetch(`${API_URL}/api/usuarios/top-oyentes`).then(r => r.json()),
+                fetch(`${API_URL}/api/colecciones/top-colecciones`).then(r => r.json()),
+                fetch(`${API_URL}/api/software/top-software`).then(r => r.json()),
+                fetch(`${API_URL}/api/hardware/top-hardware`).then(r => r.json()),
             ]);
 
             setTopUsuarios(usuarios || []);

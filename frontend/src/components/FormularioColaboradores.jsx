@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../config/api.js';
 import { useAuth } from '../contexts/ProveedorAuth';
 import './FormularioColaboradores.css';
 
@@ -12,7 +13,7 @@ const FormularioColaboradores = ({ colaboradoresSeleccionados = [], onColaborado
         const obtenerAmigos = async () => {
             if (!usuario?.id) return;
             try {
-                const response = await fetch(`http://localhost:8000/api/usuarios/${usuario.id}/amigos`);
+                const response = await fetch(`${API_URL}/api/usuarios/${usuario.id}/amigos`);
                 if (response.ok) {
                     const datos = await response.json();
                     setAmigos(Array.isArray(datos) ? datos : (datos.amigos || []));

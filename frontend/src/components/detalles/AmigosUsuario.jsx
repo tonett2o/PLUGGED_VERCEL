@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import API_URL from '../../config/api.js';
 import AvatarPorDefecto from '../../assets/user-default.jpg';
 import './AmigosUsuario.css';
 
@@ -13,7 +14,7 @@ const AmigosUsuario = ({ datosUsuario }) => {
                 try {
                     const token = localStorage.getItem('token');
                     const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-                    const url = `http://localhost:8000/api/usuarios/${datosUsuario.id}/amigos`;
+                    const url = `${API_URL}/api/usuarios/${datosUsuario.id}/amigos`;
                     const response = await fetch(url, { headers });
                     if (response.ok) {
                         const data = await response.json();

@@ -1,11 +1,12 @@
 // Reproductor.jsx - Reproductor Global de Música
 import React, { useEffect, useRef, useContext, useState } from 'react';
 import { FaMusic } from 'react-icons/fa';
+import API_URL from '../config/api.js';
 import { contextoMusica } from '../contexts/ProveedorMusica.jsx';
 import { generarPortadaPlaceholder } from '../utils/imagen.js';
 import './Reproductor.css';
 
-const URL_STORAGE = "http://localhost:8000/storage/";
+const URL_STORAGE = `${API_URL}/storage/`;
 
 const Reproductor = () => {
     // ============================================
@@ -49,7 +50,7 @@ const Reproductor = () => {
         if (!urlFinal.startsWith('http://') && !urlFinal.startsWith('https://')) {
             const rutaLimpia = urlFinal.startsWith('/') ? urlFinal.substring(1) : urlFinal;
             if (rutaLimpia.startsWith('storage/')) {
-                urlFinal = `http://localhost:8000/${rutaLimpia}`;
+                urlFinal = `${API_URL}/${rutaLimpia}`;
             } else {
                 urlFinal = `${URL_STORAGE}${rutaLimpia}`;
             }

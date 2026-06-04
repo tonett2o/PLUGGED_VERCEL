@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import API_URL from "../config/api.js";
 import { contextoEvento } from "../contexts/ProveedorEvento.jsx";
 import { contextoNotificaciones } from "../contexts/ProveedorNotificaciones.jsx";
 import FormularioColaboradores from "./FormularioColaboradores.jsx";
@@ -12,7 +13,7 @@ const useObtenerEstilos = () => {
     useEffect(() => {
         const cargarEstilos = async () => {
             try {
-                const response = await fetch('http://localhost:8000/api/estilos');
+                const response = await fetch(`${API_URL}/api/estilos`);
                 if (response.ok) {
                     const datos = await response.json();
                     setEstilos(datos);

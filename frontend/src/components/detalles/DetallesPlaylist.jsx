@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaPlay, FaPause, FaTimes } from "react-icons/fa";
+import API_URL from "../../config/api.js";
 import useApiPut from "../../hooks/Cancion/useApiPut.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoNotificaciones } from "../../contexts/ProveedorNotificaciones.jsx";
@@ -9,7 +10,7 @@ import { generarPortadaPlaceholder } from "../../utils/imagen.js";
 import PortadaPorDefecto from "../../assets/portada-default.jpg";
 import "./DetallesPlaylist.css";
 
-const URL_STORAGE = "http://localhost:8000/storage/";
+const URL_STORAGE = `${API_URL}/storage/`;
 
 const DetallesPlaylist = ({ playlistBuscada }) => {
     const { reproducirTrack, trackActual, isPlaying } = useContext(contextoMusica);

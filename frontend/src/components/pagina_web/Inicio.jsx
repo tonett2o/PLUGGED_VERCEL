@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import API_URL from "../../config/api.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { generos46 } from "../../utils/generos.js";
 import FilaCarrusel from "../FilaCarrusel.jsx";
@@ -18,7 +19,7 @@ export const Inicio = () => {
     useEffect(() => {
         const refrescarCanciones = async () => {
             try {
-                const res = await fetch('http://localhost:8000/api/canciones');
+                const res = await fetch(`${API_URL}/api/canciones`);
                 const data = await res.json();
                 setCanciones(data);
             } catch (e) {

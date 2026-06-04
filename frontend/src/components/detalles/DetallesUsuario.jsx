@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { FaTwitter, FaInstagram, FaYoutube, FaSpotify, FaTiktok, FaSoundcloud, FaMusic, FaMapPin, FaEdit, FaPlay, FaPause, FaCamera, FaMicrophone, FaTrash, FaPlus, FaImage, FaUser } from "react-icons/fa";
+import API_URL from "../../config/api.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoEquipamiento } from "../../contexts/ProveedorEquipamiento.jsx";
 import { contextoEvento } from "../../contexts/ProveedorEvento.jsx";
@@ -23,7 +24,7 @@ import useApiDelete_Cancion from "../../hooks/Cancion/UseApiDelete.js";
 
 import "./DetallesUsuario.css";
 
-const URL_STORAGE = "http://localhost:8000/storage/";
+const URL_STORAGE = `${API_URL}/storage/`;
 
 const obtenerImagen = (ruta) => {
     if (!ruta) return null;
@@ -71,7 +72,7 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
                     headers['Authorization'] = `Bearer ${token}`;
                 }
 
-                const res = await fetch('http://localhost:8000/api/canciones', { headers });
+                const res = await fetch(`${API_URL}/api/canciones`, { headers });
                 const data = await res.json();
                 setCancionesLocales(data);
             } catch (e) {
@@ -223,7 +224,7 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
                 const token = localStorage.getItem('token');
                 const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
 
-                const response = await fetch(`http://localhost:8000${endpoint}`, { headers });
+                const response = await fetch(`${API_URL}${endpoint}`, { headers });
                 if (response.ok) {
                     const datosCompletos = await response.json();
                     setDatosEdicion(datosCompletos);
@@ -265,7 +266,7 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
 
         // 🔄 Refrescar canciones locales inmediatamente después de publicar/editar
         try {
-            const res = await fetch('http://localhost:8000/api/canciones');
+            const res = await fetch(`${API_URL}/api/canciones`);
             const data = await res.json();
             setCancionesLocales(data);
         } catch (e) {
@@ -274,7 +275,7 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
 
         // 🔄 Refrescar eventos después de crear/editar
         try {
-            const resEventos = await fetch('http://localhost:8000/api/eventos');
+            const resEventos = await fetch(`${API_URL}/api/eventos`);
             if (resEventos.ok) {
                 const dataEventos = await resEventos.json();
             }

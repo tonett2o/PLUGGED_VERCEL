@@ -21,8 +21,6 @@ const ProveedorEquipamiento = (props) => {
     const [misSoftwares, setMisSoftwares] = useState([]);
     const [loadingGear, setLoadingGear] = useState(false);
 
-    const API_URL = "http://localhost:8000/api";
-
     // --- MÉTODOS: CARGA DE CATÁLOGOS GLOBALES (GET ALL) ---
     const iniciarCatalogosGlobales = async () => {
         try {
