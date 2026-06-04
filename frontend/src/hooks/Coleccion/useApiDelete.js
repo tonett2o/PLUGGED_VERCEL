@@ -1,4 +1,4 @@
-//hola
+
 import API_URL from '../../config/api.js'
 const useApiDelete = async (id, token) => {
     let respuesta = null;
