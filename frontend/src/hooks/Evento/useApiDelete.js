@@ -1,7 +1,8 @@
+import API_URL from '../../config/api.js'
 const useApiDelete = async (id, token) => {
     let respuesta = null;
 
-    const peticion = await fetch(`http://localhost:8000/api/eventos/${id}`, {
+    const peticion = await fetch(`${API_URL}/api/eventos/${id}`, {
         method: "DELETE",
         headers: {
             "Accept": "application/json",
@@ -20,3 +21,6 @@ const useApiDelete = async (id, token) => {
 };
 
 export default useApiDelete;
+
+
+

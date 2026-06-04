@@ -1,6 +1,7 @@
+import API_URL from '../../config/api.js'
 const useApiGetAll = async () => {
     let respuesta = null;
-    let peticion = await fetch("http://localhost:8000/api/eventos");
+    let peticion = await fetch(`${API_URL}/api/eventos`);
     let eventos = await peticion.json();
     console.log(eventos);
 
@@ -11,3 +12,6 @@ const useApiGetAll = async () => {
 }
 
 export default useApiGetAll;
+
+
+

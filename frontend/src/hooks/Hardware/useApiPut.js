@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 const useApiPut = async (id, hardwareEditado, token) => {
     let respuesta = null;
 
@@ -5,16 +6,16 @@ const useApiPut = async (id, hardwareEditado, token) => {
     formData.append('nombre', hardwareEditado.nombre);
     formData.append('marca', hardwareEditado.marca);
     formData.append('precio', hardwareEditado.precio);
-    formData.append('descripcion', hardwareEditado.descripcion || '');
+    formData.append('descripcion', hardwareEditado.descripcion || '`);
     
     // Simulación de PUT para Laravel al enviar archivos
-    formData.append('_method', 'PUT');
+    formData.append('_method', 'PUT`);
 
     if (hardwareEditado.imagen instanceof File) {
         formData.append('imagen', hardwareEditado.imagen);
     }
 
-    const peticion = await fetch(`http://localhost:8000/api/hardware/${id}`, {
+    const peticion = await fetch(`${API_URL}/api/hardware/${id}`, {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -35,3 +36,6 @@ const useApiPut = async (id, hardwareEditado, token) => {
 };
 
 export default useApiPut;
+
+
+

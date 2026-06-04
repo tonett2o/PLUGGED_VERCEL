@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 const useApiPost = async (eventoCreado, token) => {
     let respuesta = null;
 
@@ -7,7 +8,7 @@ const useApiPost = async (eventoCreado, token) => {
     formData.append('ubicacion', eventoCreado.ubicacion);
     formData.append('latitud', eventoCreado.latitud);
     formData.append('longitud', eventoCreado.longitud);
-    formData.append('url_venta', eventoCreado.url_venta || '');
+    formData.append('url_venta', eventoCreado.url_venta || '`);
 
     if (eventoCreado.fecha_evento) {
         formData.append('fecha_evento', eventoCreado.fecha_evento);
@@ -22,7 +23,7 @@ const useApiPost = async (eventoCreado, token) => {
         formData.append('estilos', JSON.stringify(eventoCreado.estilos));
     }
 
-    const peticion = await fetch("http://localhost:8000/api/eventos", {
+    const peticion = await fetch(`${API_URL}/api/eventos", {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -49,3 +50,6 @@ const useApiPost = async (eventoCreado, token) => {
 };
 
 export default useApiPost;
+
+
+

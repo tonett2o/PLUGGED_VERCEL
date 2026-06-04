@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 const useApiPost = async (cancionCreada, token) => {
     let respuesta = null;
 
@@ -49,7 +50,7 @@ const useApiPost = async (cancionCreada, token) => {
     }
 
     // 4. Ejecución del envío
-    const peticion = await fetch("http://localhost:8000/api/canciones", {
+    const peticion = await fetch(`${API_URL}/api/canciones", {
         method: "POST",
         headers: {
             "Accept": "application/json",
@@ -75,3 +76,6 @@ const useApiPost = async (cancionCreada, token) => {
 };
 
 export default useApiPost;
+
+
+

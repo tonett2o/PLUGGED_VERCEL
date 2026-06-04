@@ -1,6 +1,7 @@
+import API_URL from '../../config/api.js'
 const useApiGet = async (id) => {
     let respuesta = null;
-    let peticion = await fetch(`http://localhost:8000/api/usuarios/${id}`);
+    let peticion = await fetch(`${API_URL}/api/usuarios/${id}`);
     let usuario = await peticion.json();
 
     if (usuario.id == id && peticion.ok) {
@@ -10,3 +11,6 @@ const useApiGet = async (id) => {
 }
 
 export default useApiGet;
+
+
+

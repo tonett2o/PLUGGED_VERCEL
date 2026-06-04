@@ -1,3 +1,4 @@
+import API_URL from '../../config/api.js'
 /**
  * Hook para crear una playlist mediante POST
  * Construye FormData con todos los campos incluyendo colaboradores
@@ -27,7 +28,7 @@ const useApiPost = async (playlistData, token) => {
     }
 
     try {
-        const peticion = await fetch("http://localhost:8000/api/playlists", {
+        const peticion = await fetch(`${API_URL}/api/playlists", {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -72,3 +73,6 @@ const useApiPost = async (playlistData, token) => {
 };
 
 export default useApiPost;
+
+
+
