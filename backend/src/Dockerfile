@@ -28,7 +28,7 @@ COPY . .
 
 # Instalar dependencias de composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer update --optimize-autoloader --no-dev
+RUN composer update --optimize-autoloader --no-dev --no-scripts
 
 # Permisos para storage y bootstrap
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
