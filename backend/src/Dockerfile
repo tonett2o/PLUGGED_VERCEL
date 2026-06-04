@@ -1,36 +1,30 @@
-FROM php:8.3-apache
+FROM php:8.3-cli-alpine
 
-# Instalar extensiones PHP necesarias
-RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    libonig-dev \
+RUN apk add --no-cache \
+    bash \
+    git \
+    unzip \
+    icu-dev \
+    oniguruma-dev \
     libzip-dev \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) pdo pdo_mysql mbstring intl zip \
-    && a2enmod rewrite \
-    && rm -rf /var/lib/apt/lists/*
+  && docker-php-ext-configure intl \
+  && docker-php-ext-install -j$(nproc) \
+    pdo \
+    pdo_mysql \
+    mbstring \
+    intl \
+    zip \
+  && rm -rf /var/cache/apk/*
 
-WORKDIR /var/www/html
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copiar composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+WORKDIR /var/www
 
-# Copiar archivos del proyecto
 COPY . .
 
-# Instalar dependencias (sin ejecutar scripts)
-RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
+RUN composer install --optimize-autoloader --no-dev --no-scripts && \
+    chmod -R 755 storage bootstrap/cache
 
-# Permisos
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+EXPOSE 8000
 
-# Configurar Apache
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf && \
-    echo '<Directory /var/www/html/public>\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>' >> /etc/apache2/sites-available/000-default.conf
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public/"]
