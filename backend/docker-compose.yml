@@ -1,0 +1,38 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - .:/var/www
+    depends_on:
+      - php
+
+  php:
+    build: ./php
+    working_dir: /var/www/src
+    volumes:
+      - .:/var/www
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: toni
+      MYSQL_PASSWORD: toni
+    volumes:
+      - db_data:/var/lib/mysql
+
+  composer:
+    image: composer:2
+    working_dir: /app
+    volumes:
+      - .:/app
+    entrypoint: ["composer"]
+
+volumes:
+  db_data:

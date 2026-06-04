@@ -1,0 +1,105 @@
+.sc-gear-detail-page {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.sc-gear-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .sc-gear-detail-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+.sc-gear-detail-imagen {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(10, 218, 245, 0.1) 0%, rgba(10, 218, 245, 0.05) 100%);
+    border: 1px solid rgba(10, 218, 245, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sc-gear-detail-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sc-gear-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sc-gear-detail-nombre {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.sc-gear-detail-marca,
+.sc-gear-detail-precio,
+.sc-gear-detail-usuario,
+.sc-gear-detail-version,
+.sc-gear-detail-distribuidor,
+.sc-gear-detail-pago {
+    font-size: 1rem;
+    color: #b3b3b3;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.sc-gear-detail-marca strong,
+.sc-gear-detail-precio strong,
+.sc-gear-detail-usuario strong,
+.sc-gear-detail-version strong,
+.sc-gear-detail-distribuidor strong,
+.sc-gear-detail-pago strong {
+    color: #fff;
+    margin-right: 8px;
+}
+
+.sc-user-link {
+    color: #0ADAF5;
+    text-decoration: none;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+}
+
+.sc-user-link:hover {
+    color: #5cf2ff;
+    text-decoration: underline;
+}
+
+.sc-gear-detail-descripcion {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(10, 218, 245, 0.2);
+}
+
+.sc-gear-detail-descripcion h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 12px 0;
+}
+
+.sc-gear-detail-descripcion p {
+    color: #b3b3b3;
+    line-height: 1.6;
+    margin: 0;
+}

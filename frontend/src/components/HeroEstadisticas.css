@@ -1,0 +1,212 @@
+.hero-estadisticas {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10, 218, 245, 0.15) 0%, rgba(10, 218, 245, 0.05) 100%);
+    padding: 80px 40px;
+    border-radius: 12px;
+    margin-bottom: 80px;
+    overflow: hidden;
+}
+
+.hero-estadisticas::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(10, 218, 245, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hero-estadisticas-contenido {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero-estadisticas-bienvenida {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.hero-titulo {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    line-height: 1.2;
+}
+
+.acento {
+    color: #0ADAF5;
+}
+
+.hero-subtitulo {
+    color: #b3b3b3;
+    font-size: 1.1rem;
+    margin: 0 0 32px 0;
+    line-height: 1.6;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-ctas {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.hero-btn.primario {
+    background-color: #0ADAF5;
+    color: #000;
+}
+
+.hero-btn.primario:hover {
+    background-color: #00c9e0;
+    transform: translateY(-2px);
+}
+
+.hero-btn.secundario {
+    background-color: transparent;
+    color: #0ADAF5;
+    border: 2px solid #0ADAF5;
+}
+
+.hero-btn.secundario:hover {
+    background-color: rgba(10, 218, 245, 0.1);
+    border-color: #00c9e0;
+    color: #00c9e0;
+}
+
+.hero-estadisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.hero-estadistica-card {
+    text-align: center;
+    padding: 20px;
+    background: rgba(10, 218, 245, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(10, 218, 245, 0.1);
+    transition: all 0.3s ease;
+}
+
+.hero-estadistica-card:hover {
+    background: rgba(10, 218, 245, 0.1);
+    border-color: rgba(10, 218, 245, 0.3);
+    transform: translateY(-4px);
+}
+
+.hero-estadistica-numero {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0ADAF5;
+    margin-bottom: 12px;
+    line-height: 1;
+}
+
+.hero-estadistica-label {
+    font-size: 0.95rem;
+    color: #b3b3b3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .hero-estadisticas {
+        padding: 60px 24px;
+        margin-bottom: 60px;
+    }
+
+    .hero-titulo {
+        font-size: 1.8rem;
+    }
+
+    .hero-subtitulo {
+        font-size: 0.95rem;
+    }
+
+    .hero-ctas {
+        gap: 12px;
+    }
+
+    .hero-btn {
+        padding: 10px 24px;
+        font-size: 0.95rem;
+    }
+
+    .hero-estadisticas-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+    }
+
+    .hero-estadistica-numero {
+        font-size: 2rem;
+    }
+
+    .hero-estadistica-label {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-estadisticas {
+        padding: 40px 16px;
+        margin-bottom: 40px;
+    }
+
+    .hero-titulo {
+        font-size: 1.4rem;
+    }
+
+    .hero-subtitulo {
+        font-size: 0.9rem;
+    }
+
+    .hero-ctas {
+        flex-direction: column;
+    }
+
+    .hero-btn {
+        width: 100%;
+    }
+
+    .hero-estadisticas-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .hero-estadistica-card {
+        padding: 16px;
+    }
+
+    .hero-estadistica-numero {
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+    }
+
+    .hero-estadistica-label {
+        font-size: 0.75rem;
+    }
+}

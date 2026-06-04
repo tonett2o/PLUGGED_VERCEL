@@ -1,0 +1,139 @@
+.inicio-hero {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10, 218, 245, 0.15) 0%, rgba(10, 218, 245, 0.05) 100%);
+    padding: 80px 40px;
+    text-align: center;
+    border-radius: 12px;
+    margin-bottom: 80px;
+    overflow: hidden;
+}
+
+.inicio-hero-glow {
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(10, 218, 245, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.inicio-hero-contenido {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.inicio-hero-titulo {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    line-height: 1.2;
+}
+
+.acento {
+    color: #0ADAF5;
+}
+
+.inicio-hero-sub {
+    color: #b3b3b3;
+    font-size: 1.1rem;
+    margin: 0 0 40px 0;
+    line-height: 1.6;
+}
+
+.inicio-hero-cta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.inicio-btn {
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.inicio-btn.primario {
+    background-color: #0ADAF5;
+    color: #000;
+}
+
+.inicio-btn.primario:hover {
+    background-color: #00c9e0;
+    transform: translateY(-2px);
+}
+
+.inicio-btn.secundario {
+    background-color: transparent;
+    color: #0ADAF5;
+    border: 2px solid #0ADAF5;
+}
+
+.inicio-btn.secundario:hover {
+    background-color: rgba(10, 218, 245, 0.1);
+    border-color: #00c9e0;
+    color: #00c9e0;
+}
+
+.inicio-btn.grande {
+    padding: 14px 40px;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .inicio-hero {
+        padding: 60px 24px;
+        margin-bottom: 60px;
+    }
+
+    .inicio-hero-titulo {
+        font-size: 1.8rem;
+    }
+
+    .inicio-hero-sub {
+        font-size: 0.95rem;
+    }
+
+    .inicio-hero-cta {
+        gap: 12px;
+    }
+
+    .inicio-btn {
+        padding: 10px 24px;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .inicio-hero {
+        padding: 40px 16px;
+        margin-bottom: 40px;
+    }
+
+    .inicio-hero-titulo {
+        font-size: 1.4rem;
+    }
+
+    .inicio-hero-sub {
+        font-size: 0.9rem;
+    }
+
+    .inicio-hero-cta {
+        flex-direction: column;
+    }
+
+    .inicio-btn {
+        width: 100%;
+    }
+}

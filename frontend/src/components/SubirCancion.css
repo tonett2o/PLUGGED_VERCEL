@@ -1,0 +1,183 @@
+/* SubirCancion.css - Optimizado para formulario de canciones */
+
+.sc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.sc-form h2 {
+    color: #0ADAF5;
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Cuando hay espacio suficiente, permitir mejor distribución */
+@media (max-width: 900px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+.form-row > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* En móviles, los inputs se apilan */
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
+
+.sc-form label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    margin-left: 2px;
+    letter-spacing: 0.5px;
+}
+
+.sc-form input[type="text"],
+.sc-form input[type="email"],
+.sc-form input[type="password"],
+.sc-form input[type="number"],
+.sc-form input[type="date"],
+.sc-form select,
+.sc-form textarea {
+    background-color: #1a1a1a;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: #ffffff;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.sc-form input::placeholder,
+.sc-form textarea::placeholder {
+    color: #666666;
+}
+
+.sc-form select {
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.sc-form select option {
+    color: #ffffff;
+    background-color: #1a1a1a;
+}
+
+.sc-form input:focus,
+.sc-form select:focus,
+.sc-form textarea:focus {
+    background-color: #222;
+    border-color: #0ADAF5;
+    color: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(10, 218, 245, 0.1);
+}
+
+.sc-form textarea {
+    height: 50px;
+    resize: none;
+}
+
+.sc-form input[type="file"] {
+    padding: 8px 10px;
+    background: #1a1a1a;
+    border: 1px dashed #444;
+    color: #999;
+    cursor: pointer;
+}
+
+.sc-btn-upload {
+    background-color: #0ADAF5;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sc-btn-upload:hover {
+    background-color: #00c9e0;
+    transform: translateY(-2px);
+}
+
+.sc-btn-upload:active {
+    transform: translateY(0);
+}
+
+.sc-btn-upload:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.sc-loader {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+}
+
+/* Error messages */
+.sc-form span[style*="color: #ff4444"] {
+    display: block;
+    margin-top: 3px;
+    color: #ff6666;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .sc-form h2 {
+        font-size: 1.1rem;
+        margin-bottom: 6px;
+    }
+
+    .sc-form label {
+        font-size: 0.65rem;
+    }
+
+    .sc-form input,
+    .sc-form select,
+    .sc-form textarea {
+        font-size: 0.85rem;
+        padding: 8px 10px;
+    }
+
+    .sc-btn-upload {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+}

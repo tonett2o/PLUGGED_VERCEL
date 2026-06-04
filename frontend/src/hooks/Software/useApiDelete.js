@@ -1,0 +1,26 @@
+const useApiDelete = async (id, token) => {
+    let respuesta = null;
+
+    const peticion = await fetch(`http://localhost:8000/api/software/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (peticion.ok) {
+        respuesta = { success: true };
+    } else {
+        try {
+            const datosJson = await peticion.json();
+            respuesta = { error: true, detalles: datosJson.message, status: peticion.status };
+        } catch (e) {
+            respuesta = { error: true, detalles: "Error al eliminar software", status: peticion.status };
+        }
+    }
+
+    return respuesta;
+};
+
+export default useApiDelete;

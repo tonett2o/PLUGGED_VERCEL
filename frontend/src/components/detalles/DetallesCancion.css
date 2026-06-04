@@ -1,0 +1,690 @@
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.detalles-cancion {
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #1a1a1a;
+    color: #fff;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================
+   SECCIÓN HERO (Portada + Info Principales)
+   ============================================ */
+.hero-cancion {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 50px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+/* Contenedor izquierdo: portada + título + artista */
+.hero-cancion > div:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    flex-shrink: 0;
+}
+
+/* Portada cuadrada - MÁS GRANDE */
+.portada-grande {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    min-width: 320px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 48px rgba(10, 218, 245, 0.25);
+    background: linear-gradient(135deg, rgba(10, 218, 245, 0.1) 0%, rgba(10, 218, 245, 0.05) 100%);
+}
+
+.portada-grande img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.play-grande-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #0ADAF5;
+    color: #000;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 24px rgba(10, 218, 245, 0.5);
+    pointer-events: none;
+}
+
+.portada-grande:hover .play-grande-overlay {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.portada-grande::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 1;
+    transition: background 0.3s ease;
+}
+
+.portada-grande:hover::before {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Información principales (centrada bajo la portada) */
+.info-cancion {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.info-cancion h1 {
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    word-break: break-word;
+}
+
+.artista-link {
+    color: #b3b3b3;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.artista-link a {
+    color: #0ADAF5;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.artista-link a:hover {
+    color: #5cf2ff;
+    text-decoration: underline;
+}
+
+/* Contenedor derecho: controles */
+.hero-cancion > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-width: 280px;
+}
+
+/* Stats y acciones */
+.stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 0;
+}
+
+.stats span {
+    color: #999;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.stats-botones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-like,
+.btn-agregar-playlist {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+    border: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-like {
+    background: transparent;
+    border: 2px solid #0ADAF5;
+    color: #0ADAF5;
+}
+
+.btn-like:hover {
+    background-color: #0ADAF5;
+    color: #000;
+    transform: scale(1.05);
+}
+
+.btn-like.liked {
+    background-color: #0ADAF5;
+    color: #000;
+}
+
+.btn-agregar-playlist {
+    background: transparent;
+    border: 2px solid #999;
+    color: #999;
+}
+
+.btn-agregar-playlist:hover {
+    border-color: #0ADAF5;
+    color: #0ADAF5;
+    transform: scale(1.05);
+}
+
+.btn-like svg,
+.btn-agregar-playlist svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Selector para agregar a playlist */
+.selector-playlist {
+    background: rgba(10, 218, 245, 0.05);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(10, 218, 245, 0.15);
+    margin-top: 12px;
+}
+
+.selector-playlist p {
+    color: #999;
+    margin: 0 0 12px 0;
+    font-size: 0.85rem;
+}
+
+.selector-playlist select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #282828;
+    border: 1px solid rgba(10, 218, 245, 0.3);
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+}
+
+.selector-playlist select:hover {
+    border-color: #0ADAF5;
+}
+
+.selector-playlist select:focus {
+    outline: none;
+    border-color: #0ADAF5;
+    box-shadow: 0 0 0 2px rgba(10, 218, 245, 0.1);
+}
+
+/* ============================================
+   REPRODUCTOR
+   ============================================ */
+.reproductor-hero {
+    width: 100%;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   METADATOS Y CARACTERÍSTICAS
+   ============================================ */
+.metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metadata-fila {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 32px;
+}
+
+.metadata-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.metadata-label {
+    color: #666;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.metadata-value {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Estilos/Géneros */
+.metadata-estilos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.estilos-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.estilo-tag {
+    padding: 6px 14px;
+    border: 1px solid;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.estilo-tag:hover {
+    transform: scale(1.05);
+}
+
+/* ============================================
+   SECCIÓN COLABORADORES
+   ============================================ */
+.colaboradores-section {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.colaboradores-section h3 {
+    color: #0ADAF5;
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.colaboradores-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.colaborador-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(10, 218, 245, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(10, 218, 245, 0.15);
+}
+
+.colaborador-avatar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(10, 218, 245, 0.1);
+    border: 2px solid #0ADAF5;
+    flex-shrink: 0;
+}
+
+.colaborador-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.colaborador-avatar-icon {
+    color: #0ADAF5;
+    font-size: 20px;
+}
+
+.colaborador-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.colaborador-nombre {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.colaborador-rol {
+    color: #999;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+/* ============================================
+   SECCIÓN COMENTARIOS
+   ============================================ */
+.comentarios-seccion {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comentarios-seccion h2 {
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 32px 0;
+}
+
+/* Formulario nuevo comentario */
+.comentario-nuevo {
+    background: rgba(10, 218, 245, 0.03);
+    border: 1px solid rgba(10, 218, 245, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 32px;
+}
+
+.comentario-nuevo textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: #1f2023;
+    border: 1px solid rgba(10, 218, 245, 0.25);
+    border-radius: 8px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: none;
+    min-height: 120px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.comentario-nuevo textarea::placeholder {
+    color: #666;
+}
+
+.comentario-nuevo textarea:hover {
+    border-color: rgba(10, 218, 245, 0.4);
+    background: #242729;
+}
+
+.comentario-nuevo textarea:focus {
+    outline: none;
+    border-color: #0ADAF5;
+    background: #1f2023;
+    box-shadow: 0 0 0 3px rgba(10, 218, 245, 0.1);
+}
+
+.comentario-nuevo-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.comentario-nuevo button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: #0ADAF5;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+}
+
+.comentario-nuevo button:hover {
+    background: #5cf2ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(10, 218, 245, 0.3);
+}
+
+.comentario-nuevo button:active {
+    transform: translateY(0);
+}
+
+.comentario-nuevo button svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Lista de comentarios */
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comentarios-vacio {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.comentarios-vacio p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.comentarios-contenedor {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comentario-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.comentario-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(10, 218, 245, 0.2);
+}
+
+.comentario-item img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid rgba(10, 218, 245, 0.3);
+}
+
+.comentario-contenido {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comentario-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.comentario-header strong {
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.comentario-header .timestamp button {
+    background: none;
+    border: none;
+    color: #0ADAF5;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.comentario-header .timestamp button:hover {
+    background: rgba(10, 218, 245, 0.1);
+    text-decoration: underline;
+}
+
+.comentario-item p {
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.comentario-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.comentario-fecha {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.btn-eliminar-comentario {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-eliminar-comentario:hover {
+    color: #ff4444;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .detalles-cancion {
+        padding: 24px;
+    }
+
+    .hero-cancion {
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+    }
+
+    .portada-grande {
+        width: 200px;
+        height: 200px;
+    }
+
+    .info-cancion {
+        width: 100%;
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .info-cancion h1 {
+        font-size: 1.6rem;
+    }
+
+    .artista-link {
+        justify-content: center;
+    }
+
+    .stats {
+        justify-content: center;
+    }
+
+    .metadata-fila {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .detalles-cancion {
+        padding: 16px;
+    }
+
+    .portada-grande {
+        width: 160px;
+        height: 160px;
+    }
+
+    .info-cancion h1 {
+        font-size: 1.4rem;
+    }
+
+    .stats {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .stats-botones {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-like,
+    .btn-agregar-playlist {
+        flex: 1;
+    }
+
+    .metadata-fila {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,312 @@
+/* ============================================
+   PLAYLIST SELECTOR - MODERN DROPDOWN
+   ============================================ */
+.playlist-selector-container {
+    position: relative;
+    width: 100%;
+}
+
+/* Header */
+.playlist-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 12px 0;
+    border-bottom: 1px solid rgba(10, 218, 245, 0.2);
+    margin-bottom: 12px;
+}
+
+.playlist-selector-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+    color: #ff4444;
+    transform: rotate(90deg);
+}
+
+/* Playlist selected chip */
+.playlist-selected-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(10, 218, 245, 0.15);
+    border: 1px solid #0ADAF5;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0ADAF5;
+}
+
+.icon-check {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.playlist-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chip-remove {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    margin-left: auto;
+    transition: transform 0.2s ease;
+}
+
+.chip-remove:hover {
+    transform: scale(1.2);
+}
+
+/* Trigger */
+.playlist-selector-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #1f2023;
+    border: 1px solid rgba(10, 218, 245, 0.25);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+}
+
+.playlist-selector-trigger:hover {
+    border-color: rgba(10, 218, 245, 0.4);
+    background: #242729;
+}
+
+.playlist-selector-trigger.abierto {
+    border-color: #0ADAF5;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background: #242729;
+}
+
+.playlist-selector-trigger.selected {
+    border-color: #0ADAF5;
+}
+
+.playlist-selector-trigger .placeholder {
+    color: #999;
+    font-size: 0.95rem;
+}
+
+.playlist-selector-trigger .dropdown-arrow {
+    width: 20px;
+    height: 20px;
+    color: #0ADAF5;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.playlist-selector-trigger.abierto .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.playlist-selector-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1f2023;
+    border: 1px solid #0ADAF5;
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+}
+
+/* Search wrapper */
+.search-wrapper {
+    position: relative;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(10, 218, 245, 0.15);
+    background: #171819;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-icon {
+    width: 18px;
+    height: 18px;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #666;
+}
+
+/* Playlists list */
+.playlists-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 120px;
+}
+
+.playlists-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.playlists-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.playlists-list::-webkit-scrollbar-thumb {
+    background: rgba(10, 218, 245, 0.3);
+    border-radius: 3px;
+}
+
+.playlists-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(10, 218, 245, 0.5);
+}
+
+/* Playlist option */
+.playlist-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.playlist-option:hover {
+    background: rgba(10, 218, 245, 0.1);
+    border-left-color: #0ADAF5;
+}
+
+.playlist-option.selected {
+    background: rgba(10, 218, 245, 0.15);
+    border-left-color: #0ADAF5;
+}
+
+.playlist-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #0ADAF5;
+    flex-shrink: 0;
+}
+
+.playlist-titulo {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.playlist-count {
+    font-size: 0.75rem;
+    color: #666;
+    flex-shrink: 0;
+}
+
+/* No resultados */
+.no-resultados {
+    padding: 24px 16px;
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Action buttons */
+.playlist-selector-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(10, 218, 245, 0.15);
+    background: #171819;
+}
+
+.btn-cancel,
+.btn-confirm {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: #999;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ccc;
+}
+
+.btn-confirm {
+    background: #0ADAF5;
+    color: #000;
+}
+
+.btn-confirm:hover:not(:disabled) {
+    background: #5cf2ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(10, 218, 245, 0.3);
+}
+
+.btn-confirm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-confirm svg {
+    width: 18px;
+    height: 18px;
+}

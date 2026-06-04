@@ -1,0 +1,153 @@
+/* Login.css - Estilos oscuros sobrios para formulario de inicio de sesión */
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #1B1C1E;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.login-wrapper .sc-form {
+    padding: 0;
+    gap: 20px;
+    color: #ffffff;
+}
+
+.login-wrapper .sc-form h2 {
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+    color: #ffffff;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+.login-wrapper .form-row {
+    gap: 20px;
+}
+
+.login-wrapper .form-row > div {
+    gap: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-wrapper .form-row label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #bbbbbb;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 2px;
+}
+
+.login-wrapper .sc-form input[type="email"],
+.login-wrapper .sc-form input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    border: 1px solid #333333;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.login-wrapper .sc-form input[type="email"]::placeholder,
+.login-wrapper .sc-form input[type="password"]::placeholder {
+    color: #555555;
+}
+
+.login-wrapper .sc-form input[type="email"]:focus,
+.login-wrapper .sc-form input[type="password"]:focus {
+    outline: none;
+    background: #222222;
+    border-color: #0a9fb5;
+    box-shadow: 0 0 6px rgba(10, 159, 181, 0.2);
+}
+
+.login-wrapper .sc-btn-upload {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px 28px;
+    font-size: 0.95rem;
+    background-color: #0a9fb5;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-wrapper .sc-btn-upload:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background-color: #0abcd4;
+}
+
+.login-wrapper .sc-btn-upload:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.login-wrapper .sc-btn-upload:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #555;
+}
+
+.login-wrapper p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #999999;
+}
+
+.login-wrapper a {
+    color: #0abcd4;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.login-wrapper a:hover {
+    color: #0ddfee;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .login-wrapper {
+        padding: 30px 20px;
+        border-radius: 6px;
+    }
+
+    .login-wrapper .sc-form h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .login-wrapper .sc-form input[type="email"],
+    .login-wrapper .sc-form input[type="password"] {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .login-wrapper .sc-btn-upload {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}

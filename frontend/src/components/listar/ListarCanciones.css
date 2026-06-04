@@ -1,0 +1,128 @@
+/* Este es el contenedor principal */
+.listado-canciones {
+    display: block; /* Quitamos el grid, ya que usamos un carrusel */
+    padding: 30px;
+    background-color: #121212; /* Fondo oscuro */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Mensaje de "No hay canciones" */
+.listado-canciones > p {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 100px;
+}
+
+/* Contenedor general que agrupa las flechas y las canciones */
+.carrusel-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 1200px; /* Ajusta según el diseño de tu web */
+    margin: 0 auto;
+}
+
+/* La pista donde se mueven las canciones */
+.carrusel-contenedor {
+    display: flex;
+    overflow-x: auto; /* Permite el scroll horizontal */
+    gap: 25px; /* Espacio entre tarjetas */
+    padding: 15px 10px;
+    scroll-behavior: smooth;
+    
+    /* Ocultar la barra de scroll para que se vea más limpio */
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Ocultar barra de scroll en Chrome, Safari y Opera */
+.carrusel-contenedor::-webkit-scrollbar {
+    display: none; 
+}
+
+/* IMPORTANTE: El Link que envuelve la canción (Elemento del carrusel) */
+.carrusel-item {
+    flex: 0 0 auto; /* Evita que las tarjetas se encojan */
+    width: 220px; /* Le damos el ancho que antes intentabas dar con el grid */
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Efecto hover en la tarjeta completa */
+.carrusel-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Estilos para el componente Cancion (dentro del Link) */
+.cancion-card {
+    background: #1e1e1e;
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Ajuste para la imagen (portada) */
+.cancion-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background-color: #282828; /* Fondo mientras carga */
+}
+
+/* Títulos y textos */
+.cancion-card h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cancion-card p {
+    color: #b3b3b3;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+/* Estilo para los botones de las flechas */
+.flecha-carrusel {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 10;
+    transition: background-color 0.3s;
+}
+
+.flecha-carrusel:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Posicionar las flechas flotando a los lados */
+.flecha-carrusel.izquierda {
+    left: -20px;
+}
+
+.flecha-carrusel.derecha {
+    right: -20px;
+}

@@ -1,0 +1,131 @@
+.tarjeta-playlist {
+    background-color: #181818;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.tarjeta-playlist:hover {
+    background-color: #282828;
+}
+
+.contenedor-imagen-playlist {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.imagen-playlist {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.gradient-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+}
+
+.titulo-playlist-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.titulo-playlist {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s ease;
+}
+
+.titulo-playlist-link:hover .titulo-playlist {
+    color: #0ADAF5;
+}
+
+/* SECCIÓN DEL DUEÑO/USUARIO */
+.seccion-usuario-playlist {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.enlace-usuario-playlist {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+    min-width: 0;
+}
+
+.avatar-usuario-playlist {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #282828;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid #404040;
+    transition: all 0.3s ease;
+}
+
+.avatar-usuario-playlist img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    aspect-ratio: auto;
+}
+
+.avatar-placeholder {
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b3b3b3;
+}
+
+.nombre-usuario-playlist {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.enlace-usuario-playlist:hover {
+    color: #0ADAF5;
+}
+
+.enlace-usuario-playlist:hover .avatar-usuario-playlist {
+    border-color: #0ADAF5;
+    box-shadow: 0 0 8px rgba(10, 218, 245, 0.5);
+}
