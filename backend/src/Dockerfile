@@ -27,7 +27,8 @@ WORKDIR /var/www/html
 COPY . .
 
 # Instalar dependencias de composer
-RUN composer install --optimize-autoloader --no-dev
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer update --optimize-autoloader --no-dev
 
 # Permisos para storage y bootstrap
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
