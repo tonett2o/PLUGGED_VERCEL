@@ -1,16 +1,14 @@
-FROM php:8.4-cli-alpine
+FROM php:8.3-apache
 
-# Dependencias del sistema (zip, intl, etc.) + herramientas + Apache
-RUN apk add --no-cache \
+# Dependencias del sistema
+RUN apt-get update && apt-get install -y \
     bash \
     git \
     unzip \
-    icu-dev \
-    oniguruma-dev \
+    libicu-dev \
+    libonig-dev \
     libzip-dev \
     mysql-client \
-    apache2 \
-    apache2-mod-php \
   && docker-php-ext-configure intl \
   && docker-php-ext-install -j$(nproc) \
     pdo \
@@ -18,7 +16,8 @@ RUN apk add --no-cache \
     mbstring \
     intl \
     zip \
-  && rm -rf /var/cache/apk/*
+  && a2enmod rewrite \
+  && rm -rf /var/lib/apt/lists/*
 
 # Composer (copiado desde la imagen oficial)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
