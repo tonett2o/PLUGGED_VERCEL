@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaTimes } from "react-icons/fa";
-import useApiPut from "../../hooks/Cancion/UseApiPut.js";
+import useApiPut from "../../hooks/Cancion/useApiPut.js";
 // 1. Conectamos con el grifo global de la música
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoNotificaciones } from "../../contexts/ProveedorNotificaciones.jsx";

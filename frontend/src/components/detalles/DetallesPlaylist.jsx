@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaPlay, FaPause, FaTimes } from "react-icons/fa";
-import useApiPut from "../../hooks/Cancion/UseApiPut.js";
+import useApiPut from "../../hooks/Cancion/useApiPut.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoNotificaciones } from "../../contexts/ProveedorNotificaciones.jsx";
 import { useAuth } from "../../contexts/ProveedorAuth.jsx";
