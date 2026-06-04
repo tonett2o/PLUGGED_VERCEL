@@ -11,7 +11,7 @@ const useApiDelete_Galeria = async (id, token) => {
 
         // Intentar parsear JSON solo si hay contenido
         let datos = {};
-        const contentType = response.headers.get('content-type`);
+        const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
             const text = await response.text();
             if (text) {

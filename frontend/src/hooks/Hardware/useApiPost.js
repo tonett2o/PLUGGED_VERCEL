@@ -6,13 +6,13 @@ const useApiPost = async (hardwareCreado, token) => {
     formData.append('nombre', hardwareCreado.nombre);
     formData.append('marca', hardwareCreado.marca);
     formData.append('precio', hardwareCreado.precio);
-    formData.append('descripcion', hardwareCreado.descripcion || '`);
+    formData.append('descripcion', hardwareCreado.descripcion || '');
 
     if (hardwareCreado.imagen) {
         formData.append('imagen', hardwareCreado.imagen); // Archivo de imagen del equipo
     }
 
-    const peticion = await fetch(`${API_URL}/api/hardware", {
+    const peticion = await fetch(`${API_URL}/api/hardware`, {
         method: "POST",
         headers: {
             "Accept": "application/json",

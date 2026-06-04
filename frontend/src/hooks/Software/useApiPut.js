@@ -8,10 +8,10 @@ const useApiPut = async (id, softwareEditado, token) => {
     formData.append('distribuidor', softwareEditado.distribuidor);
     formData.append('precio', softwareEditado.precio);
     formData.append('tipo_pago', softwareEditado.tipo_pago);
-    formData.append('descripcion', softwareEditado.descripcion || '`);
-    
+    formData.append('descripcion', softwareEditado.descripcion || '');
+
     // Simulación de PUT para que Laravel procese el archivo 'imagen'
-    formData.append('_method', 'PUT`);
+    formData.append('_method', 'PUT');
 
     if (softwareEditado.imagen instanceof File) {
         formData.append('imagen', softwareEditado.imagen);

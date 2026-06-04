@@ -27,7 +27,7 @@ const useApiPut = async (id, cancionEditada, token) => {
     }
     
     // TRUCO LARAVEL: Para enviar archivos en una edición
-    formData.append('_method', 'PUT`);
+    formData.append('_method', 'PUT');
 
     // Solo adjuntamos archivos si el usuario seleccionó nuevos
     if (cancionEditada.archivo instanceof File) {

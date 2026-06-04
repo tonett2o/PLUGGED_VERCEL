@@ -4,7 +4,7 @@ const useApiPut = async (id, eventoEditado, token) => {
 
     const formData = new FormData();
     formData.append('nombre', eventoEditado.nombre);
-    formData.append('nombre_sala', eventoEditado.nombre_sala || '`);
+    formData.append('nombre_sala', eventoEditado.nombre_sala || '');
 
     // Manejar ubicación: puede venir como string o como objeto {direccion, lat, lng}
     let ubicacionTexto = '';
@@ -15,13 +15,13 @@ const useApiPut = async (id, eventoEditado, token) => {
     }
     formData.append('ubicacion', ubicacionTexto);
 
-    formData.append('latitud', eventoEditado.latitud || '`);
-    formData.append('longitud', eventoEditado.longitud || '`);
-    formData.append('fecha_evento', eventoEditado.fecha_evento || '`);
-    formData.append('url_venta', eventoEditado.url_venta || '`);
+    formData.append('latitud', eventoEditado.latitud || '');
+    formData.append('longitud', eventoEditado.longitud || '');
+    formData.append('fecha_evento', eventoEditado.fecha_evento || '');
+    formData.append('url_venta', eventoEditado.url_venta || '');
 
     // TRUCO LARAVEL: Para enviar archivos en una edición
-    formData.append('_method', 'PUT`);
+    formData.append('_method', 'PUT');
 
     // Solo adjuntamos imagen si el usuario seleccionó una nueva
     if (eventoEditado.imagen instanceof File) {

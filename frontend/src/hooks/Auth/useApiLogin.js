@@ -6,7 +6,7 @@ const useApiLogin = async (email, password) => {
         const { data } = await clienteAxios.post('/login', { email, password });
         return data; 
     } catch (error) {
-        console.error("Error en login:", error.response?.data?.message || "Credenciales inválidas`);
+        console.error("Error en login:", error.response?.data?.message || "Credenciales inválidas");
         return null;
     }
 };

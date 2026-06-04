@@ -8,13 +8,13 @@ const useApiPost = async (softwareCreado, token) => {
     formData.append('distribuidor', softwareCreado.distribuidor);
     formData.append('precio', softwareCreado.precio);
     formData.append('tipo_pago', softwareCreado.tipo_pago); // 'unico', 'suscripcion', etc.
-    formData.append('descripcion', softwareCreado.descripcion || '`);
+    formData.append('descripcion', softwareCreado.descripcion || '');
 
     if (softwareCreado.imagen) {
         formData.append('imagen', softwareCreado.imagen); // Archivo File
     }
 
-    const peticion = await fetch(`${API_URL}/api/software", {
+    const peticion = await fetch(`${API_URL}/api/software`, {
         method: "POST",
         headers: {
             "Accept": "application/json",
