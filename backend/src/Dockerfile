@@ -1,6 +1,6 @@
-FROM php:8.4-apache-alpine
+FROM php:8.4-cli-alpine
 
-# Dependencias del sistema (zip, intl, etc.) + herramientas
+# Dependencias del sistema (zip, intl, etc.) + herramientas + Apache
 RUN apk add --no-cache \
     bash \
     git \
@@ -9,6 +9,8 @@ RUN apk add --no-cache \
     oniguruma-dev \
     libzip-dev \
     mysql-client \
+    apache2 \
+    apache2-mod-php \
   && docker-php-ext-configure intl \
   && docker-php-ext-install -j$(nproc) \
     pdo \
@@ -16,7 +18,6 @@ RUN apk add --no-cache \
     mbstring \
     intl \
     zip \
-  && a2enmod rewrite \
   && rm -rf /var/cache/apk/*
 
 # Composer (copiado desde la imagen oficial)
