@@ -6,7 +6,9 @@ const useApiPost = async (cancionCreada, token) => {
     
     // 1. Campos obligatorios base
     formData.append('titulo', cancionCreada.titulo);
-    formData.append('archivo', cancionCreada.archivo); // El .mp3 binario
+    if (cancionCreada.archivo) {
+        formData.append('archivo', cancionCreada.archivo); // El .mp3 binario
+    }
 
     // 2. Campos adicionales
     if (cancionCreada.bpm && cancionCreada.bpm !== "") {
