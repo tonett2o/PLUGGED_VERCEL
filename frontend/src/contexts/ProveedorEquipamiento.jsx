@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import API_URL from '../config/api.js';
 
 // Hooks de Carga y Borrado Atómico (Estos sí acoplan perfectamente con tu patrón)
 import useApiGetAll_Hardware from "../hooks/Hardware/useApiGetAll.js";
