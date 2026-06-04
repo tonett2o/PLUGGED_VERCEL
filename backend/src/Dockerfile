@@ -23,7 +23,8 @@ WORKDIR /var/www
 COPY . .
 
 RUN composer install --optimize-autoloader --no-dev --no-scripts && \
-    chmod -R 755 storage bootstrap/cache
+    chmod -R 755 storage bootstrap/cache && \
+    php artisan storage:link
 
 EXPOSE 8000
 
