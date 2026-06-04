@@ -23,5 +23,15 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# (Opcional) Mejoras de permisos si luego haces storage/cache
-# RUN chown -R www-data:www-data /var/www
+# Copiar todos los archivos del proyecto
+COPY . .
+
+# Instalar dependencias de composer
+RUN composer install --optimize-autoloader --no-dev
+
+# Permisos para storage y bootstrap
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+EXPOSE 8000
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
