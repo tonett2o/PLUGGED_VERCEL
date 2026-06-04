@@ -28,4 +28,4 @@ RUN composer install --optimize-autoloader --no-dev --no-scripts && \
 
 EXPOSE 8000
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public/"]
+CMD ["php", "-c", "/var/www/php.ini", "-S", "0.0.0.0:8000", "-t", "public/"]

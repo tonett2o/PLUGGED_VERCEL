@@ -56,6 +56,13 @@ class CancionRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        \Log::info('📝 CancionRequest prepareForValidation:', [
+            'has_archivo' => $this->hasFile('archivo'),
+            'archivo' => $this->file('archivo'),
+            'all_files' => $this->allFiles(),
+            'all_input_keys' => array_keys($this->all())
+        ]);
+
         // Convertir JSON string de colaboradores a array si es necesario
         if ($this->has('colaboradores') && is_string($this->colaboradores)) {
             $this->merge([
