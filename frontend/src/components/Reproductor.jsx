@@ -353,7 +353,7 @@ const Reproductor = () => {
 
                 {/* Botones de Control */}
                 <div className="controles-centro">
-                    {/* Botón Repetir */}
+                    {/* Botón Aleatorio */}
                     <button
                         onClick={() => setIsShuffling(!isShuffling)}
                         className={`btn-control ${isShuffling ? 'activo' : ''}`}
@@ -381,7 +381,7 @@ const Reproductor = () => {
                         <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                     </button>
 
-                    {/* Botón Aleatorio */}
+                    {/* Botón Repetir */}
                     <button
                         onClick={() => setRepeatMode((repeatMode + 1) % 3)}
                         className={`btn-control ${repeatMode > 0 ? 'activo' : ''}`}
