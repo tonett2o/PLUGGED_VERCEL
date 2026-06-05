@@ -36,7 +36,9 @@ const MapaUbicacion = ({ latitud, longitud, ubicacion, onUbicacionChange }) => {
     });
 
     map.current.on('load', () => {
-      console.log('🗺️ Mapa cargado');
+      // Recalcular tamaño: si el mapa se inicializó dentro de un modal/contenedor
+      // que aún no tenía dimensiones, sin esto el lienzo queda en blanco.
+      map.current.resize();
     });
 
     map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
@@ -52,7 +54,26 @@ const MapaUbicacion = ({ latitud, longitud, ubicacion, onUbicacionChange }) => {
     };
     map.current.on('click', handleMapClick);
 
+    // Resize diferido: cubre la animación de apertura del modal (EditarPerfil),
+    // donde el contenedor pasa de oculto/0px a su tamaño real tras montar.
+    const resizeTimeouts = [
+      setTimeout(() => map.current && map.current.resize(), 150),
+      setTimeout(() => map.current && map.current.resize(), 400),
+      setTimeout(() => map.current && map.current.resize(), 800),
+    ];
+
+    // Observa cambios de tamaño del contenedor (p.ej. al terminar la transición)
+    let resizeObserver = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainer.current) {
+      resizeObserver = new ResizeObserver(() => {
+        if (map.current) map.current.resize();
+      });
+      resizeObserver.observe(mapContainer.current);
+    }
+
     return () => {
+      resizeTimeouts.forEach(clearTimeout);
+      if (resizeObserver) resizeObserver.disconnect();
       if (map.current) {
         map.current.off('click', handleMapClick);
         map.current.remove();
