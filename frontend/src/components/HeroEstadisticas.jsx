@@ -51,7 +51,7 @@ const HeroEstadisticas = () => {
                                 Comparte tus tracks, crea colecciones y playlists, descubre eventos y conecta con otros músicos.
                             </p>
                             <div className="hero-ctas">
-                                <Link to="/registrarse" className="hero-btn primario">
+                                <Link to="/registro" className="hero-btn primario">
                                     Únete gratis
                                 </Link>
                                 <Link to="/login" className="hero-btn secundario">

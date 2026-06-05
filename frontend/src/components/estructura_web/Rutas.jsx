@@ -6,7 +6,6 @@ import ExplorarEventos from '../pagina_web/ExplorarEventos.jsx';
 import Explorar from '../pagina_web/Explorar.jsx';
 import { Login } from '../pagina_web/Login.jsx';
 import Registro from '../Registro.jsx';
-import { Register } from '../pagina_web/Register.jsx';
 import { Logout } from '../pagina_web/Logout.jsx';
 import PaginaAmigos from '../pagina_web/PaginaAmigos.jsx';
 
@@ -22,7 +21,6 @@ const Rutas = () => {
                 <Route path="/iniciar-sesion" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Registro />} />
-                <Route path="/register" element={<Register />} />
                 <Route path="/logout" element={<Logout />} />
             </Routes>
         </>

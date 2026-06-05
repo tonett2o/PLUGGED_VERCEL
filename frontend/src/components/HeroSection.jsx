@@ -31,7 +31,7 @@ const HeroSection = () => {
                             Comparte tus tracks, crea colecciones y playlists, descubre eventos y conecta con otros músicos.
                         </p>
                         <div className="inicio-hero-cta">
-                            <Link to="/registrarse" className="inicio-btn primario grande">
+                            <Link to="/registro" className="inicio-btn primario grande">
                                 Únete gratis
                             </Link>
                             <Link to="/login" className="inicio-btn secundario grande">

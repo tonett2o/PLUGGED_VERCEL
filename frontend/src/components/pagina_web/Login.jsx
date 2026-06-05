@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/ProveedorAuth.jsx';
 import useApiLogin from '../../hooks/Auth/useApiLogin.js';
 import '../formulario.css';
@@ -142,9 +142,9 @@ export const Login = () => {
 
                     <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.9rem', color: '#999' }}>
                         ¿No tienes cuenta?{' '}
-                        <a href="/registro" style={{ color: '#0abcd4', textDecoration: 'none' }}>
+                        <Link to="/registro" style={{ color: '#0abcd4', textDecoration: 'none' }}>
                             Crea una aquí
-                        </a>
+                        </Link>
                     </p>
                 </form>
             </div>

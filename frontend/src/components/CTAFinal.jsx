@@ -7,7 +7,7 @@ const CTAFinal = () => {
         <section className="inicio-cta-final">
             <h2>¿Listo para compartir tu música?</h2>
             <p>Únete a miles de artistas y amantes de la música en PLUGGED</p>
-            <Link to="/registrarse" className="inicio-btn primario grande">
+            <Link to="/registro" className="inicio-btn primario grande">
                 Comenzar ahora
             </Link>
         </section>
