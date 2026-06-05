@@ -1,3 +1,19 @@
+/**
+ * Login.jsx - Formulario de inicio de sesion
+ *
+ * Permite al usuario autenticarse con email y contrasena.
+ * Los errores de validacion se muestran campo a campo directamente
+ * bajo el input correspondiente, sin necesidad de un bloque de error global.
+ *
+ * Flujo:
+ *   1. El usuario rellena el formulario y envia
+ *   2. Se llama al hook useApiLogin con las credenciales
+ *   3a. Si la respuesta contiene access_token -> sesion iniciada, redireccion a "/"
+ *   3b. Si hay errores por campo (detalles) -> se muestran inline en rojo
+ *   3c. Si es un error generico -> se muestra en el campo email
+ *
+ * Los errores desaparecen automaticamente al volver a escribir en el campo.
+ */
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/ProveedorAuth.jsx';
@@ -5,21 +21,13 @@ import useApiLogin from '../../hooks/Auth/useApiLogin.js';
 import '../formulario.css';
 import './Login.css';
 
-/**
- * Login - Componente para iniciar sesión de usuario
- *
- * Features:
- * - Validación backend con errores por campo
- * - Muestra errores con badges rojos inline
- * - Limpia errores automáticamente al escribir
- * - Estilos consistentes con EditarPerfil y Registro
- */
 export const Login = () => {
     const [formulario, setFormulario] = useState({
         email: '',
         password: ''
     });
 
+    // Mapa de errores por nombre de campo: { email: ['mensaje'], password: [...] }
     const [errores, setErrores] = useState({});
     const [cargando, setCargando] = useState(false);
 
@@ -27,7 +35,10 @@ export const Login = () => {
     const navigate = useNavigate();
 
     /**
-     * Renderiza mensaje de error para un campo específico
+     * Renderiza el primer mensaje de error de un campo si existe.
+     *
+     * @param {string} fieldName - Nombre del campo del formulario
+     * @returns {JSX.Element|null} Span con el error o null
      */
     const renderErrorMessage = (fieldName) => {
         if (!errores[fieldName]?.length) return null;
@@ -45,14 +56,12 @@ export const Login = () => {
     };
 
     /**
-     * Maneja cambios en inputs
-     * Limpia el error del campo al escribir
+     * Actualiza el formulario y borra el error del campo modificado.
      */
     const handleTexto = (e) => {
         const { name, value } = e.target;
         setFormulario({ ...formulario, [name]: value });
 
-        // Limpiar error del campo
         if (errores[name]) {
             const newErrores = { ...errores };
             delete newErrores[name];
@@ -61,8 +70,9 @@ export const Login = () => {
     };
 
     /**
-     * Envía el formulario
-     * Valida en backend, muestra errores si hay, o procesa éxito
+     * Envia las credenciales al backend.
+     * Si el login es exitoso, conecta la sesion y redirige al inicio.
+     * Si hay errores, los distribuye por campo o muestra uno generico.
      */
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -74,19 +84,18 @@ export const Login = () => {
         setCargando(false);
 
         if (respuesta && respuesta.access_token) {
-            // Éxito - conectar y redirigir
+            // Login exitoso
             conectar(respuesta);
             navigate('/');
         } else {
-            // Error de credenciales
             if (respuesta?.detalles) {
-                // Si hay errores por campo desde el backend
+                // Errores de validacion por campo devueltos por Laravel
                 setErrores(respuesta.detalles);
                 window.scrollTo(0, 0);
             } else {
-                // Error genérico
+                // Error generico (credenciales incorrectas, servidor caido, etc.)
                 setErrores({
-                    email: [respuesta?.message || 'Credenciales incorrectas o error de conexión']
+                    email: [respuesta?.message || 'Credenciales incorrectas o error de conexion']
                 });
                 window.scrollTo(0, 0);
             }
@@ -97,9 +106,9 @@ export const Login = () => {
         <div className="login-container">
             <div className="login-wrapper">
                 <form className="sc-form" onSubmit={handleSubmit}>
-                    <h2>Iniciar Sesión</h2>
+                    <h2>Iniciar Sesion</h2>
 
-                    {/* Email */}
+                    {/* Campo email */}
                     <div className="form-row" style={{ gridTemplateColumns: '1fr' }}>
                         <div>
                             <label>Email</label>
@@ -115,35 +124,34 @@ export const Login = () => {
                         </div>
                     </div>
 
-                    {/* Contraseña */}
+                    {/* Campo contrasena */}
                     <div className="form-row" style={{ gridTemplateColumns: '1fr' }}>
                         <div>
-                            <label>Contraseña</label>
+                            <label>Contrasena</label>
                             <input
                                 type="password"
                                 name="password"
                                 value={formulario.password}
                                 onChange={handleTexto}
-                                placeholder="Tu contraseña"
+                                placeholder="Tu contrasena"
                                 style={{ borderColor: errores.password ? '#ff4444' : undefined }}
                             />
                             {renderErrorMessage('password')}
                         </div>
                     </div>
 
-                    {/* BOTÓN */}
                     <button
                         type="submit"
                         className="sc-btn-upload"
                         disabled={cargando}
                     >
-                        {cargando ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                        {cargando ? 'Iniciando sesion...' : 'Iniciar Sesion'}
                     </button>
 
                     <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.9rem', color: '#999' }}>
-                        ¿No tienes cuenta?{' '}
+                        No tienes cuenta?{' '}
                         <Link to="/registro" style={{ color: '#0abcd4', textDecoration: 'none' }}>
-                            Crea una aquí
+                            Crea una aqui
                         </Link>
                     </p>
                 </form>

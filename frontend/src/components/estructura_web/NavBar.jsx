@@ -1,3 +1,19 @@
+/**
+ * NavBar.jsx - Barra de navegacion superior global
+ *
+ * Componente persistente visible en todas las rutas. Contiene:
+ *   - Logo de la aplicacion (enlace a inicio)
+ *   - Menu de navegacion principal (Inicio, Explorar, Eventos)
+ *   - Buscador global con dropdown de resultados en tiempo real
+ *   - Zona de autenticacion (avatar + nick + logout si logueado, o botones de acceso)
+ *   - Boton de amigos con badge de conteo
+ *
+ * El buscador aplica debounce de 300ms para no saturar la API con cada
+ * pulsacion de tecla. Se activa a partir de 2 caracteres.
+ *
+ * La lista de amigos se carga una vez cuando el usuario se autentica
+ * y se muestra como badge sobre el icono de amigos.
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaSearch, FaUser, FaMusic, FaCompactDisc, FaListUl, FaUsers } from 'react-icons/fa';
@@ -11,15 +27,23 @@ import Logo from '../../assets/logobueno.jpg';
 export const NavBar = () => {
     const { usuario, autenticado, desconectar } = useAuth();
     const navigate = useNavigate();
+
+    // Estado del buscador
     const [busqueda, setBusqueda] = useState('');
     const [resultados, setResultados] = useState({ artistas: [], canciones: [], colecciones: [], playlists: [] });
     const [mostrarResultados, setMostrarResultados] = useState(false);
     const [cargando, setCargando] = useState(false);
+
+    // Lista de amigos para el badge
     const [amigos, setAmigos] = useState([]);
+
+    // Referencia para el temporizador del debounce
     const timeoutRef = useRef(null);
 
     /**
-     * Maneja la búsqueda con debounce
+     * Debounce del buscador: espera 300ms tras la ultima pulsacion antes
+     * de hacer la peticion a la API. Cancela la peticion anterior si el
+     * usuario sigue escribiendo. Se resetea si la busqueda tiene menos de 2 chars.
      */
     useEffect(() => {
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -44,7 +68,8 @@ export const NavBar = () => {
     }, [busqueda]);
 
     /**
-     * Obtiene los amigos del usuario autenticado
+     * Carga la lista de amigos del usuario autenticado al iniciar sesion.
+     * Solo se ejecuta si hay usuario y su ID esta disponible.
      */
     useEffect(() => {
         if (autenticado && usuario?.id) {
@@ -67,7 +92,10 @@ export const NavBar = () => {
     }, [autenticado, usuario?.id]);
 
     /**
-     * Navega a un resultado y cierra el dropdown
+     * Navega a la pagina de detalle del resultado seleccionado y cierra el dropdown.
+     *
+     * @param {string} tipo - Tipo de entidad ('usuario', 'cancion', 'coleccion', 'playlist')
+     * @param {number} id   - ID de la entidad
      */
     const handleNavegar = (tipo, id) => {
         setMostrarResultados(false);
@@ -76,48 +104,47 @@ export const NavBar = () => {
     };
 
     /**
-     * Gestiona el cierre de sesión
+     * Gestiona el cierre de sesion en tres pasos:
+     *   1. Notifica al backend para invalidar el token (via Axios con interceptor)
+     *   2. Limpia el estado global de React y el localStorage
+     *   3. Redirige al formulario de login
      */
     const handleLogout = async () => {
-        // 1. Llamamos al hook que usa Axios para avisar a Laravel
-        // (Axios enviará el token automáticamente gracias al interceptor)
         await useApiLogout();
-
-        // 2. Limpiamos el estado global y el localStorage en React
         desconectar();
-
-        // 3. Redirigimos al usuario a la página de inicio o login
         navigate('/login');
     };
 
     return (
         <nav className="navbar">
             <div className="nav-container">
-                {/* Lado Izquierdo: Logo o Enlaces principales */}
+                {/* Lado izquierdo: logo */}
                 <div className="nav-brand">
                     <Link to="/" className="nav-logo">
                         <img src={Logo} alt="PLUGGED Logo" className="nav-logo-img" />
                     </Link>
                 </div>
 
+                {/* Menu de navegacion principal */}
                 <div className="nav-menu">
                     <Link to="/">Inicio</Link>
                     <Link to="/explorar">Explorar</Link>
                     <Link to="/eventos">Eventos</Link>
                 </div>
 
-                {/* Buscador */}
+                {/* Buscador global con dropdown de resultados */}
                 <div className="nav-search-container">
                     <div className="nav-search-wrapper">
                         <FaSearch className="nav-search-icon" />
                         <input
                             type="text"
-                            placeholder="Buscar artistas, canciones, álbumes..."
+                            placeholder="Buscar artistas, canciones, albumes..."
                             className="nav-search-input"
                             value={busqueda}
                             onChange={(e) => setBusqueda(e.target.value)}
                             onFocus={() => busqueda.length >= 2 && setMostrarResultados(true)}
                         />
+                        {/* Boton para limpiar la busqueda */}
                         {busqueda && (
                             <button
                                 className="nav-search-clear"
@@ -128,7 +155,7 @@ export const NavBar = () => {
                         )}
                     </div>
 
-                    {/* Dropdown de resultados */}
+                    {/* Dropdown de resultados: artistas, canciones, colecciones, playlists */}
                     {mostrarResultados && (
                         <div className="nav-search-results">
                             {cargando ? (
@@ -195,7 +222,7 @@ export const NavBar = () => {
 
                                     {resultados.colecciones.length > 0 && (
                                         <div className="nav-search-category">
-                                            <h4>Álbumes & EPs</h4>
+                                            <h4>Albums & EPs</h4>
                                             {resultados.colecciones.map(coleccion => (
                                                 <button
                                                     key={`coleccion-${coleccion.id}`}
@@ -258,11 +285,11 @@ export const NavBar = () => {
                     )}
                 </div>
 
-                {/* Lado Derecho: Autenticación */}
+                {/* Lado derecho: zona de autenticacion */}
                 <div className="nav-auth">
                     {autenticado ? (
                         <div className="nav-user-info">
-                            {/* Botón de amigos - A la izquierda del avatar */}
+                            {/* Enlace a amigos con badge del conteo actual */}
                             <Link
                                 to={`/amigos/${usuario.id}`}
                                 className="nav-amigos-link"
@@ -272,6 +299,7 @@ export const NavBar = () => {
                                 {amigos.length > 0 && <span className="nav-amigos-badge">{amigos.length}</span>}
                             </Link>
 
+                            {/* Avatar del usuario: navega a su perfil */}
                             <Link to={`/mostrar/usuario/${usuario.id}`} className="nav-profile-link">
                                 <img
                                     src={`${usuario.avatar}?t=${Date.now()}`}
@@ -287,16 +315,16 @@ export const NavBar = () => {
                             <button
                                 onClick={handleLogout}
                                 className="btn-logout"
-                                title="Cerrar sesión"
+                                title="Cerrar sesion"
                             >
                                 <FaSignOutAlt size={18} />
                             </button>
                         </div>
                     ) : (
                         <div className="nav-auth-links">
-                            {/* Si no está logueado, mostramos botones de acceso */}
+                            {/* Si no hay sesion, mostrar accesos de entrada */}
                             <Link to="/login" className="btn-login-link">
-                                Iniciar Sesión
+                                Iniciar Sesion
                             </Link>
                             <Link to="/registro" className="btn-register-link">
                                 <button className="btn-register-action">Registrarse</button>

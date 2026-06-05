@@ -1,10 +1,34 @@
+/**
+ * useLike.js - Hook para gestionar likes de canciones
+ *
+ * Mantiene un mapa local de likes por cancion { cancionId: { liked, count } }
+ * que se actualiza con la respuesta del backend tras cada interaccion.
+ *
+ * El endpoint POST /api/canciones/:id/like actua como toggle: si el usuario
+ * ya habia dado like lo elimina, si no lo habia dado lo crea. El backend
+ * tambien sincroniza automaticamente la playlist "Me gusta" del usuario.
+ *
+ * El usuario debe estar autenticado para poder dar like. Si no hay token,
+ * toggleLike devuelve null sin hacer la peticion.
+ *
+ * @returns {{
+ *   toggleLike(cancionId),        - Alterna el like de la cancion indicada
+ *   isLiked(cancionId),           - Indica si el usuario ha dado like a esa cancion
+ *   getLikeCount(cancionId),      - Devuelve el conteo de likes de la cancion
+ *   cargarLikesDelUsuario()       - Placeholder para carga inicial (sin implementar)
+ * }}
+ */
 import API_URL from '../../config/api.js'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export const useLike = () => {
-    const [likes, setLikes] = useState({}); // { cancionId: { liked: true, count: 128 } }
+    // Mapa de likes: { [cancionId]: { liked: boolean, count: number } }
+    const [likes, setLikes] = useState({});
 
-    // Obtener usuario autenticado
+    /**
+     * Lee el usuario autenticado desde localStorage de forma segura.
+     * @returns {object|null} Objeto usuario o null
+     */
     const getUsuarioActual = () => {
         try {
             return JSON.parse(localStorage.getItem('usuario'));
@@ -15,21 +39,25 @@ export const useLike = () => {
     };
 
     /**
-     * Alternar like/unlike de una canción
-     * Llama al backend que maneja automáticamente la sincronización con "Me gusta"
+     * Alterna el like de una cancion. Si el usuario no esta autenticado,
+     * no hace nada y devuelve null.
+     *
+     * Tras la peticion, actualiza el estado local con los datos frescos
+     * del backend (liked + likes_count).
+     *
+     * @param {number} cancionId - ID de la cancion
+     * @returns {{ liked: boolean, count: number }|null}
      */
     const toggleLike = async (cancionId) => {
         const token = localStorage.getItem('token');
         const usuario = getUsuarioActual();
 
-        // Si no está logueado, no hacer nada
         if (!token || !usuario) {
             console.warn('Usuario no autenticado - no se puede dar like');
             return null;
         }
 
         try {
-            // Llamar al endpoint del backend que sincroniza automáticamente con "Me gusta"
             const response = await fetch(`${API_URL}/api/canciones/${cancionId}/like`, {
                 method: 'POST',
                 headers: {
@@ -47,7 +75,7 @@ export const useLike = () => {
 
             const data = await response.json();
 
-            // Actualizar estado local con la respuesta del backend
+            // Actualizar el estado local con la respuesta del backend
             setLikes(prev => ({
                 ...prev,
                 [cancionId]: {
@@ -56,37 +84,38 @@ export const useLike = () => {
                 }
             }));
 
-            console.log(`Like ${data.liked ? 'agregado' : 'removido'}. Total likes: ${data.likes_count}`);
-
-            // Retornar los datos para que el componente pueda usarlos inmediatamente
             return {
                 liked: data.liked,
                 count: data.likes_count
             };
 
         } catch (error) {
-            console.error('❌ Error al alternar like:', error);
+            console.error('Error al alternar like:', error);
             return null;
         }
     };
 
     /**
-     * Verificar si el usuario ha likeado una canción
+     * Indica si el usuario autenticado ha dado like a la cancion.
+     * @param {number} cancionId - ID de la cancion
+     * @returns {boolean}
      */
     const isLiked = (cancionId) => {
         return likes[cancionId]?.liked || false;
     };
 
     /**
-     * Obtener el total de likes de una canción
+     * Devuelve el numero de likes de la cancion segun el estado local.
+     * @param {number} cancionId - ID de la cancion
+     * @returns {number}
      */
     const getLikeCount = (cancionId) => {
         return likes[cancionId]?.count || 0;
     };
 
     /**
-     * Cargar likes del usuario desde el backend
-     * (Opcional: si necesitas cargar todos los likes al montar el componente)
+     * Placeholder para una carga inicial de todos los likes del usuario.
+     * Por ahora los likes se cargan bajo demanda al interactuar con cada cancion.
      */
     const cargarLikesDelUsuario = async () => {
         const token = localStorage.getItem('token');
@@ -94,13 +123,7 @@ export const useLike = () => {
 
         if (!token || !usuario) return;
 
-        try {
-            // Aquí iría una petición GET para obtener todas las canciones likeadas por el usuario
-            // Por ahora, los likes se cargan bajo demanda cuando se interactúa con cada canción
-            console.log('Cargando likes del usuario...');
-        } catch (error) {
-            console.error('Error cargando likes:', error);
-        }
+        // Pendiente de implementar: GET /api/usuarios/:id/likes
     };
 
     return {
@@ -110,7 +133,3 @@ export const useLike = () => {
         cargarLikesDelUsuario
     };
 };
-
-
-
-

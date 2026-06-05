@@ -1,0 +1,438 @@
+// ================================================================================
+// PLUGGED - Database Diagram (DBDiagram.io)
+// Estructura completa de la base de datos
+// ================================================================================
+//
+// TABLAS PRINCIPALES: 8
+// - usuarios, colecciones, playlists, canciones, software, hardware, eventos, estilos, galeria_usuario, reproducciones
+//
+// TABLAS PIVOTE/ASOCIATIVAS: 13
+// - cancion_playlist, likes, seguidores, comentarios, usuarios_eventos, usuarios_software
+// - usuarios_hardware, eventos_estilos, evento_colaboradores, cancion_colaboradores
+// - coleccion_colaboradores, usuarios_estilos, canciones_estilos
+//
+// ================================================================================
+
+// ====== TABLAS PRINCIPALES ======
+
+Table usuarios {
+  id bigint [primary key, increment]
+  nick varchar [unique, not null]
+  nombre varchar [nullable]
+  email varchar [unique, not null]
+  ubicacion varchar [nullable]
+  avatar varchar [nullable]
+  rol enum('dj','productor','admin','usuario') [not null]
+  email_verified_at timestamp [nullable]
+  password varchar [not null]
+  remember_token varchar [nullable]
+
+  // Redes sociales
+  twitter varchar [nullable]
+  instagram varchar [nullable]
+  youtube varchar [nullable]
+  spotify varchar [nullable]
+  tiktok varchar [nullable]
+  soundcloud varchar [nullable]
+
+  // Perfil extendido
+  biografia text [nullable]
+  banner varchar [nullable]
+  latitud decimal(10,8) [nullable]
+  longitud decimal(11,8) [nullable]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    email
+    nick
+  }
+}
+
+Table colecciones {
+  id bigint [primary key, increment]
+  titulo varchar [not null]
+  artista varchar [not null]
+  portada varchar [nullable]
+  descripcion varchar [nullable]
+  privacidad enum('publica','privada') [not null]
+  protegida boolean [default: false]
+  tipo enum('album','ep','singles') [not null]
+  fecha_publicacion year [not null]
+
+  id_usuario bigint [not null, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_usuario
+    tipo
+    privacidad
+  }
+}
+
+Table playlists {
+  id bigint [primary key, increment]
+  titulo varchar [not null]
+  artista varchar [not null]
+  portada varchar [nullable]
+  descripcion varchar [nullable]
+  privacidad enum('publica','privada') [not null]
+  protegida boolean [default: false]
+  fecha_publicacion year [not null]
+
+  id_usuario bigint [not null, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_usuario
+    privacidad
+  }
+}
+
+Table canciones {
+  id bigint [primary key, increment]
+  titulo varchar [not null]
+  bpm integer [not null]
+  tonalidad varchar [nullable]
+  ubicacion varchar [not null]
+  portada varchar [nullable]
+  fecha_publicacion year [not null]
+
+  // Atributos adicionales
+  estilo varchar(100) [nullable]
+  privacidad enum('publica','privada') [default: 'publica']
+
+  id_usuario bigint [not null, ref: > usuarios.id]
+  id_coleccion bigint [not null, ref: > colecciones.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_usuario
+    id_coleccion
+    titulo
+    privacidad
+  }
+}
+
+Table estilos {
+  id bigint [primary key, increment]
+  nombre varchar [unique, not null]
+  color varchar(7) [default: '#0ADAF5']
+
+  indexes {
+    nombre
+    color
+  }
+}
+
+Table software {
+  id bigint [primary key, increment]
+  nombre varchar [unique, not null]
+  version varchar [not null]
+  distribuidor varchar [not null]
+  precio decimal(8,2) [default: 0.00]
+  imagen varchar [nullable]
+  tipo_pago enum('unico','mensual','anual','gratuito') [not null]
+  descripcion varchar [nullable]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    nombre
+  }
+}
+
+Table hardware {
+  id bigint [primary key, increment]
+  nombre varchar [unique, not null]
+  marca varchar [not null]
+  precio decimal(8,2) [default: 0.00]
+  imagen varchar [nullable]
+  descripcion varchar [nullable]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    nombre
+    marca
+  }
+}
+
+Table eventos {
+  id bigint [primary key, increment]
+  nombre varchar [not null]
+  nombre_sala varchar [not null]
+  ubicacion varchar [not null]
+  imagen varchar [nullable]
+  url_venta varchar [unique, not null]
+  fecha_evento date [nullable]
+
+  // Coordenadas geográficas
+  latitud decimal(10,8) [nullable]
+  longitud decimal(11,8) [nullable]
+
+  id_usuario bigint [nullable, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_usuario
+    fecha_evento
+    ubicacion
+  }
+}
+
+Table galeria_usuario {
+  id bigint [primary key, increment]
+  imagen varchar [not null]
+  id_usuario bigint [not null, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_usuario
+  }
+}
+
+Table reproducciones {
+  id bigint [primary key, increment]
+  id_cancion bigint [not null, ref: > canciones.id]
+  id_usuario bigint [nullable, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_cancion
+    id_usuario
+    created_at
+  }
+}
+
+// ====== TABLAS PIVOTE - RELACIONES MUSICALES ======
+
+Table cancion_playlist {
+  id_cancion bigint [primary key, ref: > canciones.id]
+  id_playlist bigint [primary key, ref: > playlists.id]
+  orden enum('artistaAZ','artistaZA','tituloAZ','tituloZA','fechaAgregadaAsc','fechaAgregadaDesc') [default: 'fechaAgregadaDesc']
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_playlist
+  }
+}
+
+Table canciones_estilos {
+  id bigint [primary key, increment]
+  id_cancion bigint [not null, ref: > canciones.id]
+  id_estilo bigint [not null, ref: > estilos.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (id_cancion, id_estilo) [unique]
+    id_cancion
+    id_estilo
+  }
+}
+
+Table usuarios_estilos {
+  id bigint [primary key, increment]
+  id_usuario bigint [not null, ref: > usuarios.id]
+  id_estilo bigint [not null, ref: > estilos.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (id_usuario, id_estilo) [unique]
+    id_usuario
+    id_estilo
+  }
+}
+
+// ====== TABLAS PIVOTE - COLABORADORES ======
+
+Table cancion_colaboradores {
+  id bigint [primary key, increment]
+  id_cancion bigint [not null, ref: > canciones.id]
+  id_usuario bigint [not null, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (id_cancion, id_usuario) [unique]
+    id_cancion
+    id_usuario
+  }
+}
+
+Table coleccion_colaboradores {
+  id bigint [primary key, increment]
+  id_coleccion bigint [not null, ref: > colecciones.id]
+  id_usuario bigint [not null, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (id_coleccion, id_usuario) [unique]
+    id_coleccion
+    id_usuario
+  }
+}
+
+Table evento_colaboradores {
+  id bigint [primary key, increment]
+  id_evento bigint [not null, ref: > eventos.id]
+  id_usuario bigint [not null, ref: > usuarios.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (id_evento, id_usuario) [unique]
+    id_evento
+    id_usuario
+  }
+}
+
+Table eventos_estilos {
+  id bigint [primary key, increment]
+  id_evento bigint [not null, ref: > eventos.id]
+  id_estilo bigint [not null, ref: > estilos.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (id_evento, id_estilo) [unique]
+    id_evento
+    id_estilo
+  }
+}
+
+// ====== TABLAS PIVOTE - INTERACCIONES SOCIALES ======
+
+Table seguidores {
+  id_seguidor bigint [primary key, ref: > usuarios.id]
+  id_seguido bigint [primary key, ref: > usuarios.id]
+
+  created_at timestamp
+
+  note: 'Sin updated_at - solo registro de seguimiento'
+}
+
+Table likes {
+  id_usuario bigint [primary key, ref: > usuarios.id]
+  id_cancion bigint [primary key, ref: > canciones.id]
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table comentarios {
+  id bigint [primary key, increment]
+  texto text [not null]
+  segundo unsignedInteger [not null]
+
+  id_usuario bigint [not null, ref: > usuarios.id]
+  id_cancion bigint [not null, ref: > canciones.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    id_cancion
+    id_usuario
+    created_at
+  }
+}
+
+// ====== TABLAS PIVOTE - EQUIPAMIENTO ======
+
+Table usuarios_software {
+  id_usuario bigint [primary key, ref: > usuarios.id]
+  id_software bigint [primary key, ref: > software.id]
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table usuarios_hardware {
+  id_usuario bigint [primary key, ref: > usuarios.id]
+  id_hardware bigint [primary key, ref: > hardware.id]
+  cantidad unsignedInteger [default: 1]
+
+  created_at timestamp
+  updated_at timestamp
+
+  note: 'Cantidad permite múltiples unidades del mismo hardware'
+}
+
+Table usuarios_eventos {
+  id_usuario bigint [primary key, ref: > usuarios.id]
+  id_evento bigint [primary key, ref: > eventos.id]
+
+  created_at timestamp
+  updated_at timestamp
+
+  note: 'Participantes/asistentes a eventos'
+}
+
+// ================================================================================
+// NOTAS Y OBSERVACIONES
+// ================================================================================
+//
+// RELACIONES PRINCIPALES (1:N):
+// - usuarios → colecciones (un usuario tiene muchas colecciones)
+// - usuarios → playlists (un usuario tiene muchas playlists)
+// - usuarios → canciones (un usuario crea muchas canciones)
+// - usuarios → eventos (un usuario crea/organiza eventos)
+// - usuarios → galeria_usuario (un usuario tiene fotos en galería)
+// - usuarios → reproducciones (un usuario genera reproducciones)
+// - colecciones → canciones (una colección contiene muchas canciones)
+//
+// RELACIONES MUCHOS-A-MUCHOS (N:M):
+// - canciones ↔ playlists (vía cancion_playlist) - con orden personalizado
+// - usuarios ↔ estilos (vía usuarios_estilos) - géneros del usuario
+// - canciones ↔ estilos (vía canciones_estilos) - géneros de canción
+// - eventos ↔ estilos (vía eventos_estilos) - géneros del evento
+// - usuarios ↔ software (vía usuarios_software) - software que usa
+// - usuarios ↔ hardware (vía usuarios_hardware) - hardware que posee
+// - usuarios ↔ eventos (vía usuarios_eventos) - participación en eventos
+// - canciones ↔ usuarios (vía cancion_colaboradores) - colaboradores
+// - colecciones ↔ usuarios (vía coleccion_colaboradores) - colaboradores
+// - eventos ↔ usuarios (vía evento_colaboradores) - organizadores
+//
+// CARACTERÍSTICAS ESPECIALES:
+// - canciones.tonalidad es nullable (puede no especificarse)
+// - eventos.fecha_evento: cambió de YEAR a DATE (para mayor precisión)
+// - usuarios_hardware.cantidad: permite múltiples unidades
+// - seguidores.created_at: sin updated_at (immutable)
+// - comentarios.id: ID propio para permitir múltiples comentarios
+// - reproducciones.id_usuario: nullable (permite reproducciones anónimas)
+// - eventos.id_usuario: nullable con nullOnDelete (evento sin propietario)
+// - cascading deletes en todas las FK para integridad referencial
+//
+// TIMESTAMPS:
+// - La mayoría tiene created_at y updated_at
+// - seguidores solo tiene created_at (no se actualiza)
+// - reproducciones solo tiene created_at (evento inmutable)
+//
+// ================================================================================

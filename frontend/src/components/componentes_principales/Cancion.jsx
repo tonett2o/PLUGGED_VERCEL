@@ -1,3 +1,23 @@
+/**
+ * Cancion.jsx - Tarjeta de presentacion de una cancion
+ *
+ * Muestra la portada, titulo y artista de una cancion dentro de un carrusel
+ * o listado. Tiene dos zonas de interaccion claramente separadas:
+ *
+ *   - Zona de imagen: al hacer clic reproduce la cancion a traves del contexto.
+ *     Si no hay sesion, muestra un candado y deshabilita la reproduccion.
+ *   - Zona de texto (titulo): enlace a la pagina de detalle de la cancion.
+ *   - Zona de artista: enlace al perfil del usuario propietario.
+ *
+ * La tarjeta adopta la clase CSS "activa" cuando es la cancion en reproduccion,
+ * lo que permite destacarla visualmente en el carrusel.
+ *
+ * Si el avatar del artista falla al cargar, se muestra el icono FaUser como
+ * fallback para mantener la consistencia visual.
+ *
+ * Props:
+ *   datosCancion {object} - Objeto cancion con id, titulo, portada, usuario
+ */
 import React, { useContext } from "react";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { generarPortadaPlaceholder } from "../../utils/imagen.js";
@@ -10,12 +30,17 @@ const Cancion = (props) => {
     const { reproducirTrack, trackActual, isPlaying } = useContext(contextoMusica);
     const { id, titulo, portada, usuario } = props.datosCancion;
     const sesionIniciada = tieneSesion();
-    // Usar gradientes como colecciones en lugar de corchea
-    const imagenPorDefecto = generarPortadaPlaceholder(titulo || 'Canción');
 
+    // Imagen de fondo generada con el titulo cuando no hay portada
+    const imagenPorDefecto = generarPortadaPlaceholder(titulo || 'Cancion');
+
+    // Indica si esta cancion es la que esta sonando en este momento
     const esEsta = trackActual?.id === id;
 
-    // Esta función ahora solo se activa al hacer clic en la imagen
+    /**
+     * Inicia o pausa la reproduccion de esta cancion.
+     * Detiene la propagacion para que el clic no active el enlace de detalle.
+     */
     const manejarReproduccion = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -27,12 +52,12 @@ const Cancion = (props) => {
             className={`tarjeta-cancion ${esEsta ? 'activa' : ''}`}
             id={id ? id : crypto.randomUUID()}
         >
-            {/* ZONA DE REPRODUCCIÓN: Al hacer clic en la imagen, suena la música */}
+            {/* Zona de la imagen: clic reproduce (o muestra candado si no hay sesion) */}
             <div
                 className="contenedor-imagen"
                 onClick={sesionIniciada ? manejarReproduccion : undefined}
                 style={{ cursor: sesionIniciada ? 'pointer' : 'not-allowed' }}
-                title={sesionIniciada ? 'Click para reproducir' : 'Inicia sesión para reproducir'}
+                title={sesionIniciada ? 'Click para reproducir' : 'Inicia sesion para reproducir'}
             >
                 <img
                     src={portada}
@@ -40,7 +65,7 @@ const Cancion = (props) => {
                     onError={(e) => (e.target.src = imagenPorDefecto)}
                 />
 
-                {/* Indicador visual / Botón Play. Solo mostrar si hay sesión */}
+                {/* Indicador play/pausa visible al hacer hover cuando hay sesion */}
                 {sesionIniciada && (
                     <div className="indicador-reproduccion">
                         <span className="icon-play">
@@ -49,7 +74,7 @@ const Cancion = (props) => {
                     </div>
                 )}
 
-                {/* Icono de candado si no hay sesión */}
+                {/* Candado para usuarios no autenticados */}
                 {!sesionIniciada && (
                     <div className="indicador-reproduccion">
                         <FaLock className="icon-lock" />
@@ -58,17 +83,18 @@ const Cancion = (props) => {
             </div>
 
             <div className="cuerpo-tarjeta">
-                {/* ZONA DE NAVEGACIÓN: Al hacer clic en el título, vamos a detalles */}
+                {/* Titulo: enlace a la pagina de detalle */}
                 <div className='titulo-cancion'>
                     <Link
                         to={`/mostrar/cancion/${id}`}
                         className="enlace-titulo-cancion"
-                        onClick={(e) => e.stopPropagation()} // Evita cualquier conflicto de clics
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        {titulo ? titulo : 'Título no disponible'}
+                        {titulo ? titulo : 'Titulo no disponible'}
                     </Link>
                 </div>
-                {/* ZONA DEL DUEÑO: Avatar + Nombre */}
+
+                {/* Artista: avatar + nombre, enlace al perfil */}
                 <div className='seccion-usuario-cancion'>
                     <Link
                         to={`/mostrar/usuario/${usuario?.id}`}
@@ -82,6 +108,7 @@ const Cancion = (props) => {
                                         src={usuario.avatar}
                                         alt={usuario?.nombre || 'Usuario'}
                                         onError={(e) => {
+                                            // Si la imagen falla, ocultar y mostrar icono
                                             e.target.style.display = 'none';
                                             const parent = e.target.parentElement;
                                             const fallback = parent.querySelector('.avatar-placeholder');
@@ -93,6 +120,7 @@ const Cancion = (props) => {
                                     </div>
                                 </>
                             ) : (
+                                // Sin avatar: mostrar icono directamente
                                 <div className='avatar-placeholder'>
                                     <FaUser />
                                 </div>

@@ -1,3 +1,27 @@
+/**
+ * ProveedorMusica.jsx - Contexto global de musica y reproduccion
+ *
+ * Centraliza la gestion de canciones, colecciones y playlists, y el estado
+ * del reproductor. Es el contexto mas amplio de la aplicacion.
+ *
+ * Criterio de actualizacion tras POST/PUT:
+ *   Cuando se crea o edita un recurso, NO se inyecta la respuesta parcial
+ *   del endpoint en el contexto. En su lugar se recarga la lista completa
+ *   desde el backend, que incluye todas las relaciones (usuario, colaboradores, etc.).
+ *   Esto evita el bug de "Artista desconocido" que aparecia cuando los datos
+ *   parciales del PUT se renderizaban antes de que llegara la respuesta del show.
+ *
+ * Exporta:
+ *   trackActual, setTrackActual, isPlaying, setIsPlaying
+ *   reproducirTrack(track)           - Selecciona o pausa/reanuda una cancion
+ *   canciones, colecciones, playlists
+ *   iniciarCanciones/Colecciones/Playlists
+ *   refrescarPlaylistsYColecciones
+ *   buscarCancion(id), buscarPlaylist(id)
+ *   publicarCancion/Coleccion/Playlist
+ *   actualizarCancion/Coleccion/Playlist
+ *   limpiarMusica()                  - Detiene el reproductor al cerrar sesion
+ */
 import React, { createContext, useState, useEffect, useRef } from "react";
 import API_URL from "../config/api.js";
 

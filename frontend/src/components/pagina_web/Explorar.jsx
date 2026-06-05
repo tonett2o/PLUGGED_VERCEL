@@ -1,3 +1,25 @@
+/**
+ * Explorar.jsx - Pagina de descubrimiento y rankings
+ *
+ * Muestra los contenidos mas populares de la plataforma organizados
+ * en dos pestanas (tabs):
+ *
+ *   Musica:
+ *     - Top 5 artistas por numero de reproducciones
+ *     - Top 5 albums/colecciones por numero de reproducciones
+ *
+ *   Equipamiento:
+ *     - Top 5 software mas usado por los usuarios
+ *     - Top 5 hardware mas usado por los usuarios
+ *
+ * Los datos se cargan en paralelo con Promise.all al montar el componente.
+ * Cada item tiene su imagen con fallback a icono de FontAwesome si la
+ * imagen falla o no existe.
+ *
+ * La estadistica mostrada por item es:
+ *   - Para artistas y colecciones: total de reproducciones
+ *   - Para software y hardware: numero de usuarios que lo utilizan
+ */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaCompactDisc, FaLaptop, FaHeadphones } from 'react-icons/fa';
@@ -6,17 +28,26 @@ import { generarPortadaPlaceholder, resolverRutaArchivo } from '../../utils/imag
 import './Explorar.css';
 
 const Explorar = () => {
+    // Tab activa: 'musica' | 'equipamiento'
     const [activeTab, setActiveTab] = useState('musica');
+
+    // Datos de los rankings
     const [topUsuarios, setTopUsuarios] = useState([]);
     const [topColecciones, setTopColecciones] = useState([]);
     const [topSoftware, setTopSoftware] = useState([]);
     const [topHardware, setTopHardware] = useState([]);
+
     const [cargando, setCargando] = useState(true);
 
     useEffect(() => {
         cargarDatos();
     }, []);
 
+    /**
+     * Carga los cuatro rankings en paralelo desde el backend.
+     * Si algun endpoint falla, el array correspondiente queda vacio
+     * y el error se registra en consola sin romper los demas rankings.
+     */
     const cargarDatos = async () => {
         try {
             const [usuarios, colecciones, software, hardware] = await Promise.all([
@@ -46,13 +77,13 @@ const Explorar = () => {
             <div className="explorar-header">
                 <h1>Explorar</h1>
 
-                {/* TABS */}
+                {/* Selector de pestanas */}
                 <div className="explorar-tabs">
                     <button
                         className={`tab-button ${activeTab === 'musica' ? 'active' : ''}`}
                         onClick={() => setActiveTab('musica')}
                     >
-                        Música
+                        Musica
                     </button>
                     <button
                         className={`tab-button ${activeTab === 'equipamiento' ? 'active' : ''}`}
@@ -63,7 +94,7 @@ const Explorar = () => {
                 </div>
             </div>
 
-            {/* TAB MÚSICA */}
+            {/* Pestana Musica: artistas y albums */}
             {activeTab === 'musica' && (
                 <div className="tab-content">
                     <section className="explorar-section">
@@ -83,6 +114,7 @@ const Explorar = () => {
                                                     src={resolverRutaArchivo(usuario.avatar)}
                                                     alt={usuario.nick}
                                                     onError={(e) => {
+                                                        // Ocultar imagen rota y mostrar icono de fallback
                                                         e.target.style.display = 'none';
                                                         const fallback = e.target.parentElement.querySelector('.item-placeholder');
                                                         if (fallback) fallback.style.display = 'block';
@@ -98,6 +130,7 @@ const Explorar = () => {
                                         <h3>{usuario.nick}</h3>
                                         <p>{usuario.nombre}</p>
                                     </div>
+                                    {/* Total de reproducciones de todas sus canciones */}
                                     <div className="item-stat">{usuario.reproducciones_total?.toLocaleString() || 0}</div>
                                 </Link>
                             ))}
@@ -105,10 +138,11 @@ const Explorar = () => {
                     </section>
 
                     <section className="explorar-section">
-                        <h2 className="section-title">Álbumes Populares</h2>
+                        <h2 className="section-title">Albums Populares</h2>
                         <div className="explorar-list">
                             {topColecciones.slice(0, 5).map((coleccion, index) => {
-                                const gradientUrl = generarPortadaPlaceholder(coleccion.titulo || 'Colección');
+                                // Gradiente generado como fallback cuando no hay portada
+                                const gradientUrl = generarPortadaPlaceholder(coleccion.titulo || 'Coleccion');
                                 return (
                                     <Link
                                         key={coleccion.id}
@@ -129,6 +163,7 @@ const Explorar = () => {
                                                     }}
                                                 />
                                             ) : null}
+                                            {/* Fallback con gradiente generado desde el titulo */}
                                             <div
                                                 className="gradient-fallback"
                                                 style={{
@@ -155,7 +190,7 @@ const Explorar = () => {
                 </div>
             )}
 
-            {/* TAB EQUIPAMIENTO */}
+            {/* Pestana Equipamiento: software y hardware */}
             {activeTab === 'equipamiento' && (
                 <div className="tab-content">
                     <section className="explorar-section">
@@ -186,6 +221,7 @@ const Explorar = () => {
                                         <h3>{soft.nombre}</h3>
                                         <p>{soft.distribuidor || 'Software'}</p>
                                     </div>
+                                    {/* Numero de usuarios que utilizan este software */}
                                     <div className="item-stat">{soft.usuarios_count}</div>
                                 </Link>
                             ))}
@@ -220,6 +256,7 @@ const Explorar = () => {
                                         <h3>{hw.nombre}</h3>
                                         <p>{hw.marca || 'Hardware'}</p>
                                     </div>
+                                    {/* Numero de usuarios que tienen este hardware */}
                                     <div className="item-stat">{hw.usuarios_count}</div>
                                 </Link>
                             ))}

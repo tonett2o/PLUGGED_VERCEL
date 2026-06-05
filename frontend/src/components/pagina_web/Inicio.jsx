@@ -1,3 +1,23 @@
+/**
+ * Inicio.jsx - Pagina principal de la plataforma
+ *
+ * Muestra los contenidos mas relevantes de la plataforma organizados en
+ * carruseles horizontales y una seccion de busqueda por genero musical.
+ *
+ * Estructura de la pagina:
+ *   1. HeroEstadisticas - Banner superior con estadisticas globales de la plataforma
+ *   2. Carrusel "Novedades" - Canciones publicas ordenadas por fecha descendente
+ *   3. Carrusel "Albums y EPs" - Colecciones de tipo album/ep publicas
+ *   4. Carrusel "Playlists" - Playlists publicas (excluye las de "me gusta")
+ *   5. BuscadorGenero - Selector de genero musical con 46 opciones
+ *   6. Carrusel dinamico - Canciones del genero seleccionado (aparece solo si hay seleccion)
+ *
+ * La lista de canciones se obtiene directamente del backend al montar el componente
+ * y se actualiza cada 5 segundos via polling para captar nuevas subidas sin recargar.
+ * Ademas se sincroniza con el contexto global de musica cuando este cambia.
+ *
+ * Solo se muestran contenidos con privacidad = 'publica'.
+ */
 import React, { useState, useContext, useEffect } from "react";
 import API_URL from "../../config/api.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
@@ -12,10 +32,18 @@ import './Inicio.css';
 
 export const Inicio = () => {
     const { canciones: cancionesGlobales = [], colecciones = [], playlists = [] } = useContext(contextoMusica) || {};
+
+    // Genero musical seleccionado en el buscador
     const [busquedaGenero, setBusquedaGenero] = useState('');
+
+    // Lista de canciones local que puede ser mas fresca que el contexto
     const [canciones, setCanciones] = useState(cancionesGlobales);
 
-    // Refrescar canciones del backend cuando se carga la página
+    /**
+     * Al montar el componente, obtiene las canciones directamente del backend
+     * para tener los datos mas actualizados. Luego establece un polling de
+     * 5 segundos para captar nuevas canciones o cambios sin recargar la pagina.
+     */
     useEffect(() => {
         const refrescarCanciones = async () => {
             try {
@@ -23,49 +51,51 @@ export const Inicio = () => {
                 const data = await res.json();
                 setCanciones(data);
             } catch (e) {
+                // Si falla, mantener las del contexto global como fallback
                 setCanciones(cancionesGlobales);
             }
         };
         refrescarCanciones();
 
-        // 🔄 POLLING: Verificar nuevas canciones y reproducciones cada 5 segundos
         const intervaloPolling = setInterval(() => {
             refrescarCanciones();
-        }, 5000); // 5 segundos para captar cambios más rápido
+        }, 5000);
 
-        // Limpieza al desmontar
         return () => clearInterval(intervaloPolling);
     }, []);
 
-    // 🔄 SINCRONIZAR: Si el contexto global cambia, actualizar también
+    /**
+     * Si el contexto global de musica se actualiza (nueva cancion subida,
+     * edicion, etc.), sincronizar el estado local con esos datos.
+     */
     useEffect(() => {
         if (cancionesGlobales && cancionesGlobales.length > 0) {
             setCanciones(cancionesGlobales);
         }
     }, [cancionesGlobales]);
 
-    // Canciones nuevas ordenadas por fecha más reciente (solo públicas)
+    // Canciones publicas ordenadas de mas reciente a mas antigua (max 20)
     const cancionesNuevas = [...canciones]
         .filter(c => c.privacidad === 'publica' || !c.privacidad)
         .sort((a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion))
         .slice(0, 20);
 
-    // Álbumes nuevos (tipo album o ep, solo públicos)
+    // Colecciones de tipo album o ep, solo publicas
     const albumesNuevos = colecciones
         .filter(c => (c.privacidad === 'publica' || !c.privacidad) && c.tipo && ['album', 'ep'].includes(c.tipo.toLowerCase()))
         .slice(0, 15);
 
-    // Todas las colecciones públicas
+    // Todas las colecciones publicas sin filtrar por tipo
     const coleccionesPublicas = colecciones
         .filter(c => c.privacidad === 'publica' || !c.privacidad)
         .slice(0, 15);
 
-    // Género seleccionado basado en búsqueda
+    // Objeto del genero seleccionado (null si no hay seleccion activa)
     const generoSeleccionado = busquedaGenero.trim() === ''
         ? null
         : generos46.find(g => g.nombre.toLowerCase() === busquedaGenero.toLowerCase());
 
-    // Canciones del género seleccionado (solo públicas)
+    // Canciones publicas que pertenecen al genero seleccionado
     const cancionesDelGenero = generoSeleccionado
         ? canciones.filter(c =>
             (c.privacidad === 'publica' || !c.privacidad) &&
@@ -80,30 +110,30 @@ export const Inicio = () => {
 
     return (
         <div className="inicio-pagina">
-            {/* Hero Section + Estadísticas */}
+            {/* Bloque superior: estadisticas y hero */}
             <HeroEstadisticas />
 
-            {/* Carrusel: Novedades */}
+            {/* Novedades: canciones mas recientes */}
             <FilaCarrusel
                 titulo="Novedades"
-                subtitulo="Las canciones más recientes"
+                subtitulo="Las canciones mas recientes"
                 items={cancionesNuevas}
                 render={(cancion) => <Cancion datosCancion={cancion} />}
                 vacio="No hay canciones disponibles"
             />
 
-            {/* Carrusel: Álbumes y EPs */}
+            {/* Albums y EPs destacados */}
             {albumesNuevos.length > 0 && (
                 <FilaCarrusel
-                    titulo="Álbumes y EPs"
+                    titulo="Albums y EPs"
                     subtitulo="Nuevas colecciones destacadas"
                     items={albumesNuevos}
                     render={(coleccion) => <Coleccion datosColeccion={coleccion} />}
-                    vacio="No hay álbumes disponibles"
+                    vacio="No hay albums disponibles"
                 />
             )}
 
-            {/* Carrusel: Playlists (solo públicas) */}
+            {/* Playlists publicas (excluye las de "me gusta" que son privadas del sistema) */}
             {(() => {
                 const playlistsFiltradas = playlists
                     .filter(p => (p.privacidad === 'publica' || !p.privacidad) && p.titulo && !p.titulo.toLowerCase().includes('me gusta'))
@@ -119,18 +149,18 @@ export const Inicio = () => {
                 );
             })()}
 
-            {/* Sección de Búsqueda por Género */}
+            {/* Selector de genero musical */}
             <BuscadorGenero
                 seleccionado={busquedaGenero}
                 onSelect={setBusquedaGenero}
                 onClear={handleClearSearch}
             />
 
-            {/* Carrusel Dinámico: Canciones del Género Seleccionado */}
+            {/* Carrusel dinamico: solo visible cuando hay un genero seleccionado */}
             {generoSeleccionado && (
                 <FilaCarrusel
                     titulo={generoSeleccionado.nombre}
-                    subtitulo={`Canciones en el género ${generoSeleccionado.nombre}`}
+                    subtitulo={`Canciones en el genero ${generoSeleccionado.nombre}`}
                     items={cancionesDelGenero}
                     render={(cancion) => <Cancion datosCancion={cancion} />}
                     vacio={`No hay canciones disponibles en ${generoSeleccionado.nombre}`}

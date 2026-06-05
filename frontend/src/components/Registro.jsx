@@ -1,3 +1,24 @@
+/**
+ * Registro.jsx - Formulario de creacion de nueva cuenta
+ *
+ * Permite al usuario registrarse en la plataforma con:
+ *   - Nick (nombre de usuario unico)
+ *   - Nombre real o artistico
+ *   - Email
+ *   - Contrasena y confirmacion
+ *   - Tipo de cuenta (usuario, DJ o productor)
+ *   - Ubicacion mediante mapa interactivo (opcional)
+ *
+ * Al enviar, si el registro es exitoso:
+ *   - Inicia sesion automaticamente con el token devuelto
+ *   - Muestra notificacion de bienvenida
+ *   - Redirige al inicio tras 1.5 segundos
+ *
+ * Si el backend devuelve errores de validacion (campo por campo),
+ * se muestran bajo cada input y desaparecen al escribir de nuevo.
+ *
+ * El backend realiza validacion realista de email (comprueba DNS).
+ */
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API_URL from '../config/api.js';
@@ -6,16 +27,6 @@ import { contextoNotificaciones } from '../contexts/ProveedorNotificaciones.jsx'
 import MapaUbicacion from './MapaUbicacion.jsx';
 import './Registro.css';
 
-/**
- * Registro - Componente para crear nueva cuenta de usuario
- *
- * Features:
- * - Validación backend con errores por campo
- * - Muestra errores con badges rojos inline
- * - Limpia errores automáticamente al escribir
- * - Si validación falla, NO se crea en BD
- * - Validación realista de email (con DNS check en backend)
- */
 const Registro = () => {
     const navigate = useNavigate();
     const notificaciones = useContext(contextoNotificaciones);
@@ -33,12 +44,14 @@ const Registro = () => {
         longitud: ''
     });
 
-    // Estado para errores de validación
+    // Mapa de errores por campo: { nick: ['ya esta en uso'], email: [...] }
     const [errores, setErrores] = useState({});
 
     /**
-     * Renderiza mensaje de error para un campo específico
-     * Muestra el primer error del array de errores en rojo
+     * Renderiza el primer mensaje de error de un campo si existe.
+     *
+     * @param {string} fieldName - Nombre del campo
+     * @returns {JSX.Element|null} Span con el error o null
      */
     const renderErrorMessage = (fieldName) => {
         if (!errores[fieldName]?.length) return null;
@@ -56,14 +69,12 @@ const Registro = () => {
     };
 
     /**
-     * Maneja cambios en inputs
-     * Limpia el error del campo al escribir
+     * Actualiza el valor del campo y borra su error anterior.
      */
     const handleTexto = (e) => {
         const { name, value } = e.target;
         setFormulario({ ...formulario, [name]: value });
 
-        // Limpiar error del campo
         if (errores[name]) {
             const newErrores = { ...errores };
             delete newErrores[name];
@@ -72,13 +83,12 @@ const Registro = () => {
     };
 
     /**
-     * Maneja cambios en selects
+     * Actualiza el valor de un select y borra su error anterior.
      */
     const handleSelect = (e) => {
         const { name, value } = e.target;
         setFormulario({ ...formulario, [name]: value });
 
-        // Limpiar error del campo
         if (errores[name]) {
             const newErrores = { ...errores };
             delete newErrores[name];
@@ -87,7 +97,12 @@ const Registro = () => {
     };
 
     /**
-     * Maneja cambios de ubicación desde el mapa
+     * Recibe las coordenadas y texto de ubicacion desde el componente de mapa.
+     * Actualiza latitud, longitud y ubicacion en el formulario.
+     *
+     * @param {number} lat             - Latitud seleccionada en el mapa
+     * @param {number} lng             - Longitud seleccionada en el mapa
+     * @param {string} ubicacionTexto  - Direccion o nombre del lugar
      */
     const handleUbicacionChange = (lat, lng, ubicacionTexto) => {
         setFormulario(prev => ({
@@ -96,7 +111,6 @@ const Registro = () => {
             longitud: lng.toString(),
             ubicacion: ubicacionTexto || prev.ubicacion
         }));
-        // Limpiar error de ubicación
         if (errores.ubicacion) {
             const newErrores = { ...errores };
             delete newErrores.ubicacion;
@@ -105,13 +119,15 @@ const Registro = () => {
     };
 
     /**
-     * Envía el formulario
-     * Valida en backend, muestra errores si hay, o procesa éxito
+     * Envia el formulario al backend como FormData.
+     * Solo incluye los campos con valor para no mandar campos vacios.
+     *
+     * Si el backend responde con exito -> inicio de sesion automatico y redireccion.
+     * Si hay errores de validacion -> se distribuyen por campo.
+     * Si hay error generico -> notificacion de error global.
      */
     const enviarFormulario = async (e) => {
         e.preventDefault();
-
-        // Limpiar errores previos
         setErrores({});
 
         try {
@@ -124,26 +140,24 @@ const Registro = () => {
 
             const response = await fetch(`${API_URL}/api/register`, {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json'
-                },
+                headers: { 'Accept': 'application/json' },
                 body: formData
             });
 
             const respuesta = await response.json();
 
             if (response.ok && !respuesta.error) {
-                // Éxito - Conectar automáticamente
+                // Registro exitoso: iniciar sesion y redirigir
                 const datosUsuario = {
                     access_token: respuesta.access_token,
                     user: respuesta.user || respuesta.usuario
                 };
                 conectar(datosUsuario);
-                notificaciones.exito("¡Bienvenido! Cuenta creada correctamente.");
+                notificaciones.exito("Bienvenido! Cuenta creada correctamente.");
                 setTimeout(() => navigate('/'), 1500);
             } else {
-                // Error: mostrar errores por campo
                 if (respuesta?.detalles) {
+                    // Errores por campo: mostrar bajo cada input
                     setErrores(respuesta.detalles);
                     window.scrollTo(0, 0);
                 } else {
@@ -151,8 +165,8 @@ const Registro = () => {
                 }
             }
         } catch (error) {
-            console.error('Error de conexión:', error);
-            notificaciones.error("Error de conexión");
+            console.error('Error de conexion:', error);
+            notificaciones.error("Error de conexion");
         }
     };
 
@@ -162,7 +176,7 @@ const Registro = () => {
                 <form className="sc-form" onSubmit={enviarFormulario}>
                     <h2>Crear Cuenta</h2>
 
-                    {/* FILA 1: Nick | Email */}
+                    {/* Fila 1: Nick y Email */}
                     <div className="form-row">
                         <div>
                             <label>Nick (Usuario)</label>
@@ -191,10 +205,10 @@ const Registro = () => {
                         </div>
                     </div>
 
-                    {/* FILA 2: Nombre | Rol */}
+                    {/* Fila 2: Nombre y Tipo de cuenta */}
                     <div className="form-row">
                         <div>
-                            <label>Nombre Real / Artístico</label>
+                            <label>Nombre Real / Artistico</label>
                             <input
                                 type="text"
                                 name="nombre"
@@ -222,36 +236,36 @@ const Registro = () => {
                         </div>
                     </div>
 
-                    {/* FILA 3: Contraseña | Confirmación */}
+                    {/* Fila 3: Contrasena y confirmacion */}
                     <div className="form-row">
                         <div>
-                            <label>Contraseña</label>
+                            <label>Contrasena</label>
                             <input
                                 type="password"
                                 name="password"
                                 value={formulario.password}
                                 onChange={handleTexto}
-                                placeholder="Mín. 8 caracteres"
+                                placeholder="Min. 8 caracteres"
                                 style={{ borderColor: errores.password ? '#ff4444' : undefined }}
                             />
                             {renderErrorMessage('password')}
                         </div>
 
                         <div>
-                            <label>Confirmar Contraseña</label>
+                            <label>Confirmar Contrasena</label>
                             <input
                                 type="password"
                                 name="password_confirmation"
                                 value={formulario.password_confirmation}
                                 onChange={handleTexto}
-                                placeholder="Repite tu contraseña"
+                                placeholder="Repite tu contrasena"
                                 style={{ borderColor: errores.password_confirmation ? '#ff4444' : undefined }}
                             />
                             {renderErrorMessage('password_confirmation')}
                         </div>
                     </div>
 
-                    {/* MAPA INTERACTIVO PARA UBICACIÓN */}
+                    {/* Mapa interactivo para seleccionar la ubicacion */}
                     <MapaUbicacion
                         latitud={formulario.latitud}
                         longitud={formulario.longitud}
@@ -259,15 +273,14 @@ const Registro = () => {
                         onUbicacionChange={handleUbicacionChange}
                     />
 
-                    {/* BOTÓN */}
                     <button type="submit" className="sc-btn-upload">
                         Crear Cuenta
                     </button>
 
                     <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.9rem', color: '#999' }}>
-                        ¿Ya tienes cuenta?{' '}
+                        Ya tienes cuenta?{' '}
                         <a href="/iniciar-sesion" style={{ color: '#0abcd4', textDecoration: 'none' }}>
-                            Inicia sesión aquí
+                            Inicia sesion aqui
                         </a>
                     </p>
                 </form>

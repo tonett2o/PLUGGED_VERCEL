@@ -1,8 +1,25 @@
+/**
+ * ProveedorEvento.jsx - Contexto global de eventos musicales
+ *
+ * Gestiona la lista de eventos de la plataforma y expone metodos para
+ * crearlos, editarlos y eliminarlos. Tras cada operacion de escritura,
+ * recarga la lista completa desde el backend en lugar de inyectar la
+ * respuesta parcial del PUT/POST, para garantizar que los colaboradores
+ * y relaciones siempre esten presentes en los datos del contexto.
+ *
+ * Exporta:
+ *   listaEventos           - Array de todos los eventos
+ *   loadingEventos         - true mientras se estan cargando los eventos
+ *   cargarTodosLosEventos  - Recarga la lista desde el backend
+ *   guardarNuevoEvento     - Crea un evento y recarga la lista
+ *   actualizarEvento       - Edita un evento y recarga la lista
+ *   eliminarEvento         - Elimina un evento y recarga la lista
+ */
 import React, { createContext, useState, useEffect } from "react";
 
 import useApiGetAll_Eventos from "../hooks/Evento/useApiGetAll.js";
 import useApiPost_Evento from "../hooks/Evento/useApiPost.js";
-// 🚨 1. IMPORTAMOS EL NUEVO HOOK DE EDICIÓN
+// Hook de edicion de eventos
 import useApiPut_Evento from "../hooks/Evento/useApiPut.js";
 import useApiDelete_Evento from "../hooks/Evento/useApiDelete.js";
 

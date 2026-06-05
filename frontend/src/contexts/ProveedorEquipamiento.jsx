@@ -1,7 +1,29 @@
+/**
+ * ProveedorEquipamiento.jsx - Contexto global de hardware y software
+ *
+ * Gestiona dos tipos de datos:
+ *   1. Catalogos globales: listas completas de todo el hardware y software
+ *      disponibles en la plataforma (para los modales de seleccion).
+ *   2. Equipamiento del usuario: los items que tiene asociados el usuario
+ *      cuyo perfil se esta visualizando en ese momento.
+ *
+ * La separacion entre catalogo y setup de usuario permite que:
+ *   - El catalogo se cargue una sola vez al montar el proveedor.
+ *   - El equipamiento por usuario se cargue bajo demanda desde DetallesUsuario.
+ *
+ * Exporta a traves del contexto:
+ *   catalogoHardware           - Array de todo el hardware registrado
+ *   catalogoSoftware           - Array de todo el software registrado
+ *   misHardwares               - Hardware del usuario actualmente visualizado
+ *   misSoftwares               - Software del usuario actualmente visualizado
+ *   loadingGear                - Indica que se esta cargando el equipamiento
+ *   cargarEquipamientoUsuario(id) - Carga el setup de un usuario concreto
+ *   guardarEquipamiento(...)   - Sincroniza el setup completo con el backend
+ *   eliminarEquipamientoPorId  - Desvincula un item del usuario en tiempo real
+ */
 import React, { createContext, useState, useEffect } from "react";
 import API_URL from '../config/api.js';
 
-// Hooks de Carga y Borrado Atómico (Estos sí acoplan perfectamente con tu patrón)
 import useApiGetAll_Hardware from "../hooks/Hardware/useApiGetAll.js";
 import useApiGet_Hardware from "../hooks/Hardware/useApiGet.js";
 import useApiGetMy_Hardware from "../hooks/Hardware/useApiGetMy.js";
@@ -15,14 +37,17 @@ import useApiDelete_Software from "../hooks/Software/useApiDelete.js";
 const contextoEquipamiento = createContext();
 
 const ProveedorEquipamiento = (props) => {
-    // --- ESTADOS GLOBALES DE EQUIPAMIENTO ---
     const [catalogoHardware, setCatalogoHardware] = useState([]);
     const [catalogoSoftware, setCatalogoSoftware] = useState([]);
+    // Setup del usuario visualizado actualmente
     const [misHardwares, setMisHardwares] = useState([]);
     const [misSoftwares, setMisSoftwares] = useState([]);
     const [loadingGear, setLoadingGear] = useState(false);
 
-    // --- MÉTODOS: CARGA DE CATÁLOGOS GLOBALES (GET ALL) ---
+    /**
+     * Carga los catalogos completos de hardware y software.
+     * Se ejecuta una sola vez al montar el proveedor.
+     */
     const iniciarCatalogosGlobales = async () => {
         try {
             const datosH = await useApiGetAll_Hardware();
@@ -31,17 +56,21 @@ const ProveedorEquipamiento = (props) => {
             const datosS = await useApiGetAll_Software();
             if (datosS) setCatalogoSoftware([...datosS]);
         } catch (error) {
-            console.error("Error al iniciar catálogos globales:", error);
+            console.error("Error al iniciar catalogos globales:", error);
         }
     };
 
-    // --- MÉTODOS: CARGA DEL SETUP DEL USUARIO PERFIL (GET) ---
+    /**
+     * Carga el equipamiento de un usuario especifico por su ID.
+     * Se llama desde DetallesUsuario cuando se visualiza un perfil.
+     *
+     * @param {number} usuarioId - ID del usuario cuyo setup se quiere cargar
+     */
     const cargarEquipamientoUsuario = async (usuarioId) => {
         if (!usuarioId) return;
 
         setLoadingGear(true);
         try {
-            // Consumimos hooks que traen el equipamiento del usuario especificado por ID
             const respuestaHW = await useApiGetMy_Hardware(usuarioId);
             const respuestaSW = await useApiGetMy_Software(usuarioId);
 
@@ -54,18 +83,22 @@ const ProveedorEquipamiento = (props) => {
         }
     };
 
-    // ==========================================
-    // 🛠️ FUNCIÓN: Guardar Setup - Recibe lista COMPLETA del modal y guarda tal cual
-    // ==========================================
+    /**
+     * Sincroniza el equipamiento completo del usuario con el backend.
+     * Recibe la lista definitiva de IDs que el usuario quiere tener asociados
+     * (ya incluye los existentes mas los nuevos que haya agregado en el modal).
+     * El backend reemplaza la asociacion completa, no hace merge parcial.
+     *
+     * @param {number[]} hardwareIdsDelModal  - IDs de hardware seleccionados
+     * @param {number[]} softwareIdsDelModal  - IDs de software seleccionados
+     * @param {object}   hardware_cantidades  - Mapa id -> cantidad para hardware
+     * @returns {object} Resultado con { error, mensaje }
+     */
     const guardarEquipamiento = async (hardwareIdsDelModal, softwareIdsDelModal, hardware_cantidades = {}) => {
         const token = localStorage.getItem('token');
-        if (!token) return { error: true, message: "No estás autenticado" };
+        if (!token) return { error: true, message: "No estas autenticado" };
 
         try {
-            // 🎯 SIMPLE: Los IDs que vienen del modal son TODOS los que el usuario quiere tener
-            // (ya contienen los viejos + los nuevos que agregó)
-            // NO necesitamos hacer merge aquí, el modal ya tiene la lista completa
-
             const peticion = await fetch(`${API_URL}/api/usuarios/equipamiento`, {
                 method: "POST",
                 headers: {
@@ -83,7 +116,7 @@ const ProveedorEquipamiento = (props) => {
             const datos = await peticion.json();
 
             if (peticion.ok && !datos.error) {
-                // Actualizamos los estados globales con la respuesta fresca de Laravel
+                // Actualizar el estado local con la respuesta fresca del servidor
                 setMisHardwares(datos.hardwares || []);
                 setMisSoftwares(datos.softwares || []);
 
@@ -98,10 +131,18 @@ const ProveedorEquipamiento = (props) => {
         }
     };
 
-    // --- MÉTODOS: ELIMINACIÓN ATÓMICA EN HOVER (DELETE) ---
+    /**
+     * Desvincula un item de equipamiento del usuario autenticado.
+     * Actualiza el estado local de forma optimista eliminando el item
+     * una vez que el backend confirma el borrado.
+     *
+     * @param {'hardware'|'software'} tipo - Tipo de equipamiento a eliminar
+     * @param {number} idElemento          - ID del item a desvincular
+     * @returns {object} Resultado con { error }
+     */
     const eliminarEquipamientoPorId = async (tipo, idElemento) => {
         const token = localStorage.getItem('token');
-        if (!token) return { error: true, message: "No estás autenticado" };
+        if (!token) return { error: true, message: "No estas autenticado" };
 
         try {
             if (tipo === 'hardware') {
@@ -124,13 +165,12 @@ const ProveedorEquipamiento = (props) => {
         }
     };
 
-    // --- DISPARADOR DE CARGA INICIAL ---
+    // Carga los catalogos globales al montar el proveedor.
+    // cargarEquipamientoUsuario se llama desde DetallesUsuario cuando tiene el ID.
     useEffect(() => {
         iniciarCatalogosGlobales();
-        // cargarEquipamientoUsuario se llamará desde DetallesUsuario cuando tenga el ID del usuario
     }, []);
 
-    // --- EXPORTACIÓN SIMÉTRICA DEL CONTEXTO ---
     const exportacion = {
         catalogoHardware,
         catalogoSoftware,
