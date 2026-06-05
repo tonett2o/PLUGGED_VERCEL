@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import API_URL from '../../config/api.js';
@@ -17,6 +18,7 @@ const obtenerImagen = (ruta) => {
 const DetallesEvento = ({ eventoBuscado }) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
+    const [avataresFallidos, setAvataresFallidos] = useState({});
 
     const {
         id,
@@ -190,22 +192,28 @@ const DetallesEvento = ({ eventoBuscado }) => {
                         </div>
                     )}
 
-                    {/* Colaboradores */}
+                    {/* Colaboradores (estilo badge, igual que en detalles de canción) */}
                     {colaboradores && colaboradores.length > 0 && (
-                        <div className="evento-colaboradores">
+                        <div className="colaboradores-section">
                             <h3>Colaboradores</h3>
-                            <div className="colaboradores-grid">
+                            <div className="colaboradores-lista">
                                 {colaboradores.map((colab) => (
-                                    <Link key={colab.id} to={`/mostrar/usuario/${colab.id}`} className="colab-card">
-                                        <img
-                                            src={obtenerImagen(colab.avatar) || 'https://via.placeholder.com/60'}
-                                            alt={colab.nick}
-                                            className="colab-avatar"
-                                        />
-                                        <div className="colab-info">
-                                            <h4>{colab.nick || colab.nombre}</h4>
+                                    <Link key={colab.id} to={`/mostrar/usuario/${colab.id}`} className="colaborador-item">
+                                        <div className="colaborador-avatar-container">
+                                            {!avataresFallidos[colab.id] && colab.avatar ? (
+                                                <img
+                                                    src={obtenerImagen(colab.avatar)}
+                                                    alt={colab.nick}
+                                                    className="colaborador-avatar"
+                                                    onError={() => setAvataresFallidos(prev => ({ ...prev, [colab.id]: true }))}
+                                                />
+                                            ) : (
+                                                <FaUser className="colaborador-avatar-icon" />
+                                            )}
                                         </div>
-                                        <span className="colab-link">→</span>
+                                        <div className="colaborador-info">
+                                            <span className="colaborador-nombre">{colab.nick || colab.nombre}</span>
+                                        </div>
                                     </Link>
                                 ))}
                             </div>
