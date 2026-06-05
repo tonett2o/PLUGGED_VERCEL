@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaUser, FaTimes } from "react-icons/fa";
 import API_URL from "../../config/api.js";
 import useApiPut from "../../hooks/Cancion/useApiPut.js";
+import { tieneSesion } from "../../utils/sesion.js";
 // 1. Conectamos con el grifo global de la música
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoNotificaciones } from "../../contexts/ProveedorNotificaciones.jsx";
@@ -175,9 +176,11 @@ const DetallesColeccion = ({ coleccionBuscada }) => {
                                     
                                     <div className="sc-row-action">
                                         {/* 🛠️ CONECTADO AL REPRODUCTOR GLOBAL */}
-                                        <button 
-                                            className="sc-row-play-btn" 
-                                            onClick={() => reproducirTrack(track)}
+                                        <button
+                                            className={`sc-row-play-btn ${!tieneSesion() ? 'disabled' : ''}`}
+                                            onClick={() => tieneSesion() && reproducirTrack(track)}
+                                            disabled={!tieneSesion()}
+                                            title={tieneSesion() ? 'Reproducir' : 'Inicia sesión para reproducir'}
                                         >
                                             {estaReproduciendo ? '⏸' : '▶'}
                                         </button>

@@ -291,6 +291,21 @@
     color: #000;
 }
 
+.sc-row-play-btn.disabled,
+.sc-row-play-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #666;
+    border-color: #666;
+}
+
+.sc-row-play-btn.disabled:hover,
+.sc-row-play-btn:disabled:hover {
+    background-color: transparent;
+    border-color: #666;
+    color: #666;
+}
+
 .sc-track-row.sc-active-track .sc-row-play-btn {
     background-color: var(--sc-accent-neon);
     border-color: var(--sc-accent-neon);

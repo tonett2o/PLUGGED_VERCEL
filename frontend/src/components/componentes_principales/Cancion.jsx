@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { generarPortadaPlaceholder } from "../../utils/imagen.js";
+import { tieneSesion } from "../../utils/sesion.js";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import "./Cancion.css";
@@ -8,6 +9,7 @@ import "./Cancion.css";
 const Cancion = (props) => {
     const { reproducirTrack, trackActual, isPlaying } = useContext(contextoMusica);
     const { id, titulo, portada, usuario } = props.datosCancion;
+    const sesionIniciada = tieneSesion();
     // Usar gradientes como colecciones en lugar de corchea
     const imagenPorDefecto = generarPortadaPlaceholder(titulo || 'Canción');
 
@@ -26,19 +28,33 @@ const Cancion = (props) => {
             id={id ? id : crypto.randomUUID()}
         >
             {/* ZONA DE REPRODUCCIÓN: Al hacer clic en la imagen, suena la música */}
-            <div className="contenedor-imagen" onClick={manejarReproduccion} style={{ cursor: 'pointer' }}>
+            <div
+                className="contenedor-imagen"
+                onClick={sesionIniciada ? manejarReproduccion : undefined}
+                style={{ cursor: sesionIniciada ? 'pointer' : 'not-allowed' }}
+                title={sesionIniciada ? 'Click para reproducir' : 'Inicia sesión para reproducir'}
+            >
                 <img
                     src={portada}
                     alt="Imagen Cancion"
                     onError={(e) => (e.target.src = imagenPorDefecto)}
                 />
 
-                {/* Indicador visual / Botón Play. Ahora siempre mostramos Play o Pausa según el estado */}
-                <div className="indicador-reproduccion">
-                    <span className="icon-play">
-                        {esEsta && isPlaying ? '⏸' : '▶'}
-                    </span>
-                </div>
+                {/* Indicador visual / Botón Play. Solo mostrar si hay sesión */}
+                {sesionIniciada && (
+                    <div className="indicador-reproduccion">
+                        <span className="icon-play">
+                            {esEsta && isPlaying ? '⏸' : '▶'}
+                        </span>
+                    </div>
+                )}
+
+                {/* Icono de candado si no hay sesión */}
+                {!sesionIniciada && (
+                    <div className="indicador-reproduccion">
+                        <span className="icon-play">🔒</span>
+                    </div>
+                )}
             </div>
 
             <div className="cuerpo-tarjeta">

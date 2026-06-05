@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import API_URL from '../../config/api.js';
 import { contextoMusica } from '../../contexts/ProveedorMusica.jsx';
+import { tieneSesion } from '../../utils/sesion.js';
 import './ReproductorDetalles.css';
 
 const URL_STORAGE = `${API_URL}/storage/`;
@@ -193,6 +195,28 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
     };
 
     if (!cancion) return null;
+
+    const sesionIniciada = tieneSesion();
+
+    // Si no hay sesión, mostrar mensaje
+    if (!sesionIniciada) {
+        return (
+            <div className="reproductor-sin-sesion">
+                <div className="mensaje-sesion">
+                    <p className="icono-candado">🔒</p>
+                    <p className="texto-principal">Inicia sesión para escuchar</p>
+                    <p className="texto-secundario">Necesitas una cuenta para reproducir música</p>
+                    <Link to="/registro" className="btn-iniciar-sesion">
+                        Crear cuenta
+                    </Link>
+                    <Link to="/login" className="btn-login-sesion">
+                        Iniciar sesión
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
     if (error) return <div className="reproductor-error">{error}</div>;
 
     return (

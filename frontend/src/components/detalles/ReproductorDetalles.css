@@ -389,3 +389,94 @@
         height: 18px;
     }
 }
+
+/* ============================================
+   MENSAJE DE SESIÓN REQUERIDA
+   ============================================ */
+
+.reproductor-sin-sesion {
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(10, 218, 245, 0.08), rgba(10, 218, 245, 0.02));
+    border-radius: 12px;
+    border: 1px solid rgba(10, 218, 245, 0.15);
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.mensaje-sesion {
+    text-align: center;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.mensaje-sesion .icono-candado {
+    font-size: 48px;
+    margin: 0;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.mensaje-sesion .texto-principal {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.mensaje-sesion .texto-secundario {
+    font-size: 0.95rem;
+    color: #b3b3b3;
+    margin: 0;
+}
+
+.btn-iniciar-sesion,
+.btn-login-sesion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.btn-iniciar-sesion {
+    background: linear-gradient(135deg, #0ADAF5, #00FFD9);
+    color: #000;
+    margin-top: 8px;
+}
+
+.btn-iniciar-sesion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(10, 218, 245, 0.4);
+}
+
+.btn-login-sesion {
+    background: transparent;
+    color: #0ADAF5;
+    border: 2px solid rgba(10, 218, 245, 0.3);
+}
+
+.btn-login-sesion:hover {
+    border-color: #0ADAF5;
+    background: rgba(10, 218, 245, 0.1);
+}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaPlay, FaPause, FaTimes } from "react-icons/fa";
 import API_URL from "../../config/api.js";
 import useApiPut from "../../hooks/Cancion/useApiPut.js";
+import { tieneSesion } from "../../utils/sesion.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoNotificaciones } from "../../contexts/ProveedorNotificaciones.jsx";
 import { useAuth } from "../../contexts/ProveedorAuth.jsx";
@@ -151,9 +152,11 @@ const DetallesPlaylist = ({ playlistBuscada }) => {
                                     
                                     <div className="sc-row-action">
                                         {/* Conectado al reproductor global con tus botones impositivos */}
-                                        <button 
-                                            className="sc-row-play-btn" 
-                                            onClick={() => reproducirTrack(track)}
+                                        <button
+                                            className={`sc-row-play-btn ${!tieneSesion() ? 'disabled' : ''}`}
+                                            onClick={() => tieneSesion() && reproducirTrack(track)}
+                                            disabled={!tieneSesion()}
+                                            title={tieneSesion() ? 'Reproducir' : 'Inicia sesión para reproducir'}
                                         >
                                             {estaReproduciendo ? '⏸' : '▶'}
                                         </button>

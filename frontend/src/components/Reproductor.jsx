@@ -100,16 +100,17 @@ const Reproductor = () => {
         const handleTimeUpdate = () => {
             setCurrentTime(audio.currentTime);
 
-            // Contar reproducción a los 30 segundos
-            if (trackActual && audio.currentTime >= 30 && !reproduccionesContadas.current.has(trackActual.id)) {
+            // Contar reproducción a los 30 segundos (solo si hay sesión)
+            const token = localStorage.getItem('token');
+            if (trackActual && audio.currentTime >= 30 && !reproduccionesContadas.current.has(trackActual.id) && token) {
                 reproduccionesContadas.current.add(trackActual.id);
                 console.log('📊 Reproducción contada:', trackActual.titulo);
 
-                fetch(`http://localhost:8000/api/canciones/${trackActual.id}/reproducir`, {
+                fetch(`${API_URL}/api/canciones/${trackActual.id}/reproducir`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${token}`
                     }
                 }).catch(e => console.error('❌ Error registrando reproducción:', e));
             }
