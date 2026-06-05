@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Playlist;
 use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Faker\Generator;
 
 /**
  * PlaylistFactory - Factory para generar datos de prueba de playlists
@@ -56,13 +57,14 @@ class PlaylistFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = resolve(Generator::class);
         return [
-            'titulo' => $this->faker->words(3, true),
-            'artista' => $this->faker->name(),
-            'portada' => $this->faker->imageUrl(500, 500, 'playlist'),
-            'descripcion' => $this->faker->sentence(),
-            'privacidad' => $this->faker->randomElement(['publica', 'privada']),
-            'fecha_publicacion' => $this->faker->year(),
+            'titulo' => $faker->words(3, true),
+            'artista' => $faker->name(),
+            'portada' => $faker->imageUrl(500, 500, 'playlist'),
+            'descripcion' => $faker->sentence(),
+            'privacidad' => $faker->randomElement(['publica', 'privada']),
+            'fecha_publicacion' => $faker->year(),
             'id_usuario' => Usuario::factory(),
         ];
     }

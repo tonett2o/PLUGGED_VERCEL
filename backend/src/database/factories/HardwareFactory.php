@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Hardware;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Faker\Generator;
 
 /**
  * HardwareFactory - Factory para generar datos de prueba de hardware
@@ -31,11 +32,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  * @extends Factory<Hardware>
  */
 class HardwareFactory extends Factory
+{
     /**
      * El nombre del modelo que corresponde a esta factory.
      */
     protected $model = Hardware::class;
-{
     /**
      * Define el estado predeterminado del modelo Hardware.
      *
@@ -53,12 +54,13 @@ class HardwareFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = resolve(Generator::class);
         return [
-            'nombre' => $this->faker->unique()->word() . ' ' . $this->faker->numerify('MK#'),
-            'marca' => $this->faker->company(),
-            'precio' => $this->faker->randomFloat(2, 50, 2000),
-            'imagen' => $this->faker->imageUrl(400, 400, 'device'),
-            'descripcion' => $this->faker->paragraph(1),
+            'nombre' => $faker->unique()->word() . ' ' . $faker->numerify('MK#'),
+            'marca' => $faker->company(),
+            'precio' => $faker->randomFloat(2, 50, 2000),
+            'imagen' => $faker->imageUrl(400, 400, 'device'),
+            'descripcion' => $faker->paragraph(1),
         ];
     }
 }
