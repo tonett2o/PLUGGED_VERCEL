@@ -92,10 +92,17 @@ const ProveedorMusica = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Canción actualizada con éxito");
-                // 🔄 Refrescar canciones, colecciones Y playlists para mantener datos sincronizados
-                await iniciarCanciones();
-                await iniciarColecciones();
-                await iniciarPlaylists();
+                // 🔄 Actualizar la canción en la lista local si viene en la respuesta
+                if (respuesta.id) {
+                    setCanciones(prevCanciones =>
+                        prevCanciones.map(c => c.id === idCancion ? respuesta : c)
+                    );
+                } else {
+                    // Si no viene en respuesta, recargar todo
+                    await iniciarCanciones();
+                    await iniciarColecciones();
+                    await iniciarPlaylists();
+                }
             }
 
             return respuesta;
@@ -146,7 +153,15 @@ const ProveedorMusica = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Playlist actualizada con éxito");
-                await iniciarPlaylists(); 
+                // 🔄 Actualizar la playlist en la lista local si viene en la respuesta
+                if (respuesta.id) {
+                    setPlaylists(prevPlaylists =>
+                        prevPlaylists.map(p => p.id === idPlaylist ? respuesta : p)
+                    );
+                } else {
+                    // Si no viene en respuesta, recargar
+                    await iniciarPlaylists();
+                }
             }
 
             return respuesta;
@@ -198,7 +213,15 @@ const ProveedorMusica = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Colección actualizada en el estado global a través del hook");
-                await iniciarColecciones(); 
+                // 🔄 Actualizar la colección en la lista local si viene en la respuesta
+                if (respuesta.id) {
+                    setColecciones(prevColecciones =>
+                        prevColecciones.map(col => col.id === idColeccion ? respuesta : col)
+                    );
+                } else {
+                    // Si no viene en respuesta, recargar
+                    await iniciarColecciones();
+                }
             }
 
             return respuesta;

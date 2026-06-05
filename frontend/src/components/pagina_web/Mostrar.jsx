@@ -46,11 +46,15 @@ const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, 
     useEffect(() => {
         // Cargar del backend si:
         // 1. No hay dato en contexto, O
-        // 2. Hay dato pero no tiene sus relaciones cargadas (ej: playlist sin canciones)
+        // 2. Hay dato pero no tiene sus relaciones cargadas (canciones, colaboradores, etc.)
         const necesitaCargar = !dato || (
-            tipo === 'playlist' && (!dato.canciones || dato.canciones.length === 0 && !Array.isArray(dato.canciones))
+            tipo === 'cancion' && (!dato.colaboradores || !Array.isArray(dato.colaboradores))
         ) || (
-            tipo === 'coleccion' && (!dato.canciones || dato.canciones.length === 0 && !Array.isArray(dato.canciones))
+            tipo === 'playlist' && (!dato.canciones || !Array.isArray(dato.canciones) || dato.canciones.length === 0)
+        ) || (
+            tipo === 'coleccion' && (!dato.canciones || !Array.isArray(dato.canciones) || dato.canciones.length === 0 || !dato.colaboradores || !Array.isArray(dato.colaboradores))
+        ) || (
+            tipo === 'evento' && (!dato.colaboradores || !Array.isArray(dato.colaboradores))
         );
 
         if (necesitaCargar && cargarDelBackend && tipo && id) {

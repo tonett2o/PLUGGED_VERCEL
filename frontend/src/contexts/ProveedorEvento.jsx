@@ -59,7 +59,15 @@ const ProveedorEventos = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Evento actualizado correctamente");
-                await cargarTodosLosEventos(); // 🔄 Refrescamos la lista global
+                // 🔄 Actualizar el evento en la lista local si viene en la respuesta
+                if (respuesta.id) {
+                    setListaEventos(prevLista =>
+                        prevLista.map(ev => ev.id === idEvento ? respuesta : ev)
+                    );
+                } else {
+                    // Si no viene en respuesta, recargar todos
+                    await cargarTodosLosEventos();
+                }
             }
             return respuesta;
         } catch (error) {
