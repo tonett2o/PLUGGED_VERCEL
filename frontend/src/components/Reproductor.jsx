@@ -1,6 +1,6 @@
 // Reproductor.jsx - Reproductor Global de Música
 import React, { useEffect, useRef, useContext, useState } from 'react';
-import { FaMusic } from 'react-icons/fa';
+import { FaMusic, FaShuffle, FaRedo } from 'react-icons/fa';
 import API_URL from '../config/api.js';
 import { contextoMusica } from '../contexts/ProveedorMusica.jsx';
 import { generarPortadaPlaceholder } from '../utils/imagen.js';
@@ -353,16 +353,14 @@ const Reproductor = () => {
 
                 {/* Botones de Control */}
                 <div className="controles-centro">
-                    {/* Botón Aleatorio */}
+                    {/* Botón Repetir */}
                     <button
-                        onClick={() => setIsShuffling(!isShuffling)}
-                        className={`btn-control ${isShuffling ? 'activo' : ''}`}
-                        title={isShuffling ? 'Desactivar aleatorio' : 'Activar aleatorio'}
+                        onClick={() => setRepeatMode((repeatMode + 1) % 3)}
+                        className={`btn-control ${repeatMode > 0 ? 'activo' : ''}`}
+                        title={repeatMode === 0 ? 'Sin repetir' : repeatMode === 1 ? 'Repetir todo' : 'Repetir una'}
                     >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                            <polyline points="16 3 20 7 16 11"></polyline>
-                            <path d="M4 20h9M20 4h-7.5a4 4 0 0 0-4 4m.5 9.5H20"></path>
-                        </svg>
+                        <FaRedo size={18} />
+                        {repeatMode === 2 && <span className="repeat-badge">1</span>}
                     </button>
 
                     {/* Botón Anterior */}
@@ -384,17 +382,13 @@ const Reproductor = () => {
                         <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                     </button>
 
-                    {/* Botón Repetir */}
+                    {/* Botón Aleatorio */}
                     <button
-                        onClick={() => setRepeatMode((repeatMode + 1) % 3)}
-                        className={`btn-control ${repeatMode > 0 ? 'activo' : ''}`}
-                        title={repeatMode === 0 ? 'Sin repetir' : repeatMode === 1 ? 'Repetir todo' : 'Repetir una'}
+                        onClick={() => setIsShuffling(!isShuffling)}
+                        className={`btn-control ${isShuffling ? 'activo' : ''}`}
+                        title={isShuffling ? 'Desactivar aleatorio' : 'Activar aleatorio'}
                     >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                            <polyline points="17 2 21 6 17 10"></polyline>
-                            <path d="M3 11v-1a4 4 0 0 1 4-4h14M7 22v1a4 4 0 0 1-4-4H3"></path>
-                        </svg>
-                        {repeatMode === 2 && <span className="repeat-badge">1</span>}
+                        <FaShuffle size={18} />
                     </button>
                 </div>
             </div>

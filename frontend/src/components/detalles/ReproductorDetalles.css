@@ -418,6 +418,7 @@
 
 .mensaje-sesion .icono-candado {
     font-size: 48px;
+    color: #0ADAF5;
     margin: 0;
     animation: bounce 2s infinite;
 }

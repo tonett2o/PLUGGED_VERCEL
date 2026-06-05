@@ -3,7 +3,7 @@ import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { generarPortadaPlaceholder } from "../../utils/imagen.js";
 import { tieneSesion } from "../../utils/sesion.js";
 import { Link } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaLock } from "react-icons/fa";
 import "./Cancion.css";
 
 const Cancion = (props) => {
@@ -52,7 +52,7 @@ const Cancion = (props) => {
                 {/* Icono de candado si no hay sesión */}
                 {!sesionIniciada && (
                     <div className="indicador-reproduccion">
-                        <span className="icon-play">🔒</span>
+                        <FaLock className="icon-lock" />
                     </div>
                 )}
             </div>

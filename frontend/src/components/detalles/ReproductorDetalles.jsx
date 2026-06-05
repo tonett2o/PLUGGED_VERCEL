@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { FaLock } from 'react-icons/fa';
 import API_URL from '../../config/api.js';
 import { contextoMusica } from '../../contexts/ProveedorMusica.jsx';
 import { tieneSesion } from '../../utils/sesion.js';
@@ -203,7 +204,7 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
         return (
             <div className="reproductor-sin-sesion">
                 <div className="mensaje-sesion">
-                    <p className="icono-candado">🔒</p>
+                    <FaLock className="icono-candado" />
                     <p className="texto-principal">Inicia sesión para escuchar</p>
                     <p className="texto-secundario">Necesitas una cuenta para reproducir música</p>
                     <Link to="/registro" className="btn-iniciar-sesion">

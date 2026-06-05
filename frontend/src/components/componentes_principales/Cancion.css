@@ -79,6 +79,16 @@
     background-color: #5CFBFF; /* Azul neón más claro */
 }
 
+/* Estilos para el icono de candado (sin sesión) */
+.icon-play {
+    font-size: 20px;
+}
+
+.icon-lock {
+    font-size: 20px;
+    color: #000;
+}
+
 /* --- 4. SI LA CANCIÓN ESTÁ SONANDO AHORA MISMO --- */
 .tarjeta-cancion.activa .indicador-reproduccion {
     opacity: 1; /* Forzar el botón a ser visible */
