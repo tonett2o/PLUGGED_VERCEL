@@ -264,6 +264,13 @@ class EventoController extends Controller
     public function destroy(string $id)
     {
         $evento = Evento::findOrFail($id);
+
+        // Eliminar la imagen del storage si existe (evita archivos huérfanos).
+        // Evento NO tiene accessor en 'imagen', así que el valor ya es la ruta de storage.
+        if ($evento->imagen && Storage::disk('public')->exists($evento->imagen)) {
+            Storage::disk('public')->delete($evento->imagen);
+        }
+
         $evento->delete();
 
         return response()->json(null, 204);

@@ -331,13 +331,13 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
     };
 
     const handleBorrarFoto = async (idFoto) => {
-        if (!window.confirm("¿Eliminar esta imagen de tu galería?")) return;
         const token = localStorage.getItem('token');
         if (!token) return;
 
         const res = await useApiDelete_Galeria(idFoto, token);
         if (res && !res.error) {
             if (refrescarTodo) await refrescarTodo();
+            notificaciones.exito("Imagen eliminada correctamente de la galería");
         } else {
             notificaciones.error(res?.detalles || "No se pudo eliminar la imagen");
         }
