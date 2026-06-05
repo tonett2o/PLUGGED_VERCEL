@@ -1,6 +1,6 @@
 // Reproductor.jsx - Reproductor Global de Música
 import React, { useEffect, useRef, useContext, useState } from 'react';
-import { FaMusic, FaShuffle, FaRedo } from 'react-icons/fa';
+import { FaMusic, FaRandom, FaRedo } from 'react-icons/fa';
 import API_URL from '../config/api.js';
 import { contextoMusica } from '../contexts/ProveedorMusica.jsx';
 import { generarPortadaPlaceholder } from '../utils/imagen.js';
@@ -388,7 +388,7 @@ const Reproductor = () => {
                         className={`btn-control ${isShuffling ? 'activo' : ''}`}
                         title={isShuffling ? 'Desactivar aleatorio' : 'Activar aleatorio'}
                     >
-                        <FaShuffle size={18} />
+                        <FaRandom size={18} />
                     </button>
                 </div>
             </div>
