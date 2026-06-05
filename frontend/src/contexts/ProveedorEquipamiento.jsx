@@ -66,7 +66,7 @@ const ProveedorEquipamiento = (props) => {
             // (ya contienen los viejos + los nuevos que agregó)
             // NO necesitamos hacer merge aquí, el modal ya tiene la lista completa
 
-            const peticion = await fetch(`${API_URL}/usuarios/equipamiento`, {
+            const peticion = await fetch(`${API_URL}/api/usuarios/equipamiento`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
