@@ -33,6 +33,10 @@ use Illuminate\Support\Str;
  * @extends Factory<User>
  */
 class UserFactory extends Factory
+    /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = User::class;
 {
     /**
      * The current password being used by the factory.

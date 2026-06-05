@@ -31,6 +31,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  * @extends Factory<Hardware>
  */
 class HardwareFactory extends Factory
+    /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = Hardware::class;
 {
     /**
      * Define el estado predeterminado del modelo Hardware.

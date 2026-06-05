@@ -30,6 +30,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ColeccionFactory extends Factory
 {
     /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = Coleccion::class;
+
+    /**
      * Define el estado predeterminado del modelo Coleccion.
      *
      * Genera atributos aleatorios usando Faker para poblar un registro

@@ -31,6 +31,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class PlaylistFactory extends Factory
 {
     /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = Playlist::class;
+
+    /**
      * Define el estado predeterminado del modelo Playlist.
      *
      * Genera atributos aleatorios usando Faker para poblar un registro

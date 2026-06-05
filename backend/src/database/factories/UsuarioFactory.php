@@ -29,6 +29,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class UsuarioFactory extends Factory
 {
     /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = Usuario::class;
+
+    /**
      * Define el estado predeterminado del modelo Usuario.
      *
      * Genera atributos aleatorios usando Faker para poblar un registro

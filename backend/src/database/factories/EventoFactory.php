@@ -29,6 +29,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  * @extends Factory<Evento>
  */
 class EventoFactory extends Factory
+    /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = Evento::class;
 {
     /**
      * Define el estado predeterminado del modelo Evento.

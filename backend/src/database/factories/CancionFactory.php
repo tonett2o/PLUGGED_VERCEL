@@ -33,6 +33,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class CancionFactory extends Factory
 {
     /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = Cancion::class;
+
+    /**
      * Define el estado predeterminado del modelo Cancion.
      *
      * Genera atributos aleatorios usando Faker para poblar un registro

@@ -33,6 +33,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  * @extends Factory<Software>
  */
 class SoftwareFactory extends Factory
+    /**
+     * El nombre del modelo que corresponde a esta factory.
+     */
+    protected $model = Software::class;
 {
     /**
      * Define el estado predeterminado del modelo Software.
