@@ -32,9 +32,14 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
             return null;
         }
 
-        const partes = filename.split('/');
-        const nombreArchivo = partes[partes.length - 1];
-        const url = `${API_URL}/api/audios/${nombreArchivo}`;
+        // Si ya es una URL completa, usarla directamente
+        if (filename.startsWith('http://') || filename.startsWith('https://')) {
+            return filename;
+        }
+
+        // Construir URL desde storage (audios/filename.mp3 → /storage/audios/filename.mp3)
+        const rutaLimpia = filename.startsWith('/') ? filename.substring(1) : filename;
+        const url = `${URL_STORAGE}${rutaLimpia}`;
 
         return url;
     }, [cancion]);

@@ -28,7 +28,7 @@ return [
     ],
 
     'allowed_origins_patterns' => [
-        '#^https://plugged-vercel.*\.vercel\.app$#',
+        '#^https://plugged-?vercel.*\.vercel\.app$#',
     ],
 
     'allowed_headers' => ['*'],
