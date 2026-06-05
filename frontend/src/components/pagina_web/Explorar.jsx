@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaCompactDisc, FaLaptop, FaHeadphones } from 'react-icons/fa';
 import API_URL from '../../config/api.js';
-import { generarPortadaPlaceholder } from '../../utils/imagen.js';
+import { generarPortadaPlaceholder, resolverRutaArchivo } from '../../utils/imagen.js';
 import './Explorar.css';
 
 const Explorar = () => {
@@ -80,7 +80,7 @@ const Explorar = () => {
                                         {usuario.avatar ? (
                                             <>
                                                 <img
-                                                    src={usuario.avatar}
+                                                    src={resolverRutaArchivo(usuario.avatar)}
                                                     alt={usuario.nick}
                                                     onError={(e) => {
                                                         e.target.style.display = 'none';
@@ -119,7 +119,7 @@ const Explorar = () => {
                                         <div className="item-image" style={{ position: 'relative' }}>
                                             {coleccion.portada ? (
                                                 <img
-                                                    src={coleccion.portada}
+                                                    src={resolverRutaArchivo(coleccion.portada)}
                                                     alt={coleccion.titulo}
                                                     onError={(e) => {
                                                         e.target.style.display = 'none';
@@ -168,7 +168,7 @@ const Explorar = () => {
                                         {soft.imagen ? (
                                             <>
                                                 <img
-                                                    src={soft.imagen}
+                                                    src={resolverRutaArchivo(soft.imagen)}
                                                     alt={soft.nombre}
                                                     onError={(e) => {
                                                         e.target.style.display = 'none';
@@ -202,7 +202,7 @@ const Explorar = () => {
                                         {hw.imagen ? (
                                             <>
                                                 <img
-                                                    src={hw.imagen}
+                                                    src={resolverRutaArchivo(hw.imagen)}
                                                     alt={hw.nombre}
                                                     onError={(e) => {
                                                         e.target.style.display = 'none';

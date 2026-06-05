@@ -5,6 +5,6 @@
     "context": "backend/src"
   },
   "deploy": {
-    "startCommand": "php -S 0.0.0.0:8000 -t public/ /var/www/router.php"
+    "startCommand": "sh -c 'mkdir -p /var/www/storage/app/public/gear /var/www/storage/app/public/sw; cp -f /var/www/database/seed-images/gear/*.png /var/www/storage/app/public/gear/ 2>/dev/null; cp -f /var/www/database/seed-images/sw/*.png /var/www/storage/app/public/sw/ 2>/dev/null; php -S 0.0.0.0:8000 -t public/ /var/www/router.php'"
   }
 }
