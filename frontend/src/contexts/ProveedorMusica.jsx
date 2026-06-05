@@ -68,15 +68,12 @@ const ProveedorMusica = (props) => {
         const resultado = await useApiPost_Cancion(objetoCompleto, token);
 
         if (resultado && !resultado.error) {
-            if (resultado.cancion) {
-                setCanciones(prevCanciones => [resultado.cancion, ...prevCanciones]);
-            } else {
-                setCanciones(prevCanciones => [resultado, ...prevCanciones]);
-            }
-
+            // Recargamos desde el backend (datos completos, con relaciones).
+            // No inyectamos la respuesta del POST en el contexto porque viene parcial
+            // (sin la relación `usuario`), lo que provocaba detalles rotos.
             await iniciarCanciones();
             await iniciarColecciones();
-            await iniciarPlaylists(); 
+            await iniciarPlaylists();
         }
         return resultado;
     };
@@ -92,17 +89,12 @@ const ProveedorMusica = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Canción actualizada con éxito");
-                // 🔄 Actualizar la canción en la lista local si viene en la respuesta
-                if (respuesta.id) {
-                    setCanciones(prevCanciones =>
-                        prevCanciones.map(c => c.id === idCancion ? respuesta : c)
-                    );
-                } else {
-                    // Si no viene en respuesta, recargar todo
-                    await iniciarCanciones();
-                    await iniciarColecciones();
-                    await iniciarPlaylists();
-                }
+                // Recargamos desde el backend (datos completos con relaciones).
+                // La respuesta del PUT viene parcial (envuelta en { cancion } y sin
+                // la relación `usuario`), así que NO la inyectamos en el contexto.
+                await iniciarCanciones();
+                await iniciarColecciones();
+                await iniciarPlaylists();
             }
 
             return respuesta;
@@ -153,15 +145,10 @@ const ProveedorMusica = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Playlist actualizada con éxito");
-                // 🔄 Actualizar la playlist en la lista local si viene en la respuesta
-                if (respuesta.id) {
-                    setPlaylists(prevPlaylists =>
-                        prevPlaylists.map(p => p.id === idPlaylist ? respuesta : p)
-                    );
-                } else {
-                    // Si no viene en respuesta, recargar
-                    await iniciarPlaylists();
-                }
+                // Recargamos desde el backend (datos completos). La respuesta del PUT
+                // viene parcial, así que no la inyectamos en el contexto.
+                await iniciarPlaylists();
+                await iniciarCanciones();
             }
 
             return respuesta;
@@ -213,15 +200,10 @@ const ProveedorMusica = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Colección actualizada en el estado global a través del hook");
-                // 🔄 Actualizar la colección en la lista local si viene en la respuesta
-                if (respuesta.id) {
-                    setColecciones(prevColecciones =>
-                        prevColecciones.map(col => col.id === idColeccion ? respuesta : col)
-                    );
-                } else {
-                    // Si no viene en respuesta, recargar
-                    await iniciarColecciones();
-                }
+                // Recargamos desde el backend (datos completos). La respuesta del PUT
+                // viene parcial, así que no la inyectamos en el contexto.
+                await iniciarColecciones();
+                await iniciarCanciones();
             }
 
             return respuesta;

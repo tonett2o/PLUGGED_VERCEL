@@ -24,10 +24,35 @@ import DetallesUsuario from "../detalles/DetallesUsuario.jsx";
 // completa y consistente, así que para estos tipos revalidamos desde él.
 const TIPOS_REVALIDA_BACKEND = ['cancion', 'coleccion', 'playlist', 'evento'];
 
+// ¿El objeto del contexto está COMPLETO para renderizar el detalle?
+// Las respuestas parciales de POST/PUT (y las inyecciones optimistas en el contexto)
+// no incluyen la relación `usuario` (canción/colección/playlist) ni `colaboradores`
+// (evento). Si detectamos esa forma parcial, NO la renderizamos: esperamos a `show`.
+// Esto evita el bug de "Artista" genérico + portada/audio rotos durante el refresco.
+const esDetalleCompleto = (tipo, d) => {
+    if (!d) return false;
+    switch (tipo) {
+        case 'cancion':
+        case 'coleccion':
+        case 'playlist':
+            return d.usuario !== undefined && d.usuario !== null;
+        case 'evento':
+            return Array.isArray(d.colaboradores);
+        default:
+            return true;
+    }
+};
+
 // El componente intermedio que limpia la lógica
 const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, id, refrescarFn }) => {
-    const [datoCargado, setDatoCargado] = useState(dato || null);
-    const [cargando, setCargando] = useState(false);
+    // Solo sembramos el render con `dato` del contexto si está completo; si es parcial,
+    // arrancamos en null para mostrar spinner hasta que llegue la versión de `show`.
+    const [datoCargado, setDatoCargado] = useState(() => (esDetalleCompleto(tipo, dato) ? dato : null));
+    // Arrancamos en "cargando" si es un tipo que revalida y aún no tenemos datos completos,
+    // para mostrar el spinner directamente (evita un flash de "No encontrado").
+    const [cargando, setCargando] = useState(
+        () => TIPOS_REVALIDA_BACKEND.includes(tipo) && !esDetalleCompleto(tipo, dato)
+    );
 
     const refrescarDatos = async () => {
         if (refrescarFn) await refrescarFn();
@@ -47,11 +72,13 @@ const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, 
 
         if (revalidaBackend && cargarDelBackend && id) {
             // STALE-WHILE-REVALIDATE: siempre traemos la versión canónica y completa
-            // desde `show`. Si ya mostramos algo de este id, mantenemos esos datos
+            // desde `show`. Si ya mostramos datos COMPLETOS de este id, los mantenemos
             // visibles mientras llega la nueva versión (sin spinner ni flicker).
-            // Así, tras un PUT nunca se renderiza la forma incompleta del contexto.
-            const tenemosAlgoDelMismoId = datoCargado && String(datoCargado.id) === String(id);
-            if (!tenemosAlgoDelMismoId) setCargando(true);
+            // Si solo tenemos datos parciales (o nada), mostramos spinner hasta `show`.
+            const tenemosCompletoDelMismoId = datoCargado
+                && String(datoCargado.id) === String(id)
+                && esDetalleCompleto(tipo, datoCargado);
+            if (!tenemosCompletoDelMismoId) setCargando(true);
 
             cargarDelBackend(id, tipo)
                 .then(datos => {

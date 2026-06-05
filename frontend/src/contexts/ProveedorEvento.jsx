@@ -59,15 +59,10 @@ const ProveedorEventos = (props) => {
 
             if (respuesta && !respuesta.error) {
                 console.log("Evento actualizado correctamente");
-                // 🔄 Actualizar el evento en la lista local si viene en la respuesta
-                if (respuesta.id) {
-                    setListaEventos(prevLista =>
-                        prevLista.map(ev => ev.id === idEvento ? respuesta : ev)
-                    );
-                } else {
-                    // Si no viene en respuesta, recargar todos
-                    await cargarTodosLosEventos();
-                }
+                // Recargamos desde el backend (datos completos con relaciones).
+                // La respuesta del PUT puede venir parcial, así que no la inyectamos
+                // en el contexto: siempre recargamos la lista canónica.
+                await cargarTodosLosEventos();
             }
             return respuesta;
         } catch (error) {
