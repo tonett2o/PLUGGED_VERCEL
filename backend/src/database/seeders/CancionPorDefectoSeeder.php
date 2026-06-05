@@ -26,7 +26,8 @@ class CancionPorDefectoSeeder extends Seeder
                 'nick' => 'Sistema',
                 'nombre' => 'Sistema PLUGGED',
                 'password' => bcrypt('password'),
-                'privacidad' => 'publica'
+                'rol' => 'admin',
+                'email_verified_at' => now()
             ]
         );
 
