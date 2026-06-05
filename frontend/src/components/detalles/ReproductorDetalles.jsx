@@ -83,7 +83,7 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
 
     // Cargar la canción
     useEffect(() => {
-        if (!cancion) return;
+        if (!cancion || !audioRef.current) return;
 
         const audioUrl = getAudioUrl();
 
@@ -92,16 +92,20 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
             return;
         }
 
-        // Limpiar anterior
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current = null;
-        }
-
-        // Crear nuevo audio
-        const audio = new Audio();
+        const audio = audioRef.current;
         audio.volume = volume;
-        audio.crossOrigin = "anonymous";
+        audio.src = audioUrl;
+
+        return () => {
+            audio.pause();
+        };
+    }, [cancion, getAudioUrl, volume]);
+
+    // Setup event listeners
+    useEffect(() => {
+        if (!audioRef.current) return;
+
+        const audio = audioRef.current;
 
         const handlePlay = () => {
             setIsPlaying(true);
@@ -139,11 +143,7 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
         audio.addEventListener('canplaythrough', handleCanPlayThrough);
         audio.addEventListener('error', handleError);
 
-        audioRef.current = audio;
-        audio.src = audioUrl;
-
         return () => {
-            audio.pause();
             audio.removeEventListener('play', handlePlay);
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -151,7 +151,7 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
             audio.removeEventListener('canplaythrough', handleCanPlayThrough);
             audio.removeEventListener('error', handleError);
         };
-    }, [cancion, onTimeChange]);
+    }, [onTimeChange]);
 
     const togglePlay = () => {
         if (!audioRef.current) return;
@@ -196,7 +196,11 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
     if (error) return <div className="reproductor-error">{error}</div>;
 
     return (
-        <div className="reproductor-detalles">
+        <>
+            {/* Elemento <audio> real en el DOM */}
+            <audio ref={audioRef} crossOrigin="anonymous" />
+
+            <div className="reproductor-detalles">
             {/* Botón Play */}
             <button className="btn-play-reproductor" onClick={togglePlay} title={isPlaying ? 'Pausar' : 'Reproducir'}>
                 {isPlaying ? (
@@ -243,7 +247,8 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
                     style={{ '--value': `${volume * 100}%` }}
                 />
             </div>
-        </div>
+            </div>
+        </>
     );
 };
 

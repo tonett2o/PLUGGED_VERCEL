@@ -85,6 +85,55 @@ const Reproductor = () => {
     // LÓGICA DE REPRODUCCIÓN
     // ============================================
 
+    // Setup event listeners del elemento audio
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const handlePlay = () => setIsPlaying(true);
+        const handlePause = () => setIsPlaying(false);
+
+        const handleEnded = () => {
+            reproducirSiguiente();
+        };
+
+        const handleTimeUpdate = () => {
+            setCurrentTime(audio.currentTime);
+
+            // Contar reproducción a los 30 segundos
+            if (trackActual && audio.currentTime >= 30 && !reproduccionesContadas.current.has(trackActual.id)) {
+                reproduccionesContadas.current.add(trackActual.id);
+                console.log('📊 Reproducción contada:', trackActual.titulo);
+
+                fetch(`http://localhost:8000/api/canciones/${trackActual.id}/reproducir`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }).catch(e => console.error('❌ Error registrando reproducción:', e));
+            }
+        };
+
+        const handleLoadedMetadata = () => {
+            setDuration(audio.duration);
+        };
+
+        audio.addEventListener('play', handlePlay);
+        audio.addEventListener('pause', handlePause);
+        audio.addEventListener('ended', handleEnded);
+        audio.addEventListener('timeupdate', handleTimeUpdate);
+        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+        return () => {
+            audio.removeEventListener('play', handlePlay);
+            audio.removeEventListener('pause', handlePause);
+            audio.removeEventListener('ended', handleEnded);
+            audio.removeEventListener('timeupdate', handleTimeUpdate);
+            audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        };
+    }, [trackActual]);
+
     // Detener audio cuando trackActual es null (cierre de sesión)
     useEffect(() => {
         if (!trackActual && audioRef.current) {
@@ -180,12 +229,7 @@ const Reproductor = () => {
      * Effect: Cargar y reproducir canción actual
      */
     useEffect(() => {
-        if (!trackActual) return;
-
-        // Pausar audio anterior
-        if (audioRef.current) {
-            audioRef.current.pause();
-        }
+        if (!trackActual || !audioRef.current) return;
 
         const urlAudio = obtenerUrlAudio(trackActual.ubicacion);
         if (!urlAudio) {
@@ -195,59 +239,23 @@ const Reproductor = () => {
 
         console.log('🎵 Reproduciendo:', trackActual.titulo);
 
-        // Crear nuevo audio
-        const audio = new Audio(urlAudio);
+        const audio = audioRef.current;
+
+        // Cambiar URL del audio y resetear posición
+        audio.src = urlAudio;
+        audio.currentTime = 0;
         audio.volume = 0.5;
-        audioRef.current = audio;
-
-        // Event listeners
-        const handlePlay = () => setIsPlaying(true);
-        const handlePause = () => setIsPlaying(false);
-
-        const handleEnded = () => {
-            reproducirSiguiente();
-        };
-
-        const handleTimeUpdate = () => {
-            setCurrentTime(audio.currentTime);
-
-            // Contar reproducción a los 30 segundos
-            if (audio.currentTime >= 30 && !reproduccionesContadas.current.has(trackActual.id)) {
-                reproduccionesContadas.current.add(trackActual.id);
-                console.log('📊 Reproducción contada:', trackActual.titulo);
-
-                fetch(`http://localhost:8000/api/canciones/${trackActual.id}/reproducir`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                }).catch(e => console.error('❌ Error registrando reproducción:', e));
-            }
-        };
-
-        const handleLoadedMetadata = () => {
-            setDuration(audio.duration);
-        };
-
-        audio.addEventListener('play', handlePlay);
-        audio.addEventListener('pause', handlePause);
-        audio.addEventListener('ended', handleEnded);
-        audio.addEventListener('timeupdate', handleTimeUpdate);
-        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
 
         // Auto-reproducir
-        audio.play().catch(() => {
-            console.log("Auto-play esperando interacción del usuario");
+        audio.play().catch((error) => {
+            console.log("⚠️ Auto-play esperando interacción del usuario:", error.message);
         });
 
         return () => {
-            audio.pause();
-            audio.removeEventListener('play', handlePlay);
-            audio.removeEventListener('pause', handlePause);
-            audio.removeEventListener('ended', handleEnded);
-            audio.removeEventListener('timeupdate', handleTimeUpdate);
-            audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
         };
     }, [trackActual]);
 
@@ -300,8 +308,12 @@ const Reproductor = () => {
     }
 
     return (
-        <div className="footer-player">
-            {/* SECCIÓN IZQUIERDA: Portada y Artista */}
+        <>
+            {/* Elemento <audio> real en el DOM para reproducción */}
+            <audio ref={audioRef} crossOrigin="anonymous" />
+
+            <div className="footer-player">
+                {/* SECCIÓN IZQUIERDA: Portada y Artista */}
             <div className="seccion-izquierda">
                 <img
                     src={obtenerRutaPortada(trackActual?.portada)}
@@ -410,7 +422,8 @@ const Reproductor = () => {
                     <FaMusic size={20} />
                 </button>
             </div>
-        </div>
+            </div>
+        </>
     );
 };
 
