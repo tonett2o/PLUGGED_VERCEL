@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Factory as FakerFactory;
 
 /**
  * UsuarioFactory - Factory para generar datos de prueba de usuarios
@@ -55,16 +54,15 @@ class UsuarioFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = FakerFactory::create();
         return [
-            'nick' => $faker->unique()->userName(),
-            'nombre' => $faker->name(),
-            'email' => $faker->unique()->safeEmail(),
-            'ubicacion' => $faker->city(),
-            'latitud' => $faker->latitude(),
-            'longitud' => $faker->longitude(),
+            'nick' => $this->faker->unique()->userName(),
+            'nombre' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'ubicacion' => $this->faker->city(),
+            'latitud' => $this->faker->latitude(),
+            'longitud' => $this->faker->longitude(),
             'avatar' => null,
-            'rol' => $faker->randomElement(['dj', 'productor', 'usuario']),
+            'rol' => $this->faker->randomElement(['dj', 'productor', 'usuario']),
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
             'remember_token' => \Illuminate\Support\Str::random(10),

@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Software;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Factory as FakerFactory;
 
 /**
  * SoftwareFactory - Factory para generar datos de prueba de software
@@ -58,15 +57,14 @@ class SoftwareFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = FakerFactory::create();
         return [
-            'nombre' => $faker->unique()->words(2, true),
-            'version' => $faker->semver(),
-            'distribuidor' => $faker->company(),
-            'precio' => $faker->randomFloat(2, 0, 500),
-            'imagen' => $faker->imageUrl(400, 400, 'tech'),
-            'tipo_pago' => $faker->randomElement(['unico', 'mensual', 'anual', 'gratuito']),
-            'descripcion' => $faker->sentence(),
+            'nombre' => $this->faker->unique()->words(2, true),
+            'version' => $this->faker->semver(),
+            'distribuidor' => $this->faker->company(),
+            'precio' => $this->faker->randomFloat(2, 0, 500),
+            'imagen' => $this->faker->imageUrl(400, 400, 'tech'),
+            'tipo_pago' => $this->faker->randomElement(['unico', 'mensual', 'anual', 'gratuito']),
+            'descripcion' => $this->faker->sentence(),
         ];
     }
 }

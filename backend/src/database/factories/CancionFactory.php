@@ -6,7 +6,6 @@ use App\Models\Cancion;
 use App\Models\Usuario;
 use App\Models\Coleccion;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Factory as FakerFactory;
 
 /**
  * CancionFactory - Factory para generar datos de prueba de canciones
@@ -58,8 +57,6 @@ class CancionFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = FakerFactory::create();
-
         // Pool de audios reales disponibles en storage
         $audiosDisponibles = [
             'audios/1QECXGjby1ICwbeV2mxsdVi5kdM0EXl5iFCBLHO2.mp3',
@@ -70,13 +67,13 @@ class CancionFactory extends Factory
         ];
 
         return [
-            'titulo' => $faker->words(3, true),
-            'bpm' => $faker->numberBetween(90, 140),
-            'tonalidad' => $faker->randomElement(['Am', 'Cm', 'F#m', 'G', 'Dm', 'Em', 'Gm']),
-            'ubicacion' => $faker->randomElement($audiosDisponibles), // Audio real en lugar de URL fake
-            'portada' => $faker->imageUrl(500, 500, 'music'),
-            'fecha_publicacion' => $faker->year(),
-            'privacidad' => $faker->randomElement(['publica', 'privada']),
+            'titulo' => $this->faker->words(3, true),
+            'bpm' => $this->faker->numberBetween(90, 140),
+            'tonalidad' => $this->faker->randomElement(['Am', 'Cm', 'F#m', 'G', 'Dm', 'Em', 'Gm']),
+            'ubicacion' => $this->faker->randomElement($audiosDisponibles), // Audio real en lugar de URL fake
+            'portada' => $this->faker->imageUrl(500, 500, 'music'),
+            'fecha_publicacion' => $this->faker->year(),
+            'privacidad' => $this->faker->randomElement(['publica', 'privada']),
             'id_usuario' => Usuario::factory(),
             'id_coleccion' => Coleccion::factory(),
         ];

@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Evento;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Factory as FakerFactory;
 
 /**
  * EventoFactory - Factory para generar datos de prueba de eventos
@@ -56,14 +55,13 @@ class EventoFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = FakerFactory::create();
         return [
-            'url_venta' => $faker->unique()->url(),
-            'nombre' => $faker->sentence(2, 3),
-            'nombre_sala' => $faker->company() . ' Stage',
-            'ubicacion' => $faker->address(),
-            'imagen' => $faker->imageUrl(800, 600, 'concert'),
-            'fecha_evento' => $faker->dateTimeBetween('2025-06-01', '2026-12-31')->format('Y-m-d'),
+            'url_venta' => $this->faker->unique()->url(),
+            'nombre' => $this->faker->sentence(2, 3),
+            'nombre_sala' => $this->faker->company() . ' Stage',
+            'ubicacion' => $this->faker->address(),
+            'imagen' => $this->faker->imageUrl(800, 600, 'concert'),
+            'fecha_evento' => $this->faker->dateTimeBetween('2025-06-01', '2026-12-31')->format('Y-m-d'),
         ];
     }
 
@@ -78,16 +76,15 @@ class EventoFactory extends Factory
     public function fromVenue($venue): static
     {
         return $this->state(function (array $attributes) use ($venue) {
-            $faker = FakerFactory::create();
             return [
                 'url_venta' => $venue['url_venta'],
-                'nombre' => $venue['nombre'] . ' ' . $faker->year(),
+                'nombre' => $venue['nombre'] . ' ' . $this->faker->year(),
                 'nombre_sala' => $venue['nombre_sala'],
                 'ubicacion' => $venue['ubicacion'],
                 'latitud' => $venue['latitud'],
                 'longitud' => $venue['longitud'],
-                'imagen' => $faker->imageUrl(800, 600, 'concert'),
-                'fecha_evento' => $faker->dateTimeBetween('2025-06-01', '2026-12-31')->format('Y-m-d'),
+                'imagen' => $this->faker->imageUrl(800, 600, 'concert'),
+                'fecha_evento' => $this->faker->dateTimeBetween('2025-06-01', '2026-12-31')->format('Y-m-d'),
             ];
         });
     }
