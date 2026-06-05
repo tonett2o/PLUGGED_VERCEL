@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import API_URL from "../../config/api.js";
 
@@ -17,38 +17,24 @@ import DetallesSoftware from "../detalles/DetallesSoftware.jsx";
 import DetallesEvento from "../detalles/DetallesEvento.jsx";
 import DetallesUsuario from "../detalles/DetallesUsuario.jsx";
 
-// Determina si un dato tiene todas las relaciones necesarias cargadas
-const tieneRelacionesCompletas = (tipo, datos) => {
-    if (!datos) return false;
-    switch (tipo) {
-        case 'cancion':   return Array.isArray(datos.colaboradores);
-        case 'playlist':  return Array.isArray(datos.canciones);
-        case 'coleccion': return Array.isArray(datos.canciones) && Array.isArray(datos.colaboradores);
-        case 'evento':    return Array.isArray(datos.colaboradores);
-        default:          return true; // hardware, software, usuario no necesitan relaciones especiales
-    }
-};
+// Tipos cuyo detalle se sirve SIEMPRE desde el backend (endpoint `show`).
+// Motivo: la respuesta del PUT (update) y las listas del contexto tienen una
+// forma incompleta (p.ej. el PUT no carga la relación `usuario` y envuelve el
+// objeto en { cancion: ... }). El endpoint `show` es la fuente de verdad
+// completa y consistente, así que para estos tipos revalidamos desde él.
+const TIPOS_REVALIDA_BACKEND = ['cancion', 'coleccion', 'playlist', 'evento'];
 
 // El componente intermedio que limpia la lógica
 const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, id, refrescarFn }) => {
     const [datoCargado, setDatoCargado] = useState(dato || null);
     const [cargando, setCargando] = useState(false);
-    // Ref para saber si ya tenemos datos completos del id actual
-    // Evita que actualizaciones parciales del contexto (iniciarCanciones, etc.)
-    // sobreescriban datos completos y provoquen el spinner de "Cargando..."
-    const datoCargadoRef = useRef(dato || null);
-
-    const setDato = (datos) => {
-        datoCargadoRef.current = datos;
-        setDatoCargado(datos);
-    };
 
     const refrescarDatos = async () => {
         if (refrescarFn) await refrescarFn();
         if (cargarDelBackend && tipo && id) {
             try {
                 const datos = await cargarDelBackend(id, tipo);
-                if (datos) setDato(datos);
+                if (datos) setDatoCargado(datos);
             } catch (error) {
                 console.error('Error refrescando datos:', error);
             }
@@ -56,38 +42,51 @@ const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, 
     };
 
     useEffect(() => {
-        const loaded = datoCargadoRef.current;
-        const mismoId = loaded && String(loaded.id) === String(id);
+        let cancelado = false;
+        const revalidaBackend = TIPOS_REVALIDA_BACKEND.includes(tipo);
 
-        if (tieneRelacionesCompletas(tipo, dato)) {
-            // El contexto tiene datos completos (p.ej. respuesta del PUT): usar directamente
-            setDato(dato);
-        } else if (!mismoId) {
-            // Id distinto al que tenemos cargado: resetear para forzar carga fresca
-            setDato(dato || null);
+        if (revalidaBackend && cargarDelBackend && id) {
+            // STALE-WHILE-REVALIDATE: siempre traemos la versión canónica y completa
+            // desde `show`. Si ya mostramos algo de este id, mantenemos esos datos
+            // visibles mientras llega la nueva versión (sin spinner ni flicker).
+            // Así, tras un PUT nunca se renderiza la forma incompleta del contexto.
+            const tenemosAlgoDelMismoId = datoCargado && String(datoCargado.id) === String(id);
+            if (!tenemosAlgoDelMismoId) setCargando(true);
+
+            cargarDelBackend(id, tipo)
+                .then(datos => {
+                    if (cancelado) return;
+                    if (datos) setDatoCargado(datos);
+                    setCargando(false);
+                })
+                .catch(error => {
+                    if (cancelado) return;
+                    console.error('Error cargando datos:', error);
+                    setCargando(false);
+                });
+        } else {
+            // usuario / hardware / software: contexto primero, backend solo si falta
+            if (dato) {
+                setDatoCargado(dato);
+            } else if (cargarDelBackend && id) {
+                setCargando(true);
+                cargarDelBackend(id, tipo)
+                    .then(datos => {
+                        if (cancelado) return;
+                        setDatoCargado(datos);
+                        setCargando(false);
+                    })
+                    .catch(error => {
+                        if (cancelado) return;
+                        console.error('Error cargando datos:', error);
+                        setCargando(false);
+                    });
+            }
         }
-        // Si mismo id pero dato parcial (p.ej. iniciarCanciones sin relaciones):
-        // NO sobreescribir — mantener los datos completos que ya teníamos
-    }, [dato, id]);
 
-    useEffect(() => {
-        const loaded = datoCargadoRef.current;
-        const mismoId = loaded && String(loaded.id) === String(id);
-        const yaTenemosBuenos = mismoId && tieneRelacionesCompletas(tipo, loaded);
-
-        if (!yaTenemosBuenos && cargarDelBackend && tipo && id) {
-            // Solo mostrar spinner si no tenemos NINGÚN dato para este id
-            // Si tenemos datos parciales: cargar en background sin spinner (evita el flicker)
-            if (!mismoId) setCargando(true);
-
-            cargarDelBackend(id, tipo).then(datos => {
-                if (datos) setDato(datos);
-                setCargando(false);
-            }).catch(error => {
-                console.error('Error cargando datos:', error);
-                setCargando(false);
-            });
-        }
+        return () => { cancelado = true; };
+        // `dato` en deps: tras un PUT el contexto cambia de referencia y eso dispara
+        // la revalidación desde el backend (trae el objeto ya actualizado y completo).
     }, [dato, id, tipo, cargarDelBackend]);
 
     if (cargando) return <p className="cargando">Cargando...</p>;
