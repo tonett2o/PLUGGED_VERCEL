@@ -20,15 +20,20 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
+# 1) Instalar dependencias PHP primero, en su propia capa.
+#    Faker está en `require` (lo usan factories/seeders en producción), por eso se
+#    instala incluso con --no-dev. Copiar solo composer.json aquí hace que esta capa
+#    se reconstruya cuando cambian las dependencias e invalida la cache de composer.
+COPY composer.json ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
+# 2) Copiar el resto del código (vendor está en .gitignore/.railwayignore, no se pisa).
 COPY . .
 
 COPY php.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Faker pasó de require-dev a require (lo usan los factories/seeders en producción).
-# Usamos `composer update fakerphp/faker` en lugar de `composer install` para que el
-# lock se regenere durante el build y Faker quede en el set de producción, manteniendo
-# el resto de paquetes fijados y excluyendo las dependencias dev reales (phpunit, etc.).
-RUN composer update fakerphp/faker --optimize-autoloader --no-dev --no-scripts && \
+# 3) Generar el autoloader optimizado ya con el código presente, permisos y storage link.
+RUN composer dump-autoload --optimize --no-scripts && \
     chmod -R 755 storage bootstrap/cache && \
     php artisan storage:link
 
