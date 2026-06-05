@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Railway (y otros PaaS) terminan TLS en el edge y reenvían HTTP al contenedor.
+        // Confiar en el proxy permite que Laravel lea X-Forwarded-Proto y detecte HTTPS,
+        // de modo que asset()/url() generen URLs https:// (evita Mixed Content).
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

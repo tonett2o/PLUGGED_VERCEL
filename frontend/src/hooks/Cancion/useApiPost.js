@@ -4,13 +4,6 @@ const useApiPost = async (cancionCreada, token) => {
 
     const formData = new FormData();
 
-    console.log('🎵 DEBUG useApiPost:', {
-        archivo: cancionCreada.archivo,
-        tipo: cancionCreada.archivo?.constructor.name,
-        nombre: cancionCreada.archivo?.name,
-        tamaño: cancionCreada.archivo?.size
-    });
-
     // 1. Campos obligatorios base
     formData.append('titulo', cancionCreada.titulo);
     if (cancionCreada.archivo) {

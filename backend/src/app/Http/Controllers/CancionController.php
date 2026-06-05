@@ -405,9 +405,13 @@ class CancionController extends Controller
 
         // Paso 2: Procesar nueva portada (si se proporciona)
         if ($request->hasFile('portada')) {
-            // Eliminar carátula anterior si existe
-            if ($cancion->portada && Storage::disk('public')->exists($cancion->portada)) {
-                Storage::disk('public')->delete($cancion->portada);
+            // Eliminar carátula anterior si existe.
+            // OJO: usar getRawOriginal porque el accessor 'portada' devuelve una URL completa
+            // (asset('storage/...')), no la ruta de storage. Con la URL, Storage::exists() fallaría
+            // y la portada antigua quedaría huérfana.
+            $portadaAnterior = $cancion->getRawOriginal('portada');
+            if ($portadaAnterior && Storage::disk('public')->exists($portadaAnterior)) {
+                Storage::disk('public')->delete($portadaAnterior);
             }
             // Almacenar nueva portada
             $datosValidados['portada'] = $request->file('portada')->store('portadas', 'public');
@@ -535,9 +539,11 @@ class CancionController extends Controller
             Storage::disk('public')->delete($cancion->getRawOriginal('ubicacion'));
         }
 
-        // Eliminar archivo de portada del storage si existe
-        if ($cancion->portada && Storage::disk('public')->exists($cancion->portada)) {
-            Storage::disk('public')->delete($cancion->portada);
+        // Eliminar archivo de portada del storage si existe.
+        // Usar getRawOriginal porque el accessor 'portada' devuelve una URL completa, no la ruta.
+        $portadaRaw = $cancion->getRawOriginal('portada');
+        if ($portadaRaw && Storage::disk('public')->exists($portadaRaw)) {
+            Storage::disk('public')->delete($portadaRaw);
         }
 
         // Eliminar registro de base de datos (cascada elimina relaciones)
