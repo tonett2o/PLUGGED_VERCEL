@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Hardware;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Generator;
+use Faker\Factory as FakerFactory;
 
 /**
  * HardwareFactory - Factory para generar datos de prueba de hardware
@@ -54,7 +54,7 @@ class HardwareFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = resolve(Generator::class);
+        $faker = FakerFactory::create();
         return [
             'nombre' => $faker->unique()->word() . ' ' . $faker->numerify('MK#'),
             'marca' => $faker->company(),

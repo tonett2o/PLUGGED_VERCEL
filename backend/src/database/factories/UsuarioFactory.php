@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Generator;
+use Faker\Factory as FakerFactory;
 
 /**
  * UsuarioFactory - Factory para generar datos de prueba de usuarios
@@ -55,7 +55,7 @@ class UsuarioFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = resolve(Generator::class);
+        $faker = FakerFactory::create();
         return [
             'nick' => $faker->unique()->userName(),
             'nombre' => $faker->name(),

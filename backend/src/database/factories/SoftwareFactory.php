@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Software;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Generator;
+use Faker\Factory as FakerFactory;
 
 /**
  * SoftwareFactory - Factory para generar datos de prueba de software
@@ -58,7 +58,7 @@ class SoftwareFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = resolve(Generator::class);
+        $faker = FakerFactory::create();
         return [
             'nombre' => $faker->unique()->words(2, true),
             'version' => $faker->semver(),

@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Models\Coleccion;
 use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Generator;
+use Faker\Factory as FakerFactory;
 
 /**
  * ColeccionFactory - Factory para generar datos de prueba de colecciones
@@ -56,7 +56,7 @@ class ColeccionFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = resolve(Generator::class);
+        $faker = FakerFactory::create();
         return [
             'titulo' => $faker->sentence(3),
             'artista' => $faker->name(),

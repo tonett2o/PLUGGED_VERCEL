@@ -6,7 +6,7 @@ use App\Models\Cancion;
 use App\Models\Usuario;
 use App\Models\Coleccion;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker\Generator;
+use Faker\Factory as FakerFactory;
 
 /**
  * CancionFactory - Factory para generar datos de prueba de canciones
@@ -58,7 +58,7 @@ class CancionFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = resolve(Generator::class);
+        $faker = FakerFactory::create();
 
         // Pool de audios reales disponibles en storage
         $audiosDisponibles = [
