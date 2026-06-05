@@ -23,6 +23,16 @@ const useApiPost = async (eventoCreado, token) => {
         formData.append('estilos', JSON.stringify(eventoCreado.estilos));
     }
 
+    // Colaboradores: enviar como array JSON
+    let colaboradoresArray = [];
+    if (Array.isArray(eventoCreado.colaboradores)) {
+        // Extraer solo IDs si son objetos, o usar directamente si son números
+        colaboradoresArray = eventoCreado.colaboradores.map(colab =>
+            typeof colab === 'object' ? colab.id : colab
+        );
+    }
+    formData.append('colaboradores', JSON.stringify(colaboradoresArray));
+
     const peticion = await fetch(`${API_URL}/api/eventos`, {
         method: "POST",
         headers: {

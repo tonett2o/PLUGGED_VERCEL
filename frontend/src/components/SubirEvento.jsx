@@ -166,6 +166,9 @@ const SubirEvento = ({ alFinalizar, datosAEditar }) => {
         setSubiendo(true);
         setErrores({});
 
+        // Validar que haya colaboradores si es necesario
+        console.log('📤 Enviando evento con colaboradores:', colaboradores);
+
         const datosEnvio = {
             ...form,
             colaboradores: colaboradores
@@ -179,15 +182,32 @@ const SubirEvento = ({ alFinalizar, datosAEditar }) => {
 
         if (res && !res.error) {
             notificaciones.exito(datosAEditar ? "Evento actualizado correctamente" : "Evento publicado correctamente");
+            // Limpiar formulario después de éxito
+            setForm({
+                nombre: "",
+                nombre_sala: "",
+                ubicacion: "",
+                latitud: "",
+                longitud: "",
+                fecha_evento: "",
+                url_venta: "",
+                imagen: null,
+                estilos: []
+            });
+            setColaboradores([]);
+            setErrores({});
             if (alFinalizar) alFinalizar();
         } else {
             // Mostrar errores de validación del backend
-            if (res?.detalles) {
+            if (res?.detalles && Object.keys(res.detalles).length > 0) {
+                console.error('❌ Errores de validación:', res.detalles);
                 setErrores(res.detalles);
-                // Mostrar error general
                 notificaciones.error(res?.message || "Revisa los campos con error");
             } else {
+                console.error('❌ Error al procesar:', res?.message);
                 notificaciones.error(res?.message || "No se pudo procesar");
+                // Limpiar errores generales después de mostrar
+                setErrores({});
             }
         }
     };
