@@ -359,7 +359,7 @@ const Reproductor = () => {
                         className={`btn-control ${repeatMode > 0 ? 'activo' : ''}`}
                         title={repeatMode === 0 ? 'Sin repetir' : repeatMode === 1 ? 'Repetir todo' : 'Repetir una'}
                     >
-                        <FaRedo size={18} />
+                        <FaRandom size={18} />
                         {repeatMode === 2 && <span className="repeat-badge">1</span>}
                     </button>
 
@@ -388,7 +388,7 @@ const Reproductor = () => {
                         className={`btn-control ${isShuffling ? 'activo' : ''}`}
                         title={isShuffling ? 'Desactivar aleatorio' : 'Activar aleatorio'}
                     >
-                        <FaRandom size={18} />
+                        <FaRedo size={18} />
                     </button>
                 </div>
             </div>
