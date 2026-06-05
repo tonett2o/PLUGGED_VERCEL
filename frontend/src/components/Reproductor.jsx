@@ -355,12 +355,11 @@ const Reproductor = () => {
                 <div className="controles-centro">
                     {/* Botón Repetir */}
                     <button
-                        onClick={() => setRepeatMode((repeatMode + 1) % 3)}
-                        className={`btn-control ${repeatMode > 0 ? 'activo' : ''}`}
-                        title={repeatMode === 0 ? 'Sin repetir' : repeatMode === 1 ? 'Repetir todo' : 'Repetir una'}
+                        onClick={() => setIsShuffling(!isShuffling)}
+                        className={`btn-control ${isShuffling ? 'activo' : ''}`}
+                        title={isShuffling ? 'Desactivar aleatorio' : 'Activar aleatorio'}
                     >
                         <FaRandom size={18} />
-                        {repeatMode === 2 && <span className="repeat-badge">1</span>}
                     </button>
 
                     {/* Botón Anterior */}
@@ -384,11 +383,12 @@ const Reproductor = () => {
 
                     {/* Botón Aleatorio */}
                     <button
-                        onClick={() => setIsShuffling(!isShuffling)}
-                        className={`btn-control ${isShuffling ? 'activo' : ''}`}
-                        title={isShuffling ? 'Desactivar aleatorio' : 'Activar aleatorio'}
+                        onClick={() => setRepeatMode((repeatMode + 1) % 3)}
+                        className={`btn-control ${repeatMode > 0 ? 'activo' : ''}`}
+                        title={repeatMode === 0 ? 'Sin repetir' : repeatMode === 1 ? 'Repetir todo' : 'Repetir una'}
                     >
                         <FaRedo size={18} />
+                        {repeatMode === 2 && <span className="repeat-badge">1</span>}
                     </button>
                 </div>
             </div>
