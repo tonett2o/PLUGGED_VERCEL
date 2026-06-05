@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Cancion;
 use App\Models\Usuario;
+use App\Models\Coleccion;
 use Illuminate\Database\Seeder;
 
 /**
@@ -11,6 +12,11 @@ use Illuminate\Database\Seeder;
  *
  * Esta canción se usa como referencia en colecciones, playlists y otros
  * contextos donde se necesita una canción por defecto.
+ *
+ * Estructura:
+ * - Usuario "Sistema" (admin)
+ * - Colección "Default" (singles)
+ * - Canción "Default Track"
  */
 class CancionPorDefectoSeeder extends Seeder
 {
@@ -31,9 +37,22 @@ class CancionPorDefectoSeeder extends Seeder
             ]
         );
 
+        // Buscar o crear colección "Singles" del usuario (como en DatabaseSeeder)
+        $coleccionSingles = Coleccion::firstOrCreate(
+            ['titulo' => 'Singles', 'id_usuario' => $usuarioSistema->id],
+            [
+                'artista' => $usuarioSistema->nick,
+                'tipo' => 'singles',
+                'privacidad' => 'publica',
+                'fecha_publicacion' => date('Y'),
+                'portada' => 'portadas/portada-default.jpg',
+                'protegida' => true
+            ]
+        );
+
         // Crear canción por defecto si no existe
         Cancion::firstOrCreate(
-            ['titulo' => 'Default Track'],
+            ['titulo' => 'Default Track', 'id_usuario' => $usuarioSistema->id],
             [
                 'bpm' => 128,
                 'tonalidad' => 'A',
@@ -43,10 +62,10 @@ class CancionPorDefectoSeeder extends Seeder
                 'fecha_publicacion' => date('Y'),
                 'privacidad' => 'publica',
                 'id_usuario' => $usuarioSistema->id,
-                'id_coleccion' => null
+                'id_coleccion' => $coleccionSingles->id
             ]
         );
 
-        $this->command->info('✓ Default song created');
+        $this->command->info('✓ Sistema user with Singles collection and default song created');
     }
 }
