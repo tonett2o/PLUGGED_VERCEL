@@ -30,4 +30,10 @@ RUN composer install --optimize-autoloader --no-dev --no-scripts && \
 
 EXPOSE 8000
 
+# El servidor built-in de PHP (php -S) es monohilo por defecto: solo atiende una
+# petición a la vez. Con varios GET concurrentes al cargar la página, los demás
+# fallan (ERR_FAILED). PHP_CLI_SERVER_WORKERS hace que forke varios procesos worker
+# para atender peticiones en paralelo.
+ENV PHP_CLI_SERVER_WORKERS=8
+
 CMD ["php", "-S", "0.0.0.0:8000", "-t", "public/", "/var/www/router.php"]
