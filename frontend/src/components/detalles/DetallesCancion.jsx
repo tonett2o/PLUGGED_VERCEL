@@ -398,10 +398,22 @@ const DetallesCancion = ({ cancionBuscada }) => {
                         <div className="comentarios-contenedor">
                             {comentarios.map((comentario) => (
                                 <div key={comentario.id} className="comentario-item">
-                                    <img
-                                        src={comentario.usuario.avatar}
-                                        alt={comentario.usuario.nombre}
-                                    />
+                                    {comentario.usuario.avatar ? (
+                                        <>
+                                            <img
+                                                src={comentario.usuario.avatar}
+                                                alt={comentario.usuario.nombre}
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    const fb = e.target.nextElementSibling;
+                                                    if (fb) fb.style.display = 'flex';
+                                                }}
+                                            />
+                                            <FaUser className="comentario-avatar-icon" style={{ display: 'none' }} />
+                                        </>
+                                    ) : (
+                                        <FaUser className="comentario-avatar-icon" />
+                                    )}
                                     <div className="comentario-contenido">
                                         <div className="comentario-header">
                                             <strong>{comentario.usuario.nombre}</strong>
