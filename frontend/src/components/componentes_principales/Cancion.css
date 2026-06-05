@@ -179,9 +179,10 @@
     text-decoration: none;
     color: inherit; /* Hereda el blanco del padre */
     display: block; /* Para que ocupe todo el espacio */
+    transition: color 0.3s ease;
 }
 
-/* Subrayado al pasar por el título, estilo Spotify */
+/* Azul al pasar por el título, igual que colecciones y playlists */
 .enlace-titulo-cancion:hover {
-    text-decoration: underline;
+    color: #0ADAF5;
 }
