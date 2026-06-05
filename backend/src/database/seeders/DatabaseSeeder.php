@@ -70,6 +70,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Canción por defecto (primero para que exista)
+        $this->call(CancionPorDefectoSeeder::class);
+
         // Equipamiento real
         $this->call(EquipamientoRealSeeder::class);
 
