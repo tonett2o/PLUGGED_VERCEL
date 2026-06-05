@@ -221,6 +221,7 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
                 value={currentTime}
                 onChange={handleScrub}
                 className="barra-progreso-reproductor"
+                style={{ '--value': `${duration ? (currentTime / duration) * 100 : 0}%` }}
             />
 
             {/* Tiempo total */}
@@ -239,6 +240,7 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
                     value={volume}
                     onChange={handleVolume}
                     className="slider-volumen-reproductor"
+                    style={{ '--value': `${volume * 100}%` }}
                 />
             </div>
         </div>
