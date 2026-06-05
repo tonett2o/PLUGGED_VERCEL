@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import API_URL from "../../config/api.js";
 
@@ -17,21 +17,38 @@ import DetallesSoftware from "../detalles/DetallesSoftware.jsx";
 import DetallesEvento from "../detalles/DetallesEvento.jsx";
 import DetallesUsuario from "../detalles/DetallesUsuario.jsx";
 
+// Determina si un dato tiene todas las relaciones necesarias cargadas
+const tieneRelacionesCompletas = (tipo, datos) => {
+    if (!datos) return false;
+    switch (tipo) {
+        case 'cancion':   return Array.isArray(datos.colaboradores);
+        case 'playlist':  return Array.isArray(datos.canciones);
+        case 'coleccion': return Array.isArray(datos.canciones) && Array.isArray(datos.colaboradores);
+        case 'evento':    return Array.isArray(datos.colaboradores);
+        default:          return true; // hardware, software, usuario no necesitan relaciones especiales
+    }
+};
+
 // El componente intermedio que limpia la lógica
 const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, id, refrescarFn }) => {
     const [datoCargado, setDatoCargado] = useState(dato || null);
     const [cargando, setCargando] = useState(false);
+    // Ref para saber si ya tenemos datos completos del id actual
+    // Evita que actualizaciones parciales del contexto (iniciarCanciones, etc.)
+    // sobreescriban datos completos y provoquen el spinner de "Cargando..."
+    const datoCargadoRef = useRef(dato || null);
 
-    // Función wrapper que actualiza tanto los datos globales como los locales
+    const setDato = (datos) => {
+        datoCargadoRef.current = datos;
+        setDatoCargado(datos);
+    };
+
     const refrescarDatos = async () => {
-        if (refrescarFn) {
-            await refrescarFn();
-        }
-        // Si no hay dato en contexto, recargar del backend para actualizar
+        if (refrescarFn) await refrescarFn();
         if (cargarDelBackend && tipo && id) {
             try {
                 const datos = await cargarDelBackend(id, tipo);
-                setDatoCargado(datos);
+                if (datos) setDato(datos);
             } catch (error) {
                 console.error('Error refrescando datos:', error);
             }
@@ -39,28 +56,32 @@ const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, 
     };
 
     useEffect(() => {
-        // Actualizar cuando cambia el dato del contexto
-        setDatoCargado(dato || null);
+        const loaded = datoCargadoRef.current;
+        const mismoId = loaded && String(loaded.id) === String(id);
+
+        if (tieneRelacionesCompletas(tipo, dato)) {
+            // El contexto tiene datos completos (p.ej. respuesta del PUT): usar directamente
+            setDato(dato);
+        } else if (!mismoId) {
+            // Id distinto al que tenemos cargado: resetear para forzar carga fresca
+            setDato(dato || null);
+        }
+        // Si mismo id pero dato parcial (p.ej. iniciarCanciones sin relaciones):
+        // NO sobreescribir — mantener los datos completos que ya teníamos
     }, [dato, id]);
 
     useEffect(() => {
-        // Cargar del backend si:
-        // 1. No hay dato en contexto, O
-        // 2. Hay dato pero no tiene sus relaciones cargadas (canciones, colaboradores, etc.)
-        const necesitaCargar = !dato || (
-            tipo === 'cancion' && (!dato.colaboradores || !Array.isArray(dato.colaboradores))
-        ) || (
-            tipo === 'playlist' && (!dato.canciones || !Array.isArray(dato.canciones) || dato.canciones.length === 0)
-        ) || (
-            tipo === 'coleccion' && (!dato.canciones || !Array.isArray(dato.canciones) || dato.canciones.length === 0 || !dato.colaboradores || !Array.isArray(dato.colaboradores))
-        ) || (
-            tipo === 'evento' && (!dato.colaboradores || !Array.isArray(dato.colaboradores))
-        );
+        const loaded = datoCargadoRef.current;
+        const mismoId = loaded && String(loaded.id) === String(id);
+        const yaTenemosBuenos = mismoId && tieneRelacionesCompletas(tipo, loaded);
 
-        if (necesitaCargar && cargarDelBackend && tipo && id) {
-            setCargando(true);
+        if (!yaTenemosBuenos && cargarDelBackend && tipo && id) {
+            // Solo mostrar spinner si no tenemos NINGÚN dato para este id
+            // Si tenemos datos parciales: cargar en background sin spinner (evita el flicker)
+            if (!mismoId) setCargando(true);
+
             cargarDelBackend(id, tipo).then(datos => {
-                setDatoCargado(datos);
+                if (datos) setDato(datos);
                 setCargando(false);
             }).catch(error => {
                 console.error('Error cargando datos:', error);
@@ -72,7 +93,6 @@ const ValidarDetalle = ({ dato, Componente, propNombre, cargarDelBackend, tipo, 
     if (cargando) return <p className="cargando">Cargando...</p>;
     if (!datoCargado) return <p className="error">No se ha encontrado la información solicitada.</p>;
 
-    // Usar key para re-montar el componente cuando cambia el id
     const props = { [propNombre]: datoCargado };
     if (refrescarFn) props.refrescarTodo = refrescarDatos;
 
