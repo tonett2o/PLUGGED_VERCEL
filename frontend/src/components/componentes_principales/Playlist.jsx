@@ -50,16 +50,21 @@ const Playlist = (props) => {
                     >
                         <div className='avatar-usuario-playlist'>
                             {usuario?.avatar ? (
-                                <img
-                                    src={usuario.avatar}
-                                    alt={usuario?.nombre || 'Usuario'}
-                                    onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        const parent = e.target.parentElement;
-                                        const fallback = parent.querySelector('.avatar-placeholder');
-                                        if (fallback) fallback.style.display = 'flex';
-                                    }}
-                                />
+                                <>
+                                    <img
+                                        src={usuario.avatar}
+                                        alt={usuario?.nombre || 'Usuario'}
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            const parent = e.target.parentElement;
+                                            const fallback = parent.querySelector('.avatar-placeholder');
+                                            if (fallback) fallback.style.display = 'flex';
+                                        }}
+                                    />
+                                    <div className='avatar-placeholder' style={{ display: 'none' }}>
+                                        <FaUser />
+                                    </div>
+                                </>
                             ) : (
                                 <div className='avatar-placeholder'>
                                     <FaUser />

@@ -78,7 +78,18 @@ const Explorar = () => {
                                     <div className="item-number">{index + 1}</div>
                                     <div className="item-image">
                                         {usuario.avatar ? (
-                                            <img src={usuario.avatar} alt={usuario.nick} />
+                                            <>
+                                                <img
+                                                    src={usuario.avatar}
+                                                    alt={usuario.nick}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        const fallback = e.target.parentElement.querySelector('.item-placeholder');
+                                                        if (fallback) fallback.style.display = 'block';
+                                                    }}
+                                                />
+                                                <FaUser className="item-placeholder" style={{ display: 'none' }} />
+                                            </>
                                         ) : (
                                             <FaUser className="item-placeholder" />
                                         )}
@@ -155,7 +166,18 @@ const Explorar = () => {
                                     <div className="item-number">{index + 1}</div>
                                     <div className="item-image">
                                         {soft.imagen ? (
-                                            <img src={soft.imagen} alt={soft.nombre} />
+                                            <>
+                                                <img
+                                                    src={soft.imagen}
+                                                    alt={soft.nombre}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        const fallback = e.target.parentElement.querySelector('.item-placeholder');
+                                                        if (fallback) fallback.style.display = 'block';
+                                                    }}
+                                                />
+                                                <FaLaptop className="item-placeholder" style={{ display: 'none' }} />
+                                            </>
                                         ) : (
                                             <FaLaptop className="item-placeholder" />
                                         )}
@@ -178,7 +200,18 @@ const Explorar = () => {
                                     <div className="item-number">{index + 1}</div>
                                     <div className="item-image">
                                         {hw.imagen ? (
-                                            <img src={hw.imagen} alt={hw.nombre} />
+                                            <>
+                                                <img
+                                                    src={hw.imagen}
+                                                    alt={hw.nombre}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        const fallback = e.target.parentElement.querySelector('.item-placeholder');
+                                                        if (fallback) fallback.style.display = 'block';
+                                                    }}
+                                                />
+                                                <FaHeadphones className="item-placeholder" style={{ display: 'none' }} />
+                                            </>
                                         ) : (
                                             <FaHeadphones className="item-placeholder" />
                                         )}
