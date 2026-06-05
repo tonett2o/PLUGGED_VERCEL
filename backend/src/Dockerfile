@@ -22,10 +22,12 @@ WORKDIR /var/www
 
 COPY . .
 
+COPY php.ini /usr/local/etc/php/conf.d/custom.ini
+
 RUN composer install --optimize-autoloader --no-dev --no-scripts && \
     chmod -R 755 storage bootstrap/cache && \
     php artisan storage:link
 
 EXPOSE 8000
 
-CMD ["php", "-c", "/var/www/php.ini", "-S", "0.0.0.0:8000", "-t", "public/"]
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public/"]
