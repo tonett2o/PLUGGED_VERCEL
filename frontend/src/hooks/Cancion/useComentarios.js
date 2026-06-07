@@ -1,189 +1,185 @@
 /**
- * useComentarios.js - Hook de gestion de comentarios en canciones
+ * useComentarios.js - Hook de comentarios de canciones contra el backend
  *
- * Implementa un sistema de comentarios persistido en localStorage.
- * Los comentarios se vinculan a una posicion temporal de la cancion (segundo),
- * lo que permite mostrarlos sincronizados con la reproduccion.
+ * Gestiona los comentarios de una cancion haciendo peticiones reales a la API.
+ * Los comentarios son visibles para todos los usuarios porque se persisten en
+ * la base de datos, no en localStorage.
  *
- * Nota: los comentarios se guardan localmente en el navegador del usuario,
- * no se sincronizan con el backend ni son visibles para otros usuarios.
- * Cada comentario incluye el timestamp de la cancion en el que fue creado.
+ * El backend devuelve los campos en formato plano (usuario_nick, usuario_avatar, segundo).
+ * Este hook los normaliza al formato que usa DetallesCancion (usuario.nombre, tiempoSegundos, etc.)
  *
- * Operaciones disponibles:
- *   agregarComentario(cancionId, texto, tiempoActual) - Crea un comentario en la posicion actual
- *   obtenerComentarios(cancionId) - Lista todos los comentarios de una cancion
- *   eliminarComentario(cancionId, comentarioId) - Elimina un comentario por id
- *   editarComentario(cancionId, comentarioId, nuevoTexto) - Edita el texto de un comentario
- *   likeComentario(cancionId, comentarioId) - Incrementa el contador de likes de un comentario
- *
- * @returns {object} Objeto con las funciones de gestion y el estado actual
+ * Operaciones:
+ *   cargarComentarios(cancionId)              - GET   /api/canciones/:id/comentarios
+ *   agregarComentario(cancionId, texto, seg)  - POST  /api/canciones/:id/comentarios
+ *   eliminarComentario(cancionId, comentId)   - DELETE /api/comentarios/:id
+ *   obtenerComentarios(cancionId)             - Lectura del estado local (sincrona)
  */
-import API_URL from '../../config/api.js'
-import { useState, useEffect } from 'react';
+import API_URL from '../../config/api.js';
+import { useState } from 'react';
 import { useAuth } from '../../contexts/ProveedorAuth';
+
+/**
+ * Convierte un comentario del formato del backend al formato que usa el componente.
+ * Backend: { id, texto, segundo, created_at, id_usuario, usuario_nick, usuario_avatar }
+ * Frontend: { id, texto, tiempoSegundos, timestamp, fechaCreacion, usuario: { id, nombre, avatar } }
+ */
+const normalizarComentario = (c) => {
+    const segundo = c.segundo || 0;
+    const minutos = Math.floor(segundo / 60);
+    const segs = Math.floor(segundo % 60);
+    return {
+        id: c.id,
+        texto: c.texto,
+        tiempoSegundos: segundo,
+        timestamp: `${String(minutos).padStart(2, '0')}:${String(segs).padStart(2, '0')}`,
+        fechaCreacion: c.created_at,
+        usuario: {
+            id: c.id_usuario,
+            nombre: c.usuario_nick || 'Usuario',
+            avatar: c.usuario_avatar || null
+        }
+    };
+};
 
 export const useComentarios = () => {
     const { usuario } = useAuth();
-    // Mapa de comentarios por cancion: { [cancionId]: Array<comentario> }
+
+    // Mapa de comentarios por cancion: { [cancionId]: Array<comentario normalizado> }
     const [comentariosPorCancion, setComentariosPorCancion] = useState({});
-
-    // Al montar el hook, carga los comentarios persistidos en localStorage
-    useEffect(() => {
-        const comentariosGuardados = localStorage.getItem('comentariosMusica');
-        if (comentariosGuardados) {
-            try {
-                setComentariosPorCancion(JSON.parse(comentariosGuardados));
-            } catch (e) {
-                console.error('Error cargando comentarios:', e);
-            }
-        }
-    }, []);
+    const [cargando, setCargando] = useState(false);
 
     /**
-     * Persiste el mapa de comentarios en localStorage y actualiza el estado.
-     * @param {object} nuevosComentarios - Mapa completo actualizado
-     */
-    const guardarComentarios = (nuevosComentarios) => {
-        setComentariosPorCancion(nuevosComentarios);
-        localStorage.setItem('comentariosMusica', JSON.stringify(nuevosComentarios));
-    };
-
-    /**
-     * Crea un nuevo comentario vinculado a la posicion actual de la cancion.
-     * Requiere usuario autenticado y texto no vacio.
-     * El comentario se inserta al principio del array (orden cronologico inverso).
+     * Carga los comentarios de una cancion desde el backend.
+     * Publica, no requiere autenticacion.
+     * Debe llamarse desde un useEffect cuando el id de cancion cambia.
      *
-     * @param {number} cancionId    - ID de la cancion
-     * @param {string} texto        - Contenido del comentario
-     * @param {number} tiempoActual - Segundo de la cancion en el que se comenta
-     * @returns {object|null} Comentario creado o null si no se pudo crear
+     * @param {number} cancionId - ID de la cancion
      */
-    const agregarComentario = (cancionId, texto, tiempoActual = 0) => {
-        if (!texto.trim() || !usuario) return null;
-
-        const nuevosComentarios = { ...comentariosPorCancion };
-
-        if (!nuevosComentarios[cancionId]) {
-            nuevosComentarios[cancionId] = [];
+    const cargarComentarios = async (cancionId) => {
+        if (!cancionId) return;
+        setCargando(true);
+        try {
+            const response = await fetch(`${API_URL}/api/canciones/${cancionId}/comentarios`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const normalizados = Array.isArray(data) ? data.map(normalizarComentario) : [];
+                setComentariosPorCancion(prev => ({ ...prev, [cancionId]: normalizados }));
+            }
+        } catch (e) {
+            console.error('Error cargando comentarios:', e);
+        } finally {
+            setCargando(false);
         }
-
-        // Formatear el tiempo como MM:SS para mostrarlo en la UI
-        const minutos = Math.floor(tiempoActual / 60);
-        const segundos = Math.floor(tiempoActual % 60);
-        const tiempoFormato = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-
-        const comentario = {
-            id: Date.now(),
-            usuario: {
-                id: usuario.id,
-                nombre: usuario.nombre || usuario.nick,
-                avatar: usuario.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${usuario.id}`
-            },
-            texto,
-            timestamp: tiempoFormato,        // Formato legible "MM:SS"
-            tiempoSegundos: tiempoActual,    // Segundos para comparar con currentTime
-            fechaCreacion: new Date().toISOString(),
-            likes: 0
-        };
-
-        // Insertar al principio para mostrar el mas reciente primero
-        nuevosComentarios[cancionId] = [comentario, ...nuevosComentarios[cancionId]];
-        guardarComentarios(nuevosComentarios);
-
-        return comentario;
     };
 
     /**
-     * Devuelve todos los comentarios de una cancion.
+     * Devuelve el array de comentarios de una cancion desde el estado local.
+     * Llamada sincrona; el array se puebla mediante cargarComentarios().
+     *
      * @param {number} cancionId - ID de la cancion
-     * @returns {Array} Array de comentarios o array vacio
+     * @returns {Array} Array de comentarios normalizados
      */
     const obtenerComentarios = (cancionId) => {
         return comentariosPorCancion[cancionId] || [];
     };
 
     /**
-     * Elimina un comentario por su id. Si la cancion se queda sin comentarios,
-     * elimina la entrada del mapa para no acumular claves vacias.
+     * Envia un nuevo comentario al backend y lo anade al estado local.
+     * Requiere usuario autenticado.
      *
      * @param {number} cancionId    - ID de la cancion
+     * @param {string} texto        - Texto del comentario
+     * @param {number} tiempoActual - Segundo de la cancion en el que se ancla el comentario
+     * @returns {object|null} Comentario normalizado creado, o null si fallo
+     */
+    const agregarComentario = async (cancionId, texto, tiempoActual = 0) => {
+        if (!texto.trim() || !usuario) return null;
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch(`${API_URL}/api/canciones/${cancionId}/comentarios`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    texto: texto.trim(),
+                    segundo: Math.floor(tiempoActual)
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const nuevo = normalizarComentario(data.comentario);
+
+                // Insertar y reordenar por segundo ascendente (igual que el backend)
+                setComentariosPorCancion(prev => {
+                    const actuales = prev[cancionId] || [];
+                    const actualizados = [...actuales, nuevo]
+                        .sort((a, b) => a.tiempoSegundos - b.tiempoSegundos);
+                    return { ...prev, [cancionId]: actualizados };
+                });
+
+                return nuevo;
+            } else {
+                const err = await response.json();
+                console.error('Error al publicar comentario:', err);
+                return null;
+            }
+        } catch (e) {
+            console.error('Error al publicar comentario:', e);
+            return null;
+        }
+    };
+
+    /**
+     * Elimina un comentario del backend y lo quita del estado local.
+     * El backend verifica que el usuario autenticado sea el autor (403 si no lo es).
+     *
+     * @param {number} cancionId    - ID de la cancion (para actualizar el estado local)
      * @param {number} comentarioId - ID del comentario a eliminar
-     * @returns {boolean} true si se elimino, false si no existia
+     * @returns {boolean} true si se elimino correctamente
      */
-    const eliminarComentario = (cancionId, comentarioId) => {
-        const nuevosComentarios = { ...comentariosPorCancion };
+    const eliminarComentario = async (cancionId, comentarioId) => {
+        const token = localStorage.getItem('token');
 
-        if (nuevosComentarios[cancionId]) {
-            nuevosComentarios[cancionId] = nuevosComentarios[cancionId].filter(c => c.id !== comentarioId);
+        try {
+            const response = await fetch(`${API_URL}/api/comentarios/${comentarioId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
 
-            if (nuevosComentarios[cancionId].length === 0) {
-                delete nuevosComentarios[cancionId];
-            }
-
-            guardarComentarios(nuevosComentarios);
-            return true;
-        }
-
-        return false;
-    };
-
-    /**
-     * Edita el texto de un comentario existente y marca la fecha de edicion.
-     *
-     * @param {number} cancionId    - ID de la cancion
-     * @param {number} comentarioId - ID del comentario a editar
-     * @param {string} nuevoTexto   - Nuevo contenido del comentario
-     * @returns {boolean} true si se edito, false si no existe o texto vacio
-     */
-    const editarComentario = (cancionId, comentarioId, nuevoTexto) => {
-        if (!nuevoTexto.trim()) return false;
-
-        const nuevosComentarios = { ...comentariosPorCancion };
-
-        if (nuevosComentarios[cancionId]) {
-            const index = nuevosComentarios[cancionId].findIndex(c => c.id === comentarioId);
-
-            if (index !== -1) {
-                nuevosComentarios[cancionId][index].texto = nuevoTexto;
-                nuevosComentarios[cancionId][index].editado = new Date().toISOString();
-                guardarComentarios(nuevosComentarios);
+            if (response.ok) {
+                // Eliminar del estado local sin recargar toda la lista
+                setComentariosPorCancion(prev => {
+                    const actuales = prev[cancionId] || [];
+                    return { ...prev, [cancionId]: actuales.filter(c => c.id !== comentarioId) };
+                });
                 return true;
             }
+
+            // 403: el usuario no es el autor
+            console.error('No puedes eliminar ese comentario');
+            return false;
+        } catch (e) {
+            console.error('Error al eliminar comentario:', e);
+            return false;
         }
-
-        return false;
-    };
-
-    /**
-     * Incrementa en 1 el contador de likes de un comentario.
-     * No valida si el usuario ya habia dado like anteriormente.
-     *
-     * @param {number} cancionId    - ID de la cancion
-     * @param {number} comentarioId - ID del comentario
-     * @returns {boolean} true si se actualizo, false si no existe
-     */
-    const likeComentario = (cancionId, comentarioId) => {
-        const nuevosComentarios = { ...comentariosPorCancion };
-
-        if (nuevosComentarios[cancionId]) {
-            const comentario = nuevosComentarios[cancionId].find(c => c.id === comentarioId);
-
-            if (comentario) {
-                comentario.likes = (comentario.likes || 0) + 1;
-                guardarComentarios(nuevosComentarios);
-                return true;
-            }
-        }
-
-        return false;
     };
 
     return {
-        agregarComentario,
+        cargarComentarios,
         obtenerComentarios,
+        agregarComentario,
         eliminarComentario,
-        editarComentario,
-        likeComentario,
-        comentariosPorCancion
+        comentariosPorCancion,
+        cargando
     };
 };

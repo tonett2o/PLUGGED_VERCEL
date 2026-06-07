@@ -16,7 +16,7 @@ const DetallesCancion = ({ cancionBuscada }) => {
     const { playlists, refrescarPlaylistsYColecciones } = useContext(contextoMusica) || {};
     const notificaciones = useContext(contextoNotificaciones);
     const { toggleLike, isLiked, getLikeCount } = useLike();
-    const { agregarComentario, obtenerComentarios, eliminarComentario } = useComentarios();
+    const { agregarComentario, obtenerComentarios, eliminarComentario, cargarComentarios } = useComentarios();
 
     const { id, titulo, portada, usuario, bpm, tonalidad, estilos = [], colaboradores = [], reproducciones_count = 0, fecha_publicacion } = cancionBuscada;
     const imagenPorDefecto = generarPortadaPlaceholder(titulo || 'Canción', false);
@@ -80,6 +80,9 @@ const DetallesCancion = ({ cancionBuscada }) => {
         };
 
         cargarDatosCancion();
+
+        // Cargar los comentarios de esta canción desde el backend (visibles para todos)
+        cargarComentarios(id);
     }, [id, reproducciones_count]);
 
     // Incrementar reproducciones cuando se reproduce
@@ -129,15 +132,22 @@ const DetallesCancion = ({ cancionBuscada }) => {
         }
     };
 
-    const handleAgregarComentario = () => {
+    const handleAgregarComentario = async () => {
         if (nuevoComentario.trim()) {
-            agregarComentario(id, nuevoComentario, tiempoActual);
-            setNuevoComentario('');
+            const creado = await agregarComentario(id, nuevoComentario, tiempoActual);
+            if (creado) {
+                setNuevoComentario('');
+            } else {
+                notificaciones?.error?.('No se pudo publicar el comentario');
+            }
         }
     };
 
-    const handleEliminarComentario = (comentarioId) => {
-        eliminarComentario(id, comentarioId);
+    const handleEliminarComentario = async (comentarioId) => {
+        const ok = await eliminarComentario(id, comentarioId);
+        if (!ok) {
+            notificaciones?.error?.('No se pudo eliminar el comentario');
+        }
     };
 
     const handleAgregarAPlaylist = async (playlistId) => {
@@ -439,13 +449,16 @@ const DetallesCancion = ({ cancionBuscada }) => {
                                                     minute: '2-digit'
                                                 })}
                                             </span>
-                                            <button
-                                                className="btn-eliminar-comentario"
-                                                onClick={() => handleEliminarComentario(comentario.id)}
-                                                title="Eliminar comentario"
-                                            >
-                                                ✕
-                                            </button>
+                                            {/* El boton de eliminar solo aparece en los comentarios propios */}
+                                            {comentario.usuario.id === usuarioActual.id && (
+                                                <button
+                                                    className="btn-eliminar-comentario"
+                                                    onClick={() => handleEliminarComentario(comentario.id)}
+                                                    title="Eliminar comentario"
+                                                >
+                                                    ✕
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

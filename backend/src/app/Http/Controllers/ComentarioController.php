@@ -82,6 +82,14 @@ class ComentarioController extends Controller
             )
             ->get();
 
+        // La consulta con DB::table() se salta el accessor del modelo Usuario,
+        // por lo que el avatar viene como ruta relativa. Lo convertimos a URL
+        // completa para que el frontend pueda mostrarlo directamente.
+        $comentarios->transform(function ($c) {
+            $c->usuario_avatar = $c->usuario_avatar ? asset('storage/' . $c->usuario_avatar) : null;
+            return $c;
+        });
+
         return response()->json($comentarios, 200);
     }
 
@@ -166,6 +174,13 @@ class ComentarioController extends Controller
                 'usuarios.avatar as usuario_avatar'
             )
             ->first();
+
+        // Convertir el avatar a URL completa (DB::table() no aplica el accessor del modelo)
+        if ($comentario) {
+            $comentario->usuario_avatar = $comentario->usuario_avatar
+                ? asset('storage/' . $comentario->usuario_avatar)
+                : null;
+        }
 
         // Paso 6: Retornar comentario creado
         return response()->json([
