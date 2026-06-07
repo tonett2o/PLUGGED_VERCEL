@@ -10,14 +10,13 @@ PLUGGED es una plataforma web donde DJs, productores y amantes de la música ele
 
 ## ¿Qué se puede hacer en PLUGGED?
 
-- 🎵 **Subir y escuchar música** — Publica tus tracks y escúchalos con un reproductor integrado que se mueve contigo por toda la web.
-- 💿 **Organizar tu música** — Agrupa tus canciones en álbumes, EPs y playlists.
-- 🗺️ **Descubrir eventos** — Publica conciertos y fiestas en un mapa interactivo para que la gente sepa dónde tocas.
-- 🎛️ **Mostrar tu setup** — Comparte el hardware y software (mesas de mezclas, sintetizadores, programas) que usas para crear tu música.
-- 👤 **Crear tu perfil de artista** — Personaliza tu página con avatar, biografía, ubicación, redes sociales y una galería de fotos.
-- ❤️ **Interactuar con la comunidad** — Sigue a otros artistas, da "me gusta" y comenta las canciones.
-- 🔍 **Buscar y explorar** — Encuentra artistas, canciones y álbumes, y consulta los rankings de lo más escuchado.
-- 🌙 **Modo claro y oscuro** — La interfaz se adapta a tus preferencias.
+-  **Subir y escuchar música** — Publica tus tracks y escúchalos con un reproductor integrado que se mueve contigo por toda la web.
+-  **Organizar tu música** — Agrupa tus canciones en álbumes, EPs y playlists.
+-  **Descubrir eventos** — Publica conciertos y fiestas en un mapa interactivo para que la gente sepa dónde tocas.
+-  **Mostrar tu setup** — Comparte el hardware y software (mesas de mezclas, sintetizadores, programas) que usas para crear tu música.
+-  **Crear tu perfil de artista** — Personaliza tu página con avatar, biografía, ubicación, redes sociales y una galería de fotos.
+-  **Interactuar con la comunidad** — Sigue a otros artistas, da "me gusta" y comenta las canciones.
+-  **Buscar y explorar** — Encuentra artistas, canciones y álbumes, y consulta los rankings de lo más escuchado.
 
 ---
 
