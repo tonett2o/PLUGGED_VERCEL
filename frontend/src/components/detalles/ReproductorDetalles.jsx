@@ -10,7 +10,7 @@ const URL_STORAGE = `${API_URL}/storage/`;
 const THROTTLE_TIME = 500; // Throttle timeupdate to 500ms intervals
 
 const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay }) => {
-    const { setTrackActual, setIsPlaying: setGlobalIsPlaying } = useContext(contextoMusica);
+    const { trackActual, setTrackActual, setIsPlaying: setGlobalIsPlaying } = useContext(contextoMusica);
     const audioRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -84,14 +84,19 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
         }
     }, [performSeek]);
 
-    // Cargar la canción.
-    // IMPORTANTE: este efecto NO depende de `volume`. Si dependiera, mover el
-    // slider de volumen volvería a ejecutar `audio.src = audioUrl`, recargando
-    // el audio desde cero y deteniendo la reproducción.
-    useEffect(() => {
-        if (!cancion || !audioRef.current) return;
+    // URL del audio derivada de la canción (string primitivo). Solo cambia cuando
+    // cambia el archivo real, NO cuando cambia la referencia del objeto `cancion`.
+    const audioUrl = getAudioUrl();
 
-        const audioUrl = getAudioUrl();
+    // Cargar la canción.
+    // Depende SOLO de `audioUrl` (string), no del objeto `cancion` ni de `volume`.
+    // Antes dependía de [cancion, getAudioUrl]: cuando Mostrar.jsx revalidaba los
+    // datos (stale-while-revalidate) y `cancion` cambiaba de referencia manteniendo
+    // el mismo archivo, este efecto se re-ejecutaba, su cleanup hacía audio.pause()
+    // y reasignaba el src, deteniendo la reproducción a los pocos segundos.
+    // Dependiendo de la URL primitiva, eso ya no ocurre.
+    useEffect(() => {
+        if (!audioRef.current) return;
 
         if (!audioUrl) {
             setError('No se encontró archivo de audio');
@@ -104,7 +109,7 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
         return () => {
             audio.pause();
         };
-    }, [cancion, getAudioUrl]);
+    }, [audioUrl]);
 
     // Sincroniza el volumen del elemento <audio> con el estado SIN tocar el src.
     // Se ejecuta al montar (volumen inicial) y cada vez que cambia `volume`,
@@ -114,6 +119,17 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
             audioRef.current.volume = volume;
         }
     }, [volume]);
+
+    // Exclusión mutua con el reproductor global.
+    // Cuando el global arranca una canción (trackActual deja de ser null), pausamos
+    // el reproductor de detalles para que NO suenen los dos a la vez.
+    // (El sentido contrario ya está cubierto en togglePlay, que hace setTrackActual(null)
+    // al reproducir desde detalles, deteniendo el global.)
+    useEffect(() => {
+        if (trackActual && audioRef.current && !audioRef.current.paused) {
+            audioRef.current.pause();
+        }
+    }, [trackActual]);
 
     // Setup event listeners
     useEffect(() => {
