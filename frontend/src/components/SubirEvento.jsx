@@ -157,6 +157,20 @@ const SubirEvento = ({ alFinalizar, datosAEditar }) => {
         setSubiendo(true);
         setErrores({});
 
+        // Validación de fecha en cliente: no se permiten eventos con fecha pasada.
+        // Comparamos solo la parte de fecha (sin hora) para que "hoy" sea válido.
+        if (form.fecha_evento) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const fechaSeleccionada = new Date(form.fecha_evento + 'T00:00:00');
+            if (fechaSeleccionada < hoy) {
+                setErrores({ fecha_evento: ['La fecha del evento no puede ser anterior a hoy'] });
+                notificaciones.error('La fecha del evento no puede ser anterior a hoy');
+                setSubiendo(false);
+                return;
+            }
+        }
+
         const datosEnvio = {
             ...form,
             colaboradores: colaboradores
@@ -244,6 +258,8 @@ const SubirEvento = ({ alFinalizar, datosAEditar }) => {
                             type="date"
                             value={form.fecha_evento}
                             onChange={handleChange}
+                            // min impide elegir fechas pasadas en el propio calendario del navegador
+                            min={new Date().toISOString().split('T')[0]}
                             style={{ borderColor: errores.fecha_evento ? '#ff4444' : undefined }}
                         />
                         {renderErrorMessage(errores, 'fecha_evento')}

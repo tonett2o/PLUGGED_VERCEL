@@ -874,8 +874,7 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
                             {cancionesDelUsuario?.length > 0 ? cancionesDelUsuario.map(track => {
                                 const estaReproduciendo = trackActual?.id === track.id && isPlaying;
                                 return (
-                                    <Link key={track.id} to={`/mostrar/cancion/${track.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <div className="sc-track-card sc-gear-item" style={{ position: 'relative', cursor: 'pointer' }}>
+                                    <div key={track.id} className="sc-track-card sc-gear-item" style={{ position: 'relative', cursor: 'pointer' }} onClick={() => reproducirTrack(track)} title="Reproducir">
                                         <div className="sc-track-art" style={{ position: 'relative' }}>
                                             {track.portada ? (
                                                 <img
@@ -910,7 +909,10 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
                                         </div>
                                         <div className="sc-track-info">
                                             <span className="sc-artist-small">{nick}</span>
-                                            <h4 style={{ cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.target.style.color = 'var(--sc-orange)'} onMouseLeave={(e) => e.target.style.color = 'inherit'}>{track.titulo}</h4>
+                                            {/* El título lleva a los detalles; stopPropagation evita disparar la reproducción del card */}
+                                            <Link to={`/mostrar/cancion/${track.id}`} onClick={(e) => e.stopPropagation()} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <h4 style={{ cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={(e) => e.target.style.color = 'var(--sc-orange)'} onMouseLeave={(e) => e.target.style.color = 'inherit'}>{track.titulo}</h4>
+                                            </Link>
                                             <div style={{ display: 'flex', gap: '15px', marginTop: '8px', fontSize: '0.85rem', color: 'var(--sc-text-dim)' }}>
                                                 {track.estilo && <span style={{ padding: '4px 8px', backgroundColor: 'var(--sc-bg-input)', borderRadius: '4px' }}>{track.estilo}</span>}
                                                 {track.bpm && <span style={{ padding: '4px 8px', backgroundColor: 'var(--sc-bg-input)', borderRadius: '4px' }}>BPM: <strong style={{ color: 'var(--sc-accent-neon)' }}>{track.bpm}</strong></span>}
@@ -978,7 +980,6 @@ const DetallesUsuario = ({ datosUsuario, refrescarTodo }) => {
                                             </div>
                                         )}
                                     </div>
-                                    </Link>
                                 );
                             }) : <p className="sc-empty">No hay tracks subidos todavía.</p>}
                         </div>

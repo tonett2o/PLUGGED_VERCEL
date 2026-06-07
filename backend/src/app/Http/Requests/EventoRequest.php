@@ -136,7 +136,7 @@ class EventoRequest extends FormRequest
             'latitud'      => 'required|numeric|between:-90,90',
             'longitud'     => 'required|numeric|between:-180,180',
             'url_venta'    => $this->getUrlVentaRule(),
-            'fecha_evento' => 'required|date_format:Y-m-d',
+            'fecha_evento' => 'required|date_format:Y-m-d|after_or_equal:today',
             'estilos'      => 'nullable|array',
             'estilos.*'    => 'integer|exists:estilos,id',
             'colaboradores' => 'nullable|array',
@@ -227,6 +227,7 @@ class EventoRequest extends FormRequest
             // Fecha del evento
             'fecha_evento.required' => 'Fecha requerida',
             'fecha_evento.date_format' => 'Formato: YYYY-MM-DD',
+            'fecha_evento.after_or_equal' => 'La fecha del evento no puede ser anterior a hoy',
 
             // Estilos/Géneros
             'estilos.array'       => 'Estilos debe ser un array',
