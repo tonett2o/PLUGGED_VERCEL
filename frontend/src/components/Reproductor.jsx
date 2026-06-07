@@ -296,8 +296,7 @@ const Reproductor = () => {
         audio.volume = 0.5;
 
         audio.play().catch((error) => {
-            // El navegador puede bloquear el autoplay sin interaccion previa del usuario
-            console.log("Auto-play esperando interaccion del usuario:", error.message);
+
         });
 
         return () => {

@@ -84,7 +84,10 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
         }
     }, [performSeek]);
 
-    // Cargar la canción
+    // Cargar la canción.
+    // IMPORTANTE: este efecto NO depende de `volume`. Si dependiera, mover el
+    // slider de volumen volvería a ejecutar `audio.src = audioUrl`, recargando
+    // el audio desde cero y deteniendo la reproducción.
     useEffect(() => {
         if (!cancion || !audioRef.current) return;
 
@@ -96,13 +99,21 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
         }
 
         const audio = audioRef.current;
-        audio.volume = volume;
         audio.src = audioUrl;
 
         return () => {
             audio.pause();
         };
-    }, [cancion, getAudioUrl, volume]);
+    }, [cancion, getAudioUrl]);
+
+    // Sincroniza el volumen del elemento <audio> con el estado SIN tocar el src.
+    // Se ejecuta al montar (volumen inicial) y cada vez que cambia `volume`,
+    // por lo que ajustar el volumen ya no interrumpe la reproducción.
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume;
+        }
+    }, [volume]);
 
     // Setup event listeners
     useEffect(() => {
@@ -182,10 +193,9 @@ const ReproductorDetallesComponent = ({ cancion, onTimeChange, seekTime, onPlay 
 
     const handleVolume = (e) => {
         const newVolume = parseFloat(e.target.value);
+        // Solo actualizamos el estado: el useEffect de volumen lo aplica al
+        // elemento <audio> sin recargar el src ni interrumpir la reproducción.
         setVolume(newVolume);
-        if (audioRef.current) {
-            audioRef.current.volume = newVolume;
-        }
     };
 
     const formatTime = (time) => {

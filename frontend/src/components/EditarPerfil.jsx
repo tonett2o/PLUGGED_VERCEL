@@ -153,7 +153,6 @@ const EditarPerfil = ({ datosActuales, alFinalizar }) => {
             // Actualizar el contexto de autenticación para que la navbar se refleje inmediatamente
             const token = localStorage.getItem('token');
             if (token && usuarioActualizado) {
-                console.log('🔄 Actualizando contexto de auth con usuario:', usuarioActualizado);
                 conectar({ access_token: token, usuario: usuarioActualizado });
             }
 
