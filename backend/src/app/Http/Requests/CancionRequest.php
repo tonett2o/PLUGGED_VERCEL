@@ -97,6 +97,16 @@ class CancionRequest extends FormRequest
                     $validator->errors()->add('colaboradores', 'Ya participas en este proyecto');
                 }
             }
+
+            // Verificar que la coleccion (si se indica) pertenezca al usuario autenticado.
+            // Evita que un track se asigne a una coleccion ajena.
+            $idColeccion = $this->input('id_coleccion');
+            if ($idColeccion) {
+                $coleccion = \App\Models\Coleccion::find($idColeccion);
+                if ($coleccion && (int) $coleccion->id_usuario !== (int) $usuario->id) {
+                    $validator->errors()->add('id_coleccion', 'No puedes asignar la canción a una colección que no es tuya');
+                }
+            }
         });
     }
 
@@ -112,7 +122,7 @@ class CancionRequest extends FormRequest
             'titulo'            => 'required|string|max:255',
             'bpm'               => 'nullable|integer|min:20|max:300',
             'tonalidad'         => 'nullable|string|max:50',
-            'id_coleccion'      => 'nullable|integer',
+            'id_coleccion'      => 'nullable|integer|exists:colecciones,id',
             'id_playlist'       => 'nullable|integer',
             'id_usuario'        => 'nullable|integer',
             'fecha_publicacion' => 'nullable|string',
@@ -184,6 +194,7 @@ class CancionRequest extends FormRequest
 
             // Colección
             'id_coleccion.integer'    => 'Colección ID inválido',
+            'id_coleccion.exists'     => 'La colección seleccionada no existe',
 
             // Playlist
             'id_playlist.integer'     => 'Playlist ID inválido',

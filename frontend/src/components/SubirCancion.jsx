@@ -85,26 +85,16 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
         }
     }, [datosAEditar?.id]);
 
-    // SEPARADO: Asignar Singles SOLO una vez cuando misColecciones esté disponible
+    // SEPARADO: marcar como inicializado en creación cuando misColecciones esté disponible.
+    // NO preasignamos el id de Singles: en creación el <select> oculta la opción "Singles",
+    // por lo que poner su id dejaría el value del select SIN una <option> coincidente. El
+    // navegador mostraría la primera opción visible (p. ej. un álbum) mientras el estado real
+    // seguiría siendo Singles -> el track se guardaba en Singles aunque se viera otro álbum.
+    // Dejando id_coleccion vacío, el select muestra coherentemente "Ninguno (Se asignará a
+    // Singles)" y el backend ya asigna Singles por defecto cuando llega vacío.
     useEffect(() => {
         if (!datosAEditar && misColecciones && misColecciones.length > 0 && !inicializadoRef.current) {
-            // Si estamos creando Y no hemos inicializado aún
-            const coleccionSingles = misColecciones.find(c => c.titulo.toLowerCase() === 'singles');
-            if (coleccionSingles) {
-                setForm({
-                    titulo: '',
-                    bpm: '',
-                    tonalidad: '',
-                    estilos: [],
-                    privacidad: 'publica',
-                    fecha_publicacion: new Date().getFullYear().toString(),
-                    portada: null,
-                    archivo: null,
-                    id_coleccion: String(coleccionSingles.id),
-                    id_playlist: ''
-                });
-                inicializadoRef.current = true;
-            }
+            inicializadoRef.current = true;
         }
     }, [datosAEditar, misColecciones]);
 
@@ -296,6 +286,7 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
                         onChange={handleChange}
                         style={{ borderColor: errores.id_coleccion ? '#ff4444' : undefined }}
                     >
+                        <option value="">Ninguno (Se asignará a Singles)</option>
                         {misColecciones?.filter(col => {
                             const titulo = col.titulo.toLowerCase().trim();
                             const isSingles = titulo === 'singles';
@@ -309,9 +300,9 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
                                 return !isGusta && !isSingles; // Ocultar "Me gusta" y Singles
                             }
                         }).map(col => (
-                            <option key={col.id} value={col.id}>{col.titulo}</option>
+                            // value como String para que coincida con form.id_coleccion (siempre string)
+                            <option key={col.id} value={String(col.id)}>{col.titulo}</option>
                         ))}
-                        <option value="">Ninguno (Se asignará a Singles)</option>
                     </select>
                     {renderErrorMessage('id_coleccion')}
                 </div>
