@@ -23,7 +23,7 @@
 /* ============================================
    PESTAÑA PARA MOSTRAR/OCULTAR
    ============================================ */
-.reproductor-pestaña {
+.reproductor-pestana {
     position: fixed;
     bottom: 20px;
     left: 50%;
@@ -42,7 +42,7 @@
     color: #000;
 }
 
-.reproductor-pestaña:hover {
+.reproductor-pestana:hover {
     transform: translateX(-50%) scale(1.1);
     box-shadow: 0 6px 16px rgba(10, 218, 245, 0.5);
 }
@@ -362,7 +362,7 @@
         height: 46px;
     }
 
-    .reproductor-pestaña {
+    .reproductor-pestana {
         width: 50px;
         height: 50px;
     }
@@ -394,7 +394,7 @@
         width: 60px;
     }
 
-    .reproductor-pestaña {
+    .reproductor-pestana {
         width: 40px;
         height: 40px;
     }

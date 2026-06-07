@@ -354,24 +354,24 @@ const Reproductor = () => {
         return null;
     }
 
-    // Estado minimizado: solo un icono flotante que expande al hacer clic
-    if (!reproducerVisible) {
-        return (
-            <div
-                className="reproductor-pestana"
-                onClick={() => setReproducerVisible(true)}
-                title="Click para expandir reproductor"
-            >
-                <FaMusic size={24} />
-            </div>
-        );
-    }
-
     return (
         <>
-            {/* Elemento audio real del navegador, sin controles nativos */}
+            {/* El elemento <audio> permanece SIEMPRE montado mientras haya cancion,
+                tanto en estado minimizado como expandido. Si estuviera dentro del
+                bloque que se oculta al minimizar, se desmontaria, audioRef pasaria a
+                null y la reproduccion se cortaria; ademas no volveria a sonar al expandir. */}
             <audio ref={audioRef} crossOrigin="anonymous" />
 
+            {!reproducerVisible ? (
+                /* Estado minimizado: icono flotante que expande al hacer clic */
+                <div
+                    className="reproductor-pestana"
+                    onClick={() => setReproducerVisible(true)}
+                    title="Click para expandir reproductor"
+                >
+                    <FaMusic size={24} />
+                </div>
+            ) : (
             <div className="footer-player">
                 {/* Zona izquierda: portada + info de la cancion */}
                 <div className="seccion-izquierda">
@@ -478,6 +478,7 @@ const Reproductor = () => {
                     </button>
                 </div>
             </div>
+            )}
         </>
     );
 };
