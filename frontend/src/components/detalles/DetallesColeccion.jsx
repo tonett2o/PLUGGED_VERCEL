@@ -188,7 +188,8 @@ const DetallesColeccion = ({ coleccionBuscada }) => {
 
                                     <div className="sc-row-meta-info">
                                         <span className="sc-row-title">{track.titulo}</span>
-                                        <span className="sc-row-artist">{artista}</span>
+                                        {/* Mostrar el nick del creador de esta cancion, no del creador de la coleccion */}
+                                        <span className="sc-row-artist">{track.usuario?.nick || track.usuario?.nombre || 'Artista Desconocido'}</span>
                                     </div>
 
                                     <div className="sc-row-details">

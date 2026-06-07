@@ -164,8 +164,8 @@ const DetallesPlaylist = ({ playlistBuscada }) => {
 
                                     <div className="sc-row-meta-info">
                                         <span className="sc-row-title">{track.titulo}</span>
-                                        {/* Mostramos el creador/artista real de este track específico de la playlist */}
-                                        <span className="sc-row-artist">{track.artista || 'Artista Desconocido'}</span>
+                                        {/* Mostrar el nick del creador real de esta cancion */}
+                                        <span className="sc-row-artist">{track.usuario?.nick || track.usuario?.nombre || 'Artista Desconocido'}</span>
                                     </div>
 
                                     <div className="sc-row-details">
