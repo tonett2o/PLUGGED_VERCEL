@@ -105,13 +105,6 @@ const SubirEvento = ({ alFinalizar, datosAEditar }) => {
                 longitud = String(datosAEditar.longitud);
             }
 
-            console.log('📍 Cargando ubicación del evento:', {
-                ubicacionTexto,
-                latitud,
-                longitud,
-                original: datosAEditar.ubicacion
-            });
-
             setForm({
                 nombre: datosAEditar.nombre || "",
                 nombre_sala: datosAEditar.nombre_sala || "",
@@ -127,10 +120,8 @@ const SubirEvento = ({ alFinalizar, datosAEditar }) => {
             // Inicializar colaboradores al editar
             if (datosAEditar.colaboradores) {
                 const ids = datosAEditar.colaboradores.map(c => c.id || c);
-                console.log('🤝 Inicializando colaboradores en SubirEvento:', ids);
                 setColaboradores(ids);
             } else {
-                console.log('⚠️ Sin colaboradores en datosAEditar');
                 setColaboradores([]);
             }
         }
@@ -165,9 +156,6 @@ const SubirEvento = ({ alFinalizar, datosAEditar }) => {
         e.preventDefault();
         setSubiendo(true);
         setErrores({});
-
-        // Validar que haya colaboradores si es necesario
-        console.log('📤 Enviando evento con colaboradores:', colaboradores);
 
         const datosEnvio = {
             ...form,

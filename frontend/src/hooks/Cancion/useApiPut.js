@@ -45,7 +45,6 @@ const useApiPut = async (id, cancionEditada, token) => {
             typeof colab === 'object' ? colab.id : colab
         );
     }
-    console.log('useApiPut_Cancion - enviando colaboradores:', colaboradoresArray);
     formData.append('colaboradores', JSON.stringify(colaboradoresArray));
 
     const peticion = await fetch(`${API_URL}/api/canciones/${id}`, {

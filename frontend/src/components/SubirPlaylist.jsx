@@ -31,9 +31,7 @@ const SubirPlaylist = ({ alFinalizar, datosAEditar }) => {
 
     // Reinicializar formulario y colaboradores cuando datosAEditar cambia
     useEffect(() => {
-        console.log('SubirPlaylist useEffect - datosAEditar:', datosAEditar);
         if (datosAEditar) {
-            console.log('Editando - descripcion:', datosAEditar.descripcion, 'colaboradores:', datosAEditar.colaboradores);
             setFormulario({
                 titulo: datosAEditar.titulo || '',
                 descripcion: datosAEditar.descripcion || '',
@@ -44,7 +42,6 @@ const SubirPlaylist = ({ alFinalizar, datosAEditar }) => {
 
         } else {
             // Limpiar formulario cuando se abre el modal para crear una nueva playlist
-            console.log('Creando nueva playlist - limpiando formulario');
             setFormulario({
                 titulo: '',
                 descripcion: '',

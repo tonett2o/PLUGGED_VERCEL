@@ -3,7 +3,6 @@ const useApiGetAll = async () => {
     let respuesta = null;
     let peticion = await fetch(`${API_URL}/api/software`);
     let software = await peticion.json();
-    console.log(software);
 
     if (Array.isArray(software) && peticion.ok) {
         respuesta = software;

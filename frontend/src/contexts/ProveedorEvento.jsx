@@ -75,7 +75,6 @@ const ProveedorEventos = (props) => {
             const respuesta = await useApiPut_Evento(idEvento, datosFormulario, token);
 
             if (respuesta && !respuesta.error) {
-                console.log("Evento actualizado correctamente");
                 // Recargamos desde el backend (datos completos con relaciones).
                 // La respuesta del PUT puede venir parcial, así que no la inyectamos
                 // en el contexto: siempre recargamos la lista canónica.
@@ -97,7 +96,6 @@ const ProveedorEventos = (props) => {
             const respuesta = await useApiDelete_Evento(idEvento, token);
 
             if (respuesta && !respuesta.error) {
-                console.log("Evento eliminado correctamente");
                 await cargarTodosLosEventos(); // 🔄 Refrescamos la lista global para actualizar mapa
             }
             return respuesta;

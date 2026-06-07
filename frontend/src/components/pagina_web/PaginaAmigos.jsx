@@ -12,23 +12,18 @@ const PaginaAmigos = () => {
     const [cargando, setCargando] = useState(true);
 
     useEffect(() => {
-        console.log('PaginaAmigos: usuarioId =', usuarioId, 'usuarioAutenticado =', usuarioAutenticado?.id);
 
         // Si el usuarioId coincide con el usuario autenticado, usamos esos datos
         if (usuarioAutenticado && String(usuarioAutenticado.id) === usuarioId) {
-            console.log('PaginaAmigos: User authenticated, using context data');
             setDatosUsuario(usuarioAutenticado);
             setCargando(false);
         } else {
-            console.log('PaginaAmigos: Fetching user data for userId:', usuarioId);
             // Si no, intentamos obtener los datos del usuario
             const obtenerDatosUsuario = async () => {
                 try {
                     const response = await fetch(`${API_URL}/api/usuarios/${usuarioId}`);
-                    console.log('PaginaAmigos: Fetch response status:', response.status);
                     if (response.ok) {
                         const datos = await response.json();
-                        console.log('PaginaAmigos: Datos recibidos:', datos);
                         setDatosUsuario(datos);
                     } else {
                         console.error('PaginaAmigos: Response not ok, redirecting');

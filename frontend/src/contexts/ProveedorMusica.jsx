@@ -112,7 +112,6 @@ const ProveedorMusica = (props) => {
             const respuesta = await useApiPut_Cancion(idCancion, datosFormulario, token);
 
             if (respuesta && !respuesta.error) {
-                console.log("Canción actualizada con éxito");
                 // Recargamos desde el backend (datos completos con relaciones).
                 // La respuesta del PUT viene parcial (envuelta en { cancion } y sin
                 // la relación `usuario`), así que NO la inyectamos en el contexto.
@@ -168,7 +167,6 @@ const ProveedorMusica = (props) => {
             const respuesta = await useApiPut_Playlist(idPlaylist, datosFormulario, token);
 
             if (respuesta && !respuesta.error) {
-                console.log("Playlist actualizada con éxito");
                 // Recargamos desde el backend (datos completos). La respuesta del PUT
                 // viene parcial, así que no la inyectamos en el contexto.
                 await iniciarPlaylists();
@@ -223,7 +221,6 @@ const ProveedorMusica = (props) => {
             const respuesta = await useApiPut_Coleccion(idColeccion, datosFormulario, token);
 
             if (respuesta && !respuesta.error) {
-                console.log("Colección actualizada en el estado global a través del hook");
                 // Recargamos desde el backend (datos completos). La respuesta del PUT
                 // viene parcial, así que no la inyectamos en el contexto.
                 await iniciarColecciones();
@@ -281,14 +278,12 @@ const ProveedorMusica = (props) => {
 
     // Método para refrescar playlists y colecciones (útil al agregar canciones)
     const refrescarPlaylistsYColecciones = async () => {
-        console.log('🔄 Refrescando playlists y colecciones...');
         await iniciarPlaylists();
         await iniciarColecciones();
     };
 
     // Método para limpiar la música cuando se cierra sesión
     const limpiarMusica = () => {
-        console.log('🛑 Limpiando reproductor...');
         setTrackActual(null);
         setIsPlaying(false);
         if (wavesurferRef.current) {

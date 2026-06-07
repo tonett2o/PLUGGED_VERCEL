@@ -68,11 +68,9 @@ const ExplorarEventos = () => {
         if (!mapContainer.current || loadingEventos) return;
 
         if (map.current) {
-            console.log('🗺️ Mapa ya inicializado');
             return;
         }
 
-        console.log('🗺️ Inicializando mapa...');
         map.current = new maplibregl.Map({
             container: mapContainer.current,
             style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
@@ -93,12 +91,6 @@ const ExplorarEventos = () => {
         Object.values(markers.current).forEach(marker => marker.remove());
         markers.current = {};
 
-        console.log('🎯 Eventos filtrados:', eventosFiltrados.length);
-        if (eventosFiltrados.length > 0) {
-            console.log('📍 Primer evento:', JSON.stringify(eventosFiltrados[0], null, 2));
-            console.log('Eventos con latitud/longitud:', eventosFiltrados.filter(e => e.latitud && e.longitud).length);
-        }
-
         // Agregar nuevos marcadores
         eventosFiltrados.forEach(evento => {
             // Las coordenadas están dentro de ubicacion
@@ -110,7 +102,6 @@ const ExplorarEventos = () => {
                 return;
             }
 
-            console.log('✅ Agregando marcador:', evento.nombre, lat, lng);
 
             const el = document.createElement('div');
             el.className = 'marker';
@@ -172,10 +163,8 @@ const ExplorarEventos = () => {
             });
 
             markers.current[evento.id] = marker;
-            console.log('✅ Marcador agregado al mapa');
         });
 
-        console.log('📍 Total de marcadores en mapa:', Object.keys(markers.current).length);
 
         // Ajustar zoom a eventos
         if (eventosFiltrados.length > 0) {

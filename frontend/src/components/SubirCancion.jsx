@@ -91,10 +91,6 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
             // Si estamos creando Y no hemos inicializado aún
             const coleccionSingles = misColecciones.find(c => c.titulo.toLowerCase() === 'singles');
             if (coleccionSingles) {
-                console.log('INICIALIZANDO: Asignando Singles por defecto', {
-                    'singles_id': coleccionSingles.id,
-                    'todas_colecciones': misColecciones.map(c => ({ id: c.id, titulo: c.titulo }))
-                });
                 setForm({
                     titulo: '',
                     bpm: '',
@@ -115,16 +111,6 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         const nuevoValor = files ? files[0] : value;
-
-        // 🔍 DEBUG: Log cuando se cambia id_coleccion
-        if (name === 'id_coleccion') {
-            console.log('CAMBIO ID_COLECCION:', {
-                'value_del_select': value,
-                'type': typeof value,
-                'name': name,
-                'nuevo_valor_guardado': nuevoValor
-            });
-        }
 
         setForm({ ...form, [name]: nuevoValor });
         // Limpiar errores de este campo cuando el usuario interactúa
@@ -183,15 +169,6 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
         try {
             const idSinglesFallback = misColecciones?.find(c => c.titulo.toLowerCase() === 'singles')?.id || '';
 
-            // 🔍 DEBUG: Log detallado de qué se está enviando
-            console.log('DEBUG SUBMIT:', {
-                'form.id_coleccion': form.id_coleccion,
-                'type': typeof form.id_coleccion,
-                'empty?': !form.id_coleccion,
-                'idSinglesFallback': idSinglesFallback,
-                'allColecciones': misColecciones?.map(c => ({ id: c.id, titulo: c.titulo }))
-            });
-
             const datosSeguros = {
                 ...form,
                 id_coleccion: form.id_coleccion || idSinglesFallback,
@@ -199,25 +176,17 @@ const SubirCancion = ({ alFinalizar, misColecciones, misPlaylists, datosAEditar 
                 colaboradores: colaboradores
             };
 
-            console.log('DATOS SEGUROS ENVIADOS:', {
-                'id_coleccion': datosSeguros.id_coleccion,
-                'type': typeof datosSeguros.id_coleccion
-            });
-
             // 2. 🚨 LÓGICA BIFURCADA: ¿Crear o Actualizar?
             const res = datosAEditar
                 ? await actualizarCancion(datosAEditar.id, datosSeguros)
                 : await publicarCancion(datosSeguros);
 
-            console.log('Respuesta del servidor:', res);
 
             if (res && !res.error) {
-                console.log('Track', datosAEditar ? 'actualizado' : 'publicado', 'exitosamente');
                 notificaciones.exito(datosAEditar ? 'Canción actualizada correctamente' : 'Canción publicada correctamente');
                 alFinalizar();
             } else if (res?.detalles && Object.keys(res.detalles).length > 0) {
-                // Mostrar errores con badges por campo
-                console.log('❌ Errores por campo:', res.detalles);
+                // Mostrar errores con badges por camp
                 setErrores(res.detalles);
                 notificaciones.error('Por favor revisa los errores en el formulario');
                 // Scroll hacia arriba para ver los errores
