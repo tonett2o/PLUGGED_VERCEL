@@ -1,7 +1,7 @@
 /**
  * Login.jsx - Formulario de inicio de sesion
  *
- * Permite al usuario autenticarse con email y contrasena.
+ * Permite al usuario autenticarse con email y contraseña.
  * Los errores de validacion se muestran campo a campo directamente
  * bajo el input correspondiente, sin necesidad de un bloque de error global.
  *
@@ -124,16 +124,16 @@ export const Login = () => {
                         </div>
                     </div>
 
-                    {/* Campo contrasena */}
+                    {/* Campo contraseña */}
                     <div className="form-row" style={{ gridTemplateColumns: '1fr' }}>
                         <div>
-                            <label>Contrasena</label>
+                            <label>Contraseña</label>
                             <input
                                 type="password"
                                 name="password"
                                 value={formulario.password}
                                 onChange={handleTexto}
-                                placeholder="Tu contrasena"
+                                placeholder="Tu contraseña"
                                 style={{ borderColor: errores.password ? '#ff4444' : undefined }}
                             />
                             {renderErrorMessage('password')}

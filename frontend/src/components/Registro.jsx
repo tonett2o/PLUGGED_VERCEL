@@ -5,7 +5,7 @@
  *   - Nick (nombre de usuario unico)
  *   - Nombre real o artistico
  *   - Email
- *   - Contrasena y confirmacion
+ *   - Contraseña y confirmacion
  *   - Tipo de cuenta (usuario, DJ o productor)
  *   - Ubicacion mediante mapa interactivo (opcional)
  *
@@ -236,10 +236,10 @@ const Registro = () => {
                         </div>
                     </div>
 
-                    {/* Fila 3: Contrasena y confirmacion */}
+                    {/* Fila 3: Contraseña y confirmacion */}
                     <div className="form-row">
                         <div>
-                            <label>Contrasena</label>
+                            <label>Contraseña</label>
                             <input
                                 type="password"
                                 name="password"
@@ -252,13 +252,13 @@ const Registro = () => {
                         </div>
 
                         <div>
-                            <label>Confirmar Contrasena</label>
+                            <label>Confirmar Contraseña</label>
                             <input
                                 type="password"
                                 name="password_confirmation"
                                 value={formulario.password_confirmation}
                                 onChange={handleTexto}
-                                placeholder="Repite tu contrasena"
+                                placeholder="Repite tu contraseña"
                                 style={{ borderColor: errores.password_confirmation ? '#ff4444' : undefined }}
                             />
                             {renderErrorMessage('password_confirmation')}

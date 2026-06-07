@@ -9,7 +9,7 @@
  * para que el componente muestre el error adecuado.
  *
  * @param {string} email    - Email del usuario
- * @param {string} password - Contrasena del usuario
+ * @param {string} password - Contraseña del usuario
  * @returns {object|null} Respuesta de la API o null en caso de error
  */
 import API_URL from '../../config/api.js'
