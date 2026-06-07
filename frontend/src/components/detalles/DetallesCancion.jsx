@@ -405,20 +405,36 @@ const DetallesCancion = ({ cancionBuscada }) => {
                         border: '1px solid rgba(10, 173, 245, 0.2)',
                         marginBottom: '20px'
                     }}>
-                        <p style={{ margin: '0 0 12px 0', color: '#999' }}>Inicia sesión para comentar</p>
-                        <Link to="/login" style={{
-                            display: 'inline-block',
-                            padding: '10px 20px',
-                            backgroundColor: '#0ADAF5',
-                            color: '#000',
-                            textDecoration: 'none',
-                            borderRadius: '4px',
-                            fontWeight: '600',
-                            transition: 'all 0.2s',
-                            cursor: 'pointer'
-                        }} onMouseEnter={(e) => e.target.style.opacity = '0.8'} onMouseLeave={(e) => e.target.style.opacity = '1'}>
-                            Iniciar sesión
-                        </Link>
+                        <p style={{ margin: '0 0 16px 0', color: '#999' }}>Inicia sesión o regístrate para comentar</p>
+                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <Link to="/login" style={{
+                                display: 'inline-block',
+                                padding: '10px 20px',
+                                backgroundColor: '#0ADAF5',
+                                color: '#000',
+                                textDecoration: 'none',
+                                borderRadius: '4px',
+                                fontWeight: '600',
+                                transition: 'all 0.2s',
+                                cursor: 'pointer'
+                            }} onMouseEnter={(e) => e.target.style.opacity = '0.8'} onMouseLeave={(e) => e.target.style.opacity = '1'}>
+                                Iniciar sesión
+                            </Link>
+                            <Link to="/registro" style={{
+                                display: 'inline-block',
+                                padding: '10px 20px',
+                                backgroundColor: 'transparent',
+                                color: '#0ADAF5',
+                                textDecoration: 'none',
+                                borderRadius: '4px',
+                                fontWeight: '600',
+                                border: '1px solid #0ADAF5',
+                                transition: 'all 0.2s',
+                                cursor: 'pointer'
+                            }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#0ADAF5'; e.target.style.color = '#000'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#0ADAF5'; }}>
+                                Regístrate
+                            </Link>
+                        </div>
                     </div>
                 )}
 
