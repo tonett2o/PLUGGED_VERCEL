@@ -6,6 +6,7 @@ import API_URL from "../../config/api.js";
 import { contextoMusica } from "../../contexts/ProveedorMusica.jsx";
 import { contextoNotificaciones } from "../../contexts/ProveedorNotificaciones.jsx";
 import { generarPortadaPlaceholder } from "../../utils/imagen.js";
+import { tieneSesion } from "../../utils/sesion.js";
 import { useLike } from "../../hooks/Cancion/useLike.js";
 import { useComentarios } from "../../hooks/Cancion/useComentarios.js";
 import ReproductorDetalles from "./ReproductorDetalles.jsx";
@@ -373,27 +374,53 @@ const DetallesCancion = ({ cancionBuscada }) => {
             <section className="comentarios-seccion">
                 <h2>Comentarios ({comentarios.length})</h2>
 
-                {/* Formulario nuevo comentario */}
-                <div className="comentario-nuevo">
-                    <textarea
-                        placeholder="Comparte tu opinión sobre esta canción..."
-                        value={nuevoComentario}
-                        onChange={(e) => setNuevoComentario(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.ctrlKey && e.key === 'Enter') {
-                                handleAgregarComentario();
-                            }
-                        }}
-                    />
-                    <div className="comentario-nuevo-footer">
-                        <button onClick={handleAgregarComentario}>
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M16.6915026,12.4744748 L3.50612381,13.2599618 C3.19218622,13.2599618 3.03521743,13.4170592 3.03521743,13.5741566 L1.15159189,20.0151496 C0.8376543,20.8006365 0.99,21.89 1.77946707,22.52 C2.41,22.99 3.50612381,23.1 4.13399899,22.8429026 L21.714504,14.0454487 C22.6563168,13.5741566 23.1272231,12.6315722 22.9702544,11.6889879 L4.13399899,1.16147071 C3.34915502,0.9 2.40734225,1.00636533 1.77946707,1.4776575 C0.994623095,2.10604706 0.837654326,3.0486314 1.15159189,3.99397806 L3.03521743,10.4349711 C3.03521743,10.5920685 3.34915502,10.7491658 3.50612381,10.7491658 L16.6915026,11.5346527 C16.6915026,11.5346527 17.1624089,11.5346527 17.1624089,12.0059448 C17.1624089,12.4744748 16.6915026,12.4744748 16.6915026,12.4744748 Z" />
-                            </svg>
-                            Comentar en {formatearTiempo(tiempoActual)}
-                        </button>
+                {/* Formulario nuevo comentario - SOLO si hay sesion */}
+                {tieneSesion() ? (
+                    <div className="comentario-nuevo">
+                        <textarea
+                            placeholder="Comparte tu opinión sobre esta canción..."
+                            value={nuevoComentario}
+                            onChange={(e) => setNuevoComentario(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.ctrlKey && e.key === 'Enter') {
+                                    handleAgregarComentario();
+                                }
+                            }}
+                        />
+                        <div className="comentario-nuevo-footer">
+                            <button onClick={handleAgregarComentario}>
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16.6915026,12.4744748 L3.50612381,13.2599618 C3.19218622,13.2599618 3.03521743,13.4170592 3.03521743,13.5741566 L1.15159189,20.0151496 C0.8376543,20.8006365 0.99,21.89 1.77946707,22.52 C2.41,22.99 3.50612381,23.1 4.13399899,22.8429026 L21.714504,14.0454487 C22.6563168,13.5741566 23.1272231,12.6315722 22.9702544,11.6889879 L4.13399899,1.16147071 C3.34915502,0.9 2.40734225,1.00636533 1.77946707,1.4776575 C0.994623095,2.10604706 0.837654326,3.0486314 1.15159189,3.99397806 L3.03521743,10.4349711 C3.03521743,10.5920685 3.34915502,10.7491658 3.50612381,10.7491658 L16.6915026,11.5346527 C16.6915026,11.5346527 17.1624089,11.5346527 17.1624089,12.0059448 C17.1624089,12.4744748 16.6915026,12.4744748 16.6915026,12.4744748 Z" />
+                                </svg>
+                                Comentar en {formatearTiempo(tiempoActual)}
+                            </button>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div style={{
+                        padding: '20px',
+                        textAlign: 'center',
+                        backgroundColor: 'rgba(10, 173, 245, 0.05)',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(10, 173, 245, 0.2)',
+                        marginBottom: '20px'
+                    }}>
+                        <p style={{ margin: '0 0 12px 0', color: '#999' }}>Inicia sesión para comentar</p>
+                        <Link to="/login" style={{
+                            display: 'inline-block',
+                            padding: '10px 20px',
+                            backgroundColor: '#0ADAF5',
+                            color: '#000',
+                            textDecoration: 'none',
+                            borderRadius: '4px',
+                            fontWeight: '600',
+                            transition: 'all 0.2s',
+                            cursor: 'pointer'
+                        }} onMouseEnter={(e) => e.target.style.opacity = '0.8'} onMouseLeave={(e) => e.target.style.opacity = '1'}>
+                            Iniciar sesión
+                        </Link>
+                    </div>
+                )}
 
                 {/* Lista de comentarios */}
                 <div className="lista-comentarios">
