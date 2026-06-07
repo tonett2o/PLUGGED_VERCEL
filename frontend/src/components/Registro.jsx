@@ -258,7 +258,7 @@ const Registro = () => {
                                 name="password_confirmation"
                                 value={formulario.password_confirmation}
                                 onChange={handleTexto}
-                                placeholder="Repite tu contraseña"
+                                placeholder="HOLA HOLA"
                                 style={{ borderColor: errores.password_confirmation ? '#ff4444' : undefined }}
                             />
                             {renderErrorMessage('password_confirmation')}
